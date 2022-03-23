@@ -2,10 +2,14 @@ package bank;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import bank.Bank;
+import bank.Fraction;
+import bank.exception.NegativeBalanceException;
 
 public class Loan {
     private String loanName;
     private String borrowerName;
+    private Customer borrower;
     private Status status;
     private double loanSum;
     private int startTimeUnit;
@@ -14,17 +18,19 @@ public class Loan {
     private Type reason;
     private double interestPrecent;
     private int paymentFrequency;
-    private Collection loaners;
+    private Collection<Fraction> fractions;
     private double currentInterest;
     private double remainInterest;
     private double currentFund;
     private double remainFund;
     private boolean isActive;
-    
+    private Collection transactions;
 
-    public Loan(String loanName, String borrowerName, double loanSum, int totalTimeUnit, Type reason, double interestPrecent, int paymentFrequency) {
+
+    public Loan(String loanName, Customer borrower, double loanSum, int totalTimeUnit, Type reason, double interestPrecent, int paymentFrequency) {
         this.loanName = loanName;
-        this.borrowerName = borrowerName;
+        this.borrower = borrower;
+        this.borrowerName = borrower.getName();
         this.loanSum = loanSum;
         this.totalTimeUnit = totalTimeUnit;
         this.reason = reason;
@@ -37,7 +43,8 @@ public class Loan {
         this.currentFund = 0;
         this.remainFund = loanSum;
         this.isActive = false;
-        this.loaners = new ArrayList<Customer>();
+        this.fractions = new ArrayList<Fraction>();
+        this.transactions = new ArrayList<Transaction>();
     }
 
     public void setStatus(int globalTimeUnit,Status status) {
@@ -52,8 +59,17 @@ public class Loan {
         this.startTimeUnit = globalTimeUnit;
     }
 
-    private void addLoaner(Customer loaner){
-        loaners.add(loaner);
+    private void checkStatus(int globalTimeUnit){
+        if(currentInterest == loanSum){
+            setStatus(globalTimeUnit,Status.Active);
+        }
+    }
+    private void addLoaner(int globalTimeUnit,Customer customer, double amount){
+        Fraction newFraction = new Fraction(customer,amount);
+        fractions.add(newFraction);
+        currentInterest += newFraction.getAmount();
+        checkStatus(globalTimeUnit);
+
     }
 
 
@@ -93,8 +109,12 @@ public class Loan {
         return paymentFrequency;
     }
 
+    public Customer getBorrower() {
+        return borrower;
+    }
+
     private Collection getLoaners() {
-        return loaners;
+        return fractions;
     }
 
     private int getRemainTimeUnit() {
@@ -121,11 +141,16 @@ public class Loan {
         return isActive;
     }
 
-    public void update(int globalTimeUnit) {
+    public void update(int globalTimeUnit) throws NegativeBalanceException {
         this.remainTimeUnit--;
         if(this.isActive && remainTimeUnit >= 0 && ((globalTimeUnit - startTimeUnit)%paymentFrequency==0 || paymentFrequency == 1))
         {
-            for()
+            for(Fraction fraction: fractions)
+            {
+                Transaction newTransaction = new Transaction(globalTimeUnit,this.borrower, fraction.getCustomer(),
+                                                        fraction.getAmount()/(totalTimeUnit/paymentFrequency)
+                                             + fraction.getAmount() * interestPrecent/(totalTimeUnit/paymentFrequency) );
+            }
         }
     }
 }

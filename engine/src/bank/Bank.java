@@ -1,5 +1,7 @@
 package bank;
 
+import bank.exception.NegativeBalanceException;
+
 import java.util.ArrayList;
 import java.util.Collection;
 public class Bank {
@@ -11,7 +13,7 @@ public class Bank {
         return globalTimeUnit;
     }
 
-    public void setGlobalTimeUnit() {
+    public void setGlobalTimeUnit() throws NegativeBalanceException {
         this.globalTimeUnit++;
         for(Loan loan: loans){
             loan.update(globalTimeUnit);
@@ -26,8 +28,9 @@ public class Bank {
         return customers;
     }
 
-    public void addLoan(String loanName, String borrowerName, double loanSum, int totalTimeUnit, Type reason, double interestPrecent, int paymentFrequency){
-        loans.add(new Loan(loanName,  borrowerName,  loanSum,  totalTimeUnit,  reason,  interestPrecent,  paymentFrequency));
+    public void addLoan(Customer customer, double loanSum, int totalTimeUnit, Type reason, double interestPrecent, int paymentFrequency){
+        Loan newLoan = customer.createLoan(customer.getName(),loanSum, totalTimeUnit, reason, interestPrecent,paymentFrequency);
+        loans.add(newLoan);
     }
 
     public void addCostumer(String name, double balance){
