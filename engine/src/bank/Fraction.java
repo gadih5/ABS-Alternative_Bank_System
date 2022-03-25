@@ -20,5 +20,13 @@ public class Fraction {
     public double getAmount() {
         return amount;
     }
+
+    @Override
+    public String toString() {
+        return
+                "{"+getCustomerName() +
+                 " , "+ amount +
+                "} " ;
+    }
 }
 

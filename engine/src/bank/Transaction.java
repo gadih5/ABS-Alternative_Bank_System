@@ -8,6 +8,7 @@ public class Transaction {
     private int timeUnit;
     private double previousBalance;
     private double afterBalance;
+
     private String sign;
 
     public Transaction(int globalTimeUnit,Customer fromCustomer,Customer toCustomer, double amount) throws NegativeBalanceException {

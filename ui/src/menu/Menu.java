@@ -1,8 +1,9 @@
 package menu;
 
 import java.util.Scanner;
-
+import bank.Bank;
 public class Menu {
+    public Bank myBank=new Bank();
     public static void run(){
         System.out.println("Please choose a command by number:");
         System.out.println("1)Read File");

@@ -25,6 +25,8 @@ public class Loan {
     private double remainFund;
     private boolean isActive;
     private Collection transactions;
+    private double amountToComplete;
+    private Collection uncompletedTransactions;
 
 
     public Loan(String loanName, Customer borrower, double loanSum, int totalTimeUnit, Type reason, double interestPrecent, int paymentFrequency) {
@@ -42,6 +44,7 @@ public class Loan {
         this.remainInterest = loanSum * interestPrecent;
         this.currentFund = 0;
         this.remainFund = loanSum;
+        this.amountToComplete=loanSum;
         this.isActive = false;
         this.fractions = new ArrayList<Fraction>();
         this.transactions = new ArrayList<Transaction>();
@@ -68,44 +71,52 @@ public class Loan {
         Fraction newFraction = new Fraction(customer,amount);
         fractions.add(newFraction);
         currentInterest += newFraction.getAmount();
+        amountToComplete-= newFraction.getAmount();
         checkStatus(globalTimeUnit);
 
     }
 
+    protected Collection<Fraction> getFractions() {
+        return fractions;
+    }
 
-    private String getSerialNumber() {
+    protected Collection getTransactions() {
+        return transactions;
+    }
+
+    protected String getSerialNumber() {
         return loanName;
     }
 
-    private String getBorrowerName() {
+    protected String getBorrowerName() {
         return borrowerName;
     }
 
-    private Status getStatus() {
+    protected Status getStatus() {
         return status;
     }
 
-    private double getLoanSum() {
+    protected double getLoanSum() {
         return loanSum;
     }
 
-    private int getStartTimeUnit() {
+    protected int getStartTimeUnit() {
         return startTimeUnit;
     }
 
-    private int getTotalTimeUnit() {
+    protected int getTotalTimeUnit() {
         return totalTimeUnit;
     }
 
-    private Type getReason() {
+    protected Type getReason() {
         return reason;
     }
 
-    private double getInterestPrecent() {
+    protected double getInterestPrecent() {
         return interestPrecent;
     }
 
-    private int getPaymentFrequency() {
+    protected int getPaymentFrequency() {
         return paymentFrequency;
     }
 
@@ -113,43 +124,58 @@ public class Loan {
         return borrower;
     }
 
-    private Collection getLoaners() {
+    protected Collection getLoaners() {
         return fractions;
     }
 
-    private int getRemainTimeUnit() {
+    protected int getRemainTimeUnit() {
         return remainTimeUnit;
     }
 
-    private double getCurrentInterest() {
+    protected double getCurrentInterest() {
         return currentInterest;
     }
 
-    private double getRemainInterest() {
+    protected double getRemainInterest() {
         return remainInterest;
     }
 
-    private double getCurrentFund() {
+    protected double getCurrentFund() {
         return currentFund;
     }
 
-    private double getRemainFund() {
+    protected double getRemainFund() {
         return remainFund;
     }
 
-    private boolean isActive() {
+    public double getAmountToComplete() {
+        return amountToComplete;
+    }
+
+    protected boolean isActive() {
         return isActive;
     }
 
     public void update(int globalTimeUnit) throws NegativeBalanceException {
+
+        //add debts payments first.+if debts is 0 and loan in risk change to Active
+        //Cheack Status Update Statue
         this.remainTimeUnit--;
         if(this.isActive && remainTimeUnit >= 0 && ((globalTimeUnit - startTimeUnit)%paymentFrequency==0 || paymentFrequency == 1))
         {
             for(Fraction fraction: fractions)
             {
-                Transaction newTransaction = new Transaction(globalTimeUnit,this.borrower, fraction.getCustomer(),
-                                                        fraction.getAmount()/(totalTimeUnit/paymentFrequency)
-                                             + fraction.getAmount() * interestPrecent/(totalTimeUnit/paymentFrequency) );
+                LoanTransaction newLoanTransaction = null;
+                try {
+                    newLoanTransaction = new LoanTransaction(globalTimeUnit,this.borrower, fraction.getCustomer(),
+                                                            fraction.getAmount()/(totalTimeUnit/paymentFrequency)
+                                                 ,fraction.getAmount() * interestPrecent/(totalTimeUnit/paymentFrequency) );
+                    transactions.add(newLoanTransaction);
+                } catch (NegativeBalanceException e) {
+                   uncompletedTransactions.add(new Debt(fraction.getCustomer(),fraction.getAmount()/(totalTimeUnit/paymentFrequency)+fraction.getAmount() * interestPrecent/(totalTimeUnit/paymentFrequency)));
+                   throw new NegativeBalanceException("Negative Balance " + this.borrowerName+" to "+fraction.getCustomerName());
+                }
+
             }
         }
     }
