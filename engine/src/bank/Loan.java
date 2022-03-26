@@ -2,6 +2,7 @@ package bank;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 
 import bank.Bank;
@@ -17,6 +18,7 @@ public class Loan {
     private int startTimeUnit;
     private int totalTimeUnit;
     private int remainTimeUnit;
+    private int finishTimeUnit;
     private Type reason;
     private double interestPrecent;
     private int paymentFrequency;
@@ -51,14 +53,21 @@ public class Loan {
         this.fractions = new ArrayList<Fraction>();
         this.transactions = new ArrayList<Transaction>();
         this.uncompletedTransactions = new ArrayList<Debt>();
+        this.finishTimeUnit = 0;
     }
 
     public void setStatus(int globalTimeUnit,Status status) {
         if(this.status == Status.Pending && status == Status.Active) {
             setStartTimeUnit(globalTimeUnit);
         }
+        if(status == Status.Finished){
+            setFinishTimeUnit(globalTimeUnit);
+        }
         this.status = status;
+    }
 
+    private void setFinishTimeUnit(int globalTimeUnit) {
+        this.finishTimeUnit = globalTimeUnit;
     }
 
     public void setStartTimeUnit(int globalTimeUnit) {
@@ -162,9 +171,16 @@ public class Loan {
     public void update(int globalTimeUnit) throws NegativeBalanceException {
         this.remainTimeUnit--;
         if(this.status==status.Risk){
-            uncompletedTransactions.sort(uncompletedTransactions.ge);
+            Collections.sort(uncompletedTransactions);
             for(Debt debt:uncompletedTransactions){
-                d
+                if(debt.getAmount() <= this.getBorrower().getBalance()){
+                    LoanTransaction newLoanTransaction = new LoanTransaction(globalTimeUnit, this.borrower, debt.getToCustomer(), debt.getFundPart(), debt.getInterestPart());
+                    uncompletedTransactions.remove(debt);
+                    transactions.add(newLoanTransaction);
+                }
+            }
+            if(this.uncompletedTransactions.isEmpty()){
+                setStatus(globalTimeUnit,Status.Active);
             }
         }
 
@@ -174,16 +190,19 @@ public class Loan {
             {
                 LoanTransaction newLoanTransaction = null;
                 try {
-                    newLoanTransaction = new LoanTransaction(globalTimeUnit,this.borrower, fraction.getCustomer(),
+                    newLoanTransaction = new LoanTransaction(globalTimeUnit, this.borrower, fraction.getCustomer(),
                                                             fraction.getAmount()/(totalTimeUnit/paymentFrequency)
                                                  ,fraction.getAmount() * interestPrecent/(totalTimeUnit/paymentFrequency) );
                     transactions.add(newLoanTransaction);
                 } catch (NegativeBalanceException e) {
-                   uncompletedTransactions.add(new Debt(fraction.getCustomer(),fraction.getAmount()/(totalTimeUnit/paymentFrequency)+fraction.getAmount() * interestPrecent/(totalTimeUnit/paymentFrequency)));
+                   uncompletedTransactions.add(new Debt(fraction.getCustomer(),fraction.getAmount()/(totalTimeUnit/paymentFrequency),fraction.getAmount() * interestPrecent/(totalTimeUnit/paymentFrequency)));
                    throw new NegativeBalanceException("Negative Balance " + this.borrowerName+" to "+fraction.getCustomerName());
                 }
 
             }
+        }
+        if(this.remainTimeUnit == 0 && this.status != Status.Risk){
+            setStatus(globalTimeUnit,Status.Finished);
         }
     }
 }

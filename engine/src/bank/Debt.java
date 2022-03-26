@@ -1,16 +1,28 @@
 package bank;
 
-public class Debt implements Comparable {
+public class Debt implements Comparable<Debt> {
     private Customer toCustomer;
+    private double fundPart;
+    private double interestPart;
     private double amount;
 
-    public Debt(Customer toCustomer, double amount) {
+    public Debt(Customer toCustomer, double fundPart,double interestPart) {
         this.toCustomer = toCustomer;
-        this.amount = amount;
+        this.fundPart = fundPart;
+        this.interestPart = interestPart;
+        this.amount = fundPart + interestPart;
     }
 
     public Customer getToCustomer() {
         return toCustomer;
+    }
+
+    public double getFundPart() {
+        return fundPart;
+    }
+
+    public double getInterestPart() {
+        return interestPart;
     }
 
     public double getAmount() {
@@ -18,8 +30,7 @@ public class Debt implements Comparable {
     }
 
     @Override
-    public int compareTo(Object o) {
-        Debt d = (Debt) o;
+    public int compareTo(Debt d) {
         int res = 0;
         if (this.amount > d.getAmount()) {
             res = 1;
