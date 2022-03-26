@@ -2,6 +2,8 @@ package bank;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
+
 import bank.Bank;
 import bank.Fraction;
 import bank.exception.NegativeBalanceException;
@@ -26,7 +28,7 @@ public class Loan {
     private boolean isActive;
     private Collection transactions;
     private double amountToComplete;
-    private Collection uncompletedTransactions;
+    private ArrayList<Debt> uncompletedTransactions;
 
 
     public Loan(String loanName, Customer borrower, double loanSum, int totalTimeUnit, Type reason, double interestPrecent, int paymentFrequency) {
@@ -48,6 +50,7 @@ public class Loan {
         this.isActive = false;
         this.fractions = new ArrayList<Fraction>();
         this.transactions = new ArrayList<Transaction>();
+        this.uncompletedTransactions = new ArrayList<Debt>();
     }
 
     public void setStatus(int globalTimeUnit,Status status) {
@@ -157,10 +160,14 @@ public class Loan {
     }
 
     public void update(int globalTimeUnit) throws NegativeBalanceException {
-
-        //add debts payments first.+if debts is 0 and loan in risk change to Active
-        //Cheack Status Update Statue
         this.remainTimeUnit--;
+        if(this.status==status.Risk){
+            uncompletedTransactions.sort(uncompletedTransactions.ge);
+            for(Debt debt:uncompletedTransactions){
+                d
+            }
+        }
+
         if(this.isActive && remainTimeUnit >= 0 && ((globalTimeUnit - startTimeUnit)%paymentFrequency==0 || paymentFrequency == 1))
         {
             for(Fraction fraction: fractions)
