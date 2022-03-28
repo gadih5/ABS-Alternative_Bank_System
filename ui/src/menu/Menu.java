@@ -69,7 +69,7 @@ public class Menu {
                 ", Reason: " + loanDto.getReason() +
                 ", Loan Sum: " + loanDto.getLoanSum() +
                 ", Total Loan Time: " + loanDto.getTotalTimeUnit() +
-                ", interest: " + loanDto.getInterestPrecent() +
+                ", interest: " + loanDto.getInterestPercent() +
                 ", Payment Frequency: " + loanDto.getPaymentFrequency() +
                 ", Status: " + loanDto.getStatus() +"\n\r";
         String frqString="Loaners: \n";

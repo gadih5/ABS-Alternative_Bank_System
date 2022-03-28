@@ -5,7 +5,7 @@ import bank.exception.NegativeBalanceException;
 public class Transaction {
     private Customer toCustomer;
     private double amount; //positive value
-    private int timeUnit;
+    private final int timeUnit;
     private double previousBalance;
     private double afterBalance;
 

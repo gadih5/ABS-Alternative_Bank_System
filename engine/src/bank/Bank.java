@@ -5,11 +5,12 @@ import bank.exception.NegativeBalanceException;
 import java.util.ArrayList;
 import java.util.Collection;
 public class Bank {
-    protected static  int globalTimeUnit = 1;
+    protected static int globalTimeUnit = 1;
     private Collection<Loan> loans = new ArrayList<>();
     private Collection<LoanDto> loansDto = new ArrayList<>();
 
-    private Collection customers = new ArrayList<Customer>();
+    private Collection<Customer> customers = new ArrayList<>();
+    private Collection<CustomerDto> customersDto = new ArrayList<>();
 
     public static int getGlobalTimeUnit() {
         return globalTimeUnit;
@@ -43,7 +44,9 @@ public class Bank {
     public Collection<LoanDto> getLoansDto() {
         return loansDto;
     }
-
+    public Collection<CustomerDto> getCustomersDto(){
+        return customersDto;
+    }
     public void addLoan(Customer customer, double loanSum, int totalTimeUnit, Type reason, double interestPrecent, int paymentFrequency){
         Loan newLoan = customer.createLoan(customer.getName(),loanSum, totalTimeUnit, reason, interestPrecent,paymentFrequency);
         loans.add(newLoan);

@@ -3,15 +3,12 @@ package bank;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 
-import bank.Bank;
-import bank.Fraction;
 import bank.exception.NegativeBalanceException;
 
 public class Loan {
-    private String loanName;
-    private String borrowerName;
+    private final double startLoanAmount;
+    private final String loanName;
     private Customer borrower;
     private Status status;
     private double loanSum;
@@ -20,7 +17,7 @@ public class Loan {
     private int remainTimeUnit;
     private int finishTimeUnit;
     private Type reason;
-    private double interestPrecent;
+    private double interestPercent;
     private int paymentFrequency;
     private Collection<Fraction> fractions;
     private double currentInterest;
@@ -33,19 +30,19 @@ public class Loan {
     private ArrayList<Debt> uncompletedTransactions;
 
 
-    public Loan(String loanName, Customer borrower, double loanSum, int totalTimeUnit, Type reason, double interestPrecent, int paymentFrequency) {
+    public Loan(String loanName, Customer borrower, double loanSum, int totalTimeUnit, Type reason, double interestPercent, int paymentFrequency) {
         this.loanName = loanName;
         this.borrower = borrower;
-        this.borrowerName = borrower.getName();
         this.loanSum = loanSum;
         this.totalTimeUnit = totalTimeUnit;
         this.reason = reason;
-        this.interestPrecent = interestPrecent;
+        this.interestPercent = interestPercent;
         this.paymentFrequency = paymentFrequency;
         this.status = Status.Pending;
         this.remainTimeUnit = totalTimeUnit;
         this.currentInterest =0;
-        this.remainInterest = loanSum * interestPrecent;
+        this.remainInterest = loanSum * interestPercent;
+        this.startLoanAmount = loanSum + remainInterest;
         this.currentFund = 0;
         this.remainFund = loanSum;
         this.amountToComplete=loanSum;
@@ -88,6 +85,7 @@ public class Loan {
 
     }
 
+
     protected Collection<Fraction> getFractions() {
         return fractions;
     }
@@ -96,16 +94,20 @@ public class Loan {
         return transactions;
     }
 
-    protected String getSerialNumber() {
-        return loanName;
+    protected String getBorrowerName() {
+        return borrower.getName();
     }
 
-    protected String getBorrowerName() {
-        return borrowerName;
+    public String getLoanName() {
+        return loanName;
     }
 
     protected Status getStatus() {
         return status;
+    }
+
+    public double getStartLoanAmount() {
+        return startLoanAmount;
     }
 
     protected double getLoanSum() {
@@ -124,8 +126,8 @@ public class Loan {
         return reason;
     }
 
-    protected double getInterestPrecent() {
-        return interestPrecent;
+    protected double getInterestPercent() {
+        return interestPercent;
     }
 
     protected int getPaymentFrequency() {
@@ -199,15 +201,15 @@ public class Loan {
                 LoanTransaction newLoanTransaction = null;
                 try {
                     double fundPart = fraction.getAmount()/(totalTimeUnit/paymentFrequency);
-                    double interestPart = fraction.getAmount() * interestPrecent/(totalTimeUnit/paymentFrequency);
+                    double interestPart = fraction.getAmount() * interestPercent /(totalTimeUnit/paymentFrequency);
                     newLoanTransaction = new LoanTransaction(globalTimeUnit, this.borrower, fraction.getCustomer(), fundPart,interestPart );
                     transactions.add(newLoanTransaction);
                     this.remainFund -= fundPart;
                     this.remainInterest -= interestPart;
 
                 } catch (NegativeBalanceException e) {
-                   uncompletedTransactions.add(new Debt(fraction.getCustomer(),fraction.getAmount()/(totalTimeUnit/paymentFrequency),fraction.getAmount() * interestPrecent/(totalTimeUnit/paymentFrequency)));
-                   throw new NegativeBalanceException("Negative Balance " + this.borrowerName+" to "+fraction.getCustomerName());
+                   uncompletedTransactions.add(new Debt(fraction.getCustomer(),fraction.getAmount()/(totalTimeUnit/paymentFrequency),fraction.getAmount() * interestPercent /(totalTimeUnit/paymentFrequency)));
+                   throw new NegativeBalanceException("Negative Balance " + this.getBorrowerName() +" to "+fraction.getCustomerName());
                 }
 
             }
