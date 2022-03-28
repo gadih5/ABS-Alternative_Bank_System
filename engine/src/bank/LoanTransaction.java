@@ -26,4 +26,5 @@ public class LoanTransaction {
         this.interestPart = interestPart;
     }
 
+
 }

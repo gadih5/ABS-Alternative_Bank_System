@@ -164,8 +164,16 @@ public class Loan {
         return amountToComplete;
     }
 
+    public int getFinishTimeUnit() {
+        return finishTimeUnit;
+    }
+
     protected boolean isActive() {
         return isActive;
+    }
+
+    public ArrayList<Debt> getUncompletedTransactions() {
+        return uncompletedTransactions;
     }
 
     public void update(int globalTimeUnit) throws NegativeBalanceException {
@@ -190,10 +198,13 @@ public class Loan {
             {
                 LoanTransaction newLoanTransaction = null;
                 try {
-                    newLoanTransaction = new LoanTransaction(globalTimeUnit, this.borrower, fraction.getCustomer(),
-                                                            fraction.getAmount()/(totalTimeUnit/paymentFrequency)
-                                                 ,fraction.getAmount() * interestPrecent/(totalTimeUnit/paymentFrequency) );
+                    double fundPart = fraction.getAmount()/(totalTimeUnit/paymentFrequency);
+                    double interestPart = fraction.getAmount() * interestPrecent/(totalTimeUnit/paymentFrequency);
+                    newLoanTransaction = new LoanTransaction(globalTimeUnit, this.borrower, fraction.getCustomer(), fundPart,interestPart );
                     transactions.add(newLoanTransaction);
+                    this.remainFund -= fundPart;
+                    this.remainInterest -= interestPart;
+
                 } catch (NegativeBalanceException e) {
                    uncompletedTransactions.add(new Debt(fraction.getCustomer(),fraction.getAmount()/(totalTimeUnit/paymentFrequency),fraction.getAmount() * interestPrecent/(totalTimeUnit/paymentFrequency)));
                    throw new NegativeBalanceException("Negative Balance " + this.borrowerName+" to "+fraction.getCustomerName());
@@ -201,7 +212,7 @@ public class Loan {
 
             }
         }
-        if(this.remainTimeUnit == 0 && this.status != Status.Risk){
+        if(this.remainTimeUnit == 0 && this.status != Status.Risk && this.remainInterest == 0 && this.remainFund == 0){
             setStatus(globalTimeUnit,Status.Finished);
         }
     }

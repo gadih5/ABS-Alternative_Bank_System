@@ -7,6 +7,8 @@ import java.util.Collection;
 public class Bank {
     protected static  int globalTimeUnit = 1;
     private Collection<Loan> loans = new ArrayList<>();
+    private Collection<LoanDto> loansDto = new ArrayList<>();
+
     private Collection customers = new ArrayList<Customer>();
 
     public static int getGlobalTimeUnit() {
@@ -22,7 +24,12 @@ public class Bank {
         setGlobalTimeUnit(temp++);
         for(Loan loan: loans){
             loan.update(globalTimeUnit);
+            updateLoansDto();
         }
+    }
+
+    private void updateLoansDto() {
+
     }
 
     public Collection getLoans() {
@@ -33,6 +40,10 @@ public class Bank {
         return customers;
     }
 
+    public Collection<LoanDto> getLoansDto() {
+        return loansDto;
+    }
+
     public void addLoan(Customer customer, double loanSum, int totalTimeUnit, Type reason, double interestPrecent, int paymentFrequency){
         Loan newLoan = customer.createLoan(customer.getName(),loanSum, totalTimeUnit, reason, interestPrecent,paymentFrequency);
         loans.add(newLoan);
@@ -41,5 +52,7 @@ public class Bank {
     public void addCostumer(String name, double balance){
         customers.add(new Customer(name,balance));
     }
+
+
 
 }

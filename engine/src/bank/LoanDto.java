@@ -10,6 +10,7 @@ public class LoanDto {
     private int startTimeUnit;
     private int totalTimeUnit;
     private int remainTimeUnit;
+    private int finishTimeUnit;
     private Type reason;
     private double interestPrecent;
     private int paymentFrequency;
@@ -21,6 +22,7 @@ public class LoanDto {
     private boolean isActive;
     private Collection<LoanTransaction> transactions;
     private double amountToComplete;
+    private Collection<Debt> debts;
 
 
     @Override
@@ -52,30 +54,29 @@ public class LoanDto {
         }
         activeStr+="Total fund paid:"+currentFund+" Total interest paid:"+currentInterest+" Total remain fund:"+ remainFund+" Total remain interest:" +remainInterest;
         res+=activeStr;
-        if(status==Status.Risk)
-
-
-
-                    ", remainTimeUnit=" + remainTimeUnit +
-
-                    ", interestPrecent=" + interestPrecent +
-                    ", paymentFrequency=" + paymentFrequency +
-                    ", fractions=" + fractions +
-                    ", currentInterest=" + currentInterest +
-                    ", remainInterest=" + remainInterest +
-                    ", currentFund=" + currentFund +
-                    ", remainFund=" + remainFund +
-                    ", isActive=" + isActive +
-                    ", transactions=" + transactions +
-                    '}';
-
+        if(status==Status.Risk){
+            String debtsInfo = this.borrowerName + "debts: ";
+            double debtAmount = 0;
+            int numOfDebts = 0;
+                    for(Debt debt: debts){
+                        debtsInfo += debt.toString() + "\n";
+                        debtAmount += debt.getAmount();
+                        numOfDebts++;
+                    }
+                    debtsInfo += "Number of debts: " + numOfDebts
+                                +", Sum of debts: " + debtAmount + "\n";
+                    res += debtsInfo;
+        }
+        if(status==Status.Finished) {
+            String finishInfo = "Start time: " + this.startTimeUnit
+                              + ", Finish time: " + this.finishTimeUnit + "\n";
+            res += finishInfo;
+        }
         }
         return res;
-
-
     }
 
-    private int checkNextPayment() {
+    public int checkNextPayment() {
         int nextPayment;
         if((Bank.getGlobalTimeUnit() - startTimeUnit)%paymentFrequency==0 || paymentFrequency == 1){
             nextPayment = Bank.getGlobalTimeUnit();
@@ -89,12 +90,93 @@ public class LoanDto {
         return nextPayment;
     }
 
+    public String getLoanName() {
+        return loanName;
+    }
+
+    public String getBorrowerName() {
+        return borrowerName;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public double getLoanSum() {
+        return loanSum;
+    }
+
+    public int getStartTimeUnit() {
+        return startTimeUnit;
+    }
+
+    public int getTotalTimeUnit() {
+        return totalTimeUnit;
+    }
+
+    public int getRemainTimeUnit() {
+        return remainTimeUnit;
+    }
+
+    public int getFinishTimeUnit() {
+        return finishTimeUnit;
+    }
+
+    public Type getReason() {
+        return reason;
+    }
+
+    public double getInterestPrecent() {
+        return interestPrecent;
+    }
+
+    public int getPaymentFrequency() {
+        return paymentFrequency;
+    }
+
+    public Collection<Fraction> getFractions() {
+        return fractions;
+    }
+
+    public double getCurrentInterest() {
+        return currentInterest;
+    }
+
+    public double getRemainInterest() {
+        return remainInterest;
+    }
+
+    public double getCurrentFund() {
+        return currentFund;
+    }
+
+    public double getRemainFund() {
+        return remainFund;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public Collection<LoanTransaction> getTransactions() {
+        return transactions;
+    }
+
+    public double getAmountToComplete() {
+        return amountToComplete;
+    }
+
+    public Collection<Debt> getDebts() {
+        return debts;
+    }
+
     public LoanDto(Loan loan) {
         this.loanName = loan.getSerialNumber();
         this.borrowerName = loan.getBorrowerName();
         this.status = loan.getStatus();
         this.loanSum = loan.getLoanSum();
         this.startTimeUnit = loan.getStartTimeUnit();
+        this.finishTimeUnit = loan.getFinishTimeUnit();
         this.totalTimeUnit = loan.getTotalTimeUnit();
         this.remainTimeUnit = loan.getStartTimeUnit();
         this.reason =loan.getReason() ;
@@ -108,5 +190,6 @@ public class LoanDto {
         this.isActive = loan.isActive();
         this.transactions = loan.getTransactions();
         this.amountToComplete=loan.getAmountToComplete();
+        this.debts = loan.getUncompletedTransactions();
     }
 }

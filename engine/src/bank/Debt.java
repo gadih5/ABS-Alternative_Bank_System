@@ -39,6 +39,14 @@ public class Debt implements Comparable<Debt> {
 
         return res;
     }
+
+    @Override
+    public String toString() {
+        return "Debt{" +
+                "to customer:" + toCustomer +
+                ", amount:" + amount +
+                '}';
+    }
 }
 
 
