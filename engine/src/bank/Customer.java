@@ -45,15 +45,15 @@ public class Customer {
         return balance;
     }
 
-    private Collection getTransactions() {
+    public Collection getTransactions() {
         return transactions;
     }
 
-    private Collection getIngoingLoans() {
+    public Collection getIngoingLoans() {
         return ingoingLoans;
     }
 
-    private Collection getOutgoingLoans() {
+    public Collection getOutgoingLoans() {
         return outgoingLoans;
     }
 

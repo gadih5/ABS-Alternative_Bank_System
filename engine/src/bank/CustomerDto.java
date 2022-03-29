@@ -8,26 +8,18 @@ public class CustomerDto {
     private Collection<Loan> ingoingLoans;
     private Collection<Loan> outgoingLoans;
 
-    public CustomerDto(String name,Collection transactions, Collection ingoingLoans, Collection outgoingLoans) {
-        this.name = name;
-        this.transactions = transactions;
-        this.ingoingLoans = ingoingLoans;
-        this.outgoingLoans = outgoingLoans;
+    public CustomerDto(Customer customer) {
+        this.name = customer.getName();
+        this.transactions = customer.getTransactions();
+        this.ingoingLoans = getIngoingLoans();
+        this.outgoingLoans = getOutgoingLoans();
     }
 
-    @Override
-    public String toString() {
-        String res = "Customer full name: " + this.name + "\n" +
-                     "All customer's transactions made so far: " + "\n";
-        for(Transaction transaction: this.transactions){
-            res += "Time performed: " + transaction.getTimeUnit() +
-                    "Amount transferred: " + transaction.getSign() + transaction.getAmount() +
-                    "Previous balance: " + transaction.getPreviousBalance() +
-                    "After balance: " + transaction.getAfterBalance() + "\n";
-        }
 
-        res += "All loans that the customer has borrowed: " + "\n";
-        for(Loan loan: this.outgoingLoans){
+    public String getCustomerLoansInfo(Collection<Loan> loans){
+        String res = "";
+
+        for(Loan loan: loans){
             res += "Loan name: " + loan.getLoanName() +
                     "Category: " + loan.getReason() +
                     "Fund: " + loan.getLoanSum() +
@@ -39,22 +31,48 @@ public class CustomerDto {
                 res += "Amount missing become 'Active': " + loan.getAmountToComplete();
             }
             if(loan.getStatus() == Status.Active){
-                res += "Next payment: " + checkNextPayment(loan.getStartTimeUnit(), loan.getPaymentFrequency());
+                res += "Next payment at: " + checkNextPayment(loan.getStartTimeUnit(), loan.getPaymentFrequency());
             }
-
+            double nextPayment = 0;
+            for(Fraction fraction: loan.getFractions()) {
+                double fundPart = fraction.getAmount()/(loan.getTotalTimeUnit()/ loan.getPaymentFrequency());
+                double interestPart = fraction.getAmount() * loan.getInterestPercent() /(loan.getTotalTimeUnit()/loan.getPaymentFrequency());
+                nextPayment += fundPart + interestPart;
+            }
+            res += ", sum to pay: " + nextPayment;
+            if(loan.getStatus() == Status.Risk){
+                res += "Number of debts: ";
+                int numberOfDebts = 0;
+                double amountOfDebts = 0;
+                for(Debt debt:loan.getUncompletedTransactions()){
+                    numberOfDebts++;
+                    amountOfDebts += debt.getAmount();
+                }
+                res += numberOfDebts + "amount to pay: " + amountOfDebts +"\n";
+            }
+            if(loan.getStatus() == Status.Finished){
+                res += "Start time: " + loan.getStartTimeUnit()
+                        + ", Finish time: " + loan.getFinishTimeUnit() + "\n";
+            }
         }
-
-
-
-
-
-                ", ingoingLoans=" + ingoingLoans +
-                ", outgoingLoans=" + outgoingLoans +
-                '}';
-
-
-
         return res;
+    }
+
+
+    public String getName() {
+        return name;
+    }
+
+    public Collection<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public Collection<Loan> getIngoingLoans() {
+        return ingoingLoans;
+    }
+
+    public Collection<Loan> getOutgoingLoans() {
+        return outgoingLoans;
     }
 
     public int checkNextPayment(int startTimeUnit, int paymentFrequency) {

@@ -38,7 +38,7 @@ public class Menu {
 
                     break;
                 case "3":
-
+                    this.printCustomerInfo(myBank.getCustomersDto());
                     break;
                 case "4":
 
@@ -112,10 +112,40 @@ public class Menu {
         }
         return res;
     }
+
     public void printLoanInfo(Collection<LoanDto> loansDto){
         for(LoanDto loanDto: loansDto){
             String info = getLoanDtotoString(loanDto);
             System.out.println(info);
         }
     }
+
+    public String getCustomerDtotoString(CustomerDto customerDto){
+        String res = "Customer full name: " + customerDto.getName() + "\n" +
+                "All customer's transactions made so far: " + "\n";
+        for(Transaction transaction: customerDto.getTransactions()){
+            res += "Time performed: " + transaction.getTimeUnit() +
+                    "Amount transferred: " + transaction.getSign() + transaction.getAmount() +
+                    "Previous balance: " + transaction.getPreviousBalance() +
+                    "After balance: " + transaction.getAfterBalance() + "\n";
+        }
+        if(!customerDto.getOutgoingLoans().isEmpty()) {
+            res += "All loans that the customer has borrowed: " + "\n";
+            res += customerDto.getCustomerLoansInfo(customerDto.getOutgoingLoans());
+        }
+        if(!customerDto.getIngoingLoans().isEmpty()) {
+            res += "All loans that the customer is a loaner: " + "\n";
+            res += customerDto.getCustomerLoansInfo(customerDto.getIngoingLoans());
+        }
+        return res;
+    }
+
+    public void printCustomerInfo(Collection<CustomerDto> customersDto){
+        for(CustomerDto customerDto: customersDto){
+            String info = getCustomerDtotoString(customerDto);
+            System.out.println(info);
+        }
+    }
+
+
 }

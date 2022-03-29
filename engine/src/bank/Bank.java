@@ -8,7 +8,6 @@ public class Bank {
     protected static int globalTimeUnit = 1;
     private Collection<Loan> loans = new ArrayList<>();
     private Collection<LoanDto> loansDto = new ArrayList<>();
-
     private Collection<Customer> customers = new ArrayList<>();
     private Collection<CustomerDto> customersDto = new ArrayList<>();
 
@@ -25,8 +24,16 @@ public class Bank {
         setGlobalTimeUnit(temp++);
         for(Loan loan: loans){
             loan.update(globalTimeUnit);
-            updateLoansDto();
+            for(LoanDto loanDto: loansDto){
+                loanDto = new LoanDto();
+            }
+            for(CustomerDto customerDto: customersDto){
+                customerDto.update();
+            }
         }
+    }
+
+    private void updateCustomersDto() {
     }
 
     private void updateLoansDto() {
@@ -47,13 +54,16 @@ public class Bank {
     public Collection<CustomerDto> getCustomersDto(){
         return customersDto;
     }
-    public void addLoan(Customer customer, double loanSum, int totalTimeUnit, Type reason, double interestPrecent, int paymentFrequency){
-        Loan newLoan = customer.createLoan(customer.getName(),loanSum, totalTimeUnit, reason, interestPrecent,paymentFrequency);
+    public void addLoan(Customer customer, double loanSum, int totalTimeUnit, Type reason, double interestPercent, int paymentFrequency){
+        Loan newLoan = customer.createLoan(customer.getName(),loanSum, totalTimeUnit, reason, interestPercent,paymentFrequency);
         loans.add(newLoan);
+        loansDto.add(new LoanDto(newLoan));
     }
 
     public void addCostumer(String name, double balance){
-        customers.add(new Customer(name,balance));
+        Customer newCustomer = new Customer(name,balance);
+        customers.add(newCustomer);
+        customersDto.add(new CustomerDto(newCustomer));
     }
 
 
