@@ -28,6 +28,7 @@ public class Loan {
     private Collection transactions;
     private double amountToComplete;
     private ArrayList<Debt> uncompletedTransactions;
+    private LoanDto loanDto;
 
 
     public Loan(String loanName, Customer borrower, double loanSum, int totalTimeUnit, Type reason, double interestPercent, int paymentFrequency) {
@@ -51,6 +52,7 @@ public class Loan {
         this.transactions = new ArrayList<Transaction>();
         this.uncompletedTransactions = new ArrayList<Debt>();
         this.finishTimeUnit = 0;
+        this.loanDto = new LoanDto(this);
     }
 
     public void setStatus(int globalTimeUnit,Status status) {
@@ -61,6 +63,10 @@ public class Loan {
             setFinishTimeUnit(globalTimeUnit);
         }
         this.status = status;
+    }
+
+    public LoanDto getLoanDto() {
+        return loanDto;
     }
 
     private void setFinishTimeUnit(int globalTimeUnit) {
@@ -82,7 +88,7 @@ public class Loan {
         currentInterest += newFraction.getAmount();
         amountToComplete-= newFraction.getAmount();
         checkStatus(globalTimeUnit);
-
+        updateLoanDto();
     }
 
 
@@ -217,5 +223,10 @@ public class Loan {
         if(this.remainTimeUnit == 0 && this.status != Status.Risk && this.remainInterest == 0 && this.remainFund == 0){
             setStatus(globalTimeUnit,Status.Finished);
         }
+        this.updateLoanDto();
+    }
+
+    void updateLoanDto(){
+        this.loanDto = new LoanDto(this);
     }
 }

@@ -12,6 +12,7 @@ public class Customer {
     private Collection transactions;
     private Collection ingoingLoans;
     private Collection outgoingLoans;
+    private CustomerDto customerDto;
 
     public Customer(String name, double balance) {
         this.name = name;
@@ -19,6 +20,7 @@ public class Customer {
         this.transactions = new ArrayList<>();
         this.ingoingLoans = new ArrayList<>();
         this.outgoingLoans = new ArrayList<>();
+        this.customerDto = new CustomerDto(this);
     }
 
     public void addTransaction(Transaction transaction) {
@@ -35,6 +37,7 @@ public class Customer {
     public Loan createLoan(String loanName, double loanSum, int totalTimeUnit, Type reason, double interestPrecent, int paymentFrequency){
         Loan newLoan = new Loan( loanName, this,  loanSum,  totalTimeUnit,  reason,  interestPrecent,  paymentFrequency);
         outgoingLoans.add(newLoan);
+        updateCustomerDto();
         return newLoan;
     }
     public String getName() {
@@ -57,5 +60,12 @@ public class Customer {
         return outgoingLoans;
     }
 
+    public void updateCustomerDto() {
+        this.customerDto = new CustomerDto(this);
+    }
+
+    public CustomerDto getCustomerDto() {
+        return this.customerDto;
+    }
 }
 
