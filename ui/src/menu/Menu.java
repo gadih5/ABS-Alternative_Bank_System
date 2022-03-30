@@ -1,9 +1,15 @@
 package menu;
 
+import java.io.FileNotFoundException;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Scanner;
 
 import bank.*;
+import bank.exception.NotXmlException;
+import bank.xml.XmlReader;
+
+import javax.xml.bind.JAXBException;
 
 public class Menu {
     public Bank myBank=new Bank();
@@ -31,7 +37,7 @@ public class Menu {
 
             switch (command) {
                 case "1":
-
+                    if(this.GetXmlPath());
                     break;
                 case "2":
                     this.printLoanInfo(myBank.getLoansDto());
@@ -60,6 +66,27 @@ public class Menu {
                     isError = true;
             }
         }while(isError);
+    }
+
+    private boolean GetXmlPath() {
+
+        System.out.println("Please enter an Xml File Path:\n");
+        String xmlString;
+        Scanner obj=new Scanner(System.in) ;
+        xmlString=obj.nextLine();
+        try {
+            XmlReader myXml=new XmlReader(Paths.get(xmlString));
+
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found!" +
+                    " Try again!");
+
+        } catch (NotXmlException e) {
+            System.out.println("Not Xml File! Try again");
+        } catch ( Exception b) {
+            System.out.println("Something Went Wrong,Please Try Again!");
+        }
+        return true;
     }
 
 
