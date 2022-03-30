@@ -6,7 +6,7 @@
 //
 
 
-package bank.xml.genrated;
+package bank.xml.generated;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element ref="{}abs-loan" maxOccurs="unbounded"/>
+ *         &lt;element ref="{}abs-customer" maxOccurs="unbounded"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -38,41 +38,41 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "absLoan"
+    "absCustomer"
 })
-@XmlRootElement(name = "abs-loans")
-public class AbsLoans {
+@XmlRootElement(name = "abs-customers")
+public class AbsCustomers {
 
-    @XmlElement(name = "abs-loan", required = true)
-    protected List<AbsLoan> absLoan;
+    @XmlElement(name = "abs-customer", required = true)
+    protected List<AbsCustomer> absCustomer;
 
     /**
-     * Gets the value of the absLoan property.
+     * Gets the value of the absCustomer property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the absLoan property.
+     * This is why there is not a <CODE>set</CODE> method for the absCustomer property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getAbsLoan().add(newItem);
+     *    getAbsCustomer().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link AbsLoan }
+     * {@link AbsCustomer }
      * 
      * 
      */
-    public List<AbsLoan> getAbsLoan() {
-        if (absLoan == null) {
-            absLoan = new ArrayList<AbsLoan>();
+    public List<AbsCustomer> getAbsCustomer() {
+        if (absCustomer == null) {
+            absCustomer = new ArrayList<AbsCustomer>();
         }
-        return this.absLoan;
+        return this.absCustomer;
     }
 
 }

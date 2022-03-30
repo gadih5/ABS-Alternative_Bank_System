@@ -1,6 +1,8 @@
 package bank.xml;
 import bank.exception.NotXmlException;
-
+import bank.xml.generated.AbsDescriptor;
+import bank.xml.generated.AbsLoan;
+import bank.xml.generated.AbsLoans;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -11,23 +13,23 @@ import java.io.InputStream;
 import java.nio.file.Path;
 
 public class XmlReader {
+    private final static String JAXB_XML_PACKAGE_NAME = "bank.xml.generated";
     private boolean successfullyLoad;
     private Path xmlPath;
+
     public XmlReader(Path xmlPath) throws FileNotFoundException, NotXmlException, JAXBException {
         this.xmlPath = xmlPath;
-        if (!(xmlPath.endsWith(".xml"))) {
-            throw (new NotXmlException("Not xml Format"));
-            }else{
-                InputStream inputStream = new FileInputStream(new File(String.valueOf(xmlPath)));
-
-            JAXBContext jc = JAXBContext.newInstance(JAXB_XML_GAME_PACKAGE_NAME);
+        if(!(xmlPath.toString().endsWith(".xml"))){
+            throw (new NotXmlException("Not Xml format!"));
+        }else{
+            File xmlFile = xmlPath.toFile();
+            InputStream inputStream = new FileInputStream(xmlFile);
+            JAXBContext jc = JAXBContext.newInstance(JAXB_XML_PACKAGE_NAME);
             Unmarshaller u = jc.createUnmarshaller();
-            u.unmarshal(xmlPath.toFile());
-            }
-
+            AbsDescriptor absDescriptor =(AbsDescriptor) u.unmarshal(inputStream);
         }
+    }
 
-    private final static String JAXB_XML_GAME_PACKAGE_NAME = "bank.xml.generated";
 
     public Path getXmlPath() {
 

@@ -28,24 +28,27 @@ public class Menu {
     }
 
     private void menuController() {
-        boolean isError = false;
         do {
-            isError = false;
             Scanner scanner = new Scanner(System.in);
 
             String command = scanner.next();
 
             switch (command) {
                 case "1":
-                    if(this.GetXmlPath());
+                    this.getXmlPath();
+                    this.run();
                     break;
+
                 case "2":
                     this.printLoanInfo(myBank.getLoansDto());
-
+                    this.run();
                     break;
+
                 case "3":
                     this.printCustomerInfo(myBank.getCustomersDto());
+                    this.run();
                     break;
+
                 case "4":
 
                     break;
@@ -59,38 +62,40 @@ public class Menu {
 
                     break;
                 case "8":
-
+                    System.out.println("Thank you for using ABS, cya next time!");
+                    System.exit(0);
                     break;
                 default:
-                    System.out.println("Must be a number from 1 to 8, please enter your choise again:");
-                    isError = true;
+                    System.out.println("Must be a number from 1 to 8, please enter your choice again:");
             }
-        }while(isError);
+        }while(true);
     }
 
-    private boolean GetXmlPath() {
+    private void getXmlPath() {
 
-        System.out.println("Please enter an Xml File Path:\n");
-        String xmlString;
-        Scanner obj=new Scanner(System.in) ;
-        xmlString=obj.nextLine();
-        try {
-            XmlReader myXml=new XmlReader(Paths.get(xmlString));
+        boolean succeed = false;
+        while(!succeed) {
+            System.out.println("Please enter a Xml file path:\n");
+            String xmlString;
+            Scanner obj = new Scanner(System.in);
+            xmlString = obj.nextLine();
+            try {
+                XmlReader myXml = new XmlReader(Paths.get(xmlString));
+                succeed = true;
+            } catch (FileNotFoundException e) {
+                System.out.println("File not found! Please try again..");
 
-        } catch (FileNotFoundException e) {
-            System.out.println("File not found!" +
-                    " Try again!");
-
-        } catch (NotXmlException e) {
-            System.out.println("Not Xml File! Try again");
-        } catch ( Exception b) {
-            System.out.println("Something Went Wrong,Please Try Again!");
+            } catch (NotXmlException e) {
+                System.out.println("Not Xml file! Please try again..");
+            } catch (Exception b) {
+                System.out.println("Something went wrong! Please try again..");
+            }
         }
-        return true;
+        System.out.println("File loaded successfully!\n");
     }
 
 
-    public String getLoanDtotoString(LoanDto loanDto){
+    public String getLoanDtoToString(LoanDto loanDto){
         String res=    "Loan Name: "+ loanDto.getLoanName() +
                 ", Borrower Name: " + loanDto.getBorrowerName() +
                 ", Reason: " + loanDto.getReason() +
@@ -141,13 +146,18 @@ public class Menu {
     }
 
     public void printLoanInfo(Collection<LoanDto> loansDto){
-        for(LoanDto loanDto: loansDto){
-            String info = getLoanDtotoString(loanDto);
-            System.out.println(info);
+        if(loansDto == null){
+            System.out.println("There is no any loan in the system.\n");
+        }
+        else{
+            for(LoanDto loanDto: loansDto){
+                String info = getLoanDtoToString(loanDto);
+                System.out.println(info);
+            }
         }
     }
 
-    public String getCustomerDtotoString(CustomerDto customerDto){
+    public String getCustomerDtoToString(CustomerDto customerDto){
         String res = "Customer full name: " + customerDto.getName() + "\n" +
                 "All customer's transactions made so far: " + "\n";
         for(Transaction transaction: customerDto.getTransactions()){
@@ -168,10 +178,16 @@ public class Menu {
     }
 
     public void printCustomerInfo(Collection<CustomerDto> customersDto){
-        for(CustomerDto customerDto: customersDto){
-            String info = getCustomerDtotoString(customerDto);
-            System.out.println(info);
+        if(customersDto == null){
+            System.out.println("There is no any customer in the system.\n");
         }
+        else{
+            for(CustomerDto customerDto: customersDto){
+                String info = getCustomerDtoToString(customerDto);
+                System.out.println(info);
+            }
+        }
+
     }
 
 

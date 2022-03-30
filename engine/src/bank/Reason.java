@@ -1,6 +1,6 @@
 package bank;
 
-public enum Type {
+public enum Reason {
     Renovation,Car,Business,Minus,Event,Vacation,Other
 };
 

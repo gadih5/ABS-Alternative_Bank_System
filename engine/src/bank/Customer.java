@@ -1,11 +1,10 @@
 package bank;
 
 import bank.exception.NegativeBalanceException;
-import bank.Transaction;
+
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import bank.Bank;
+
 public class Customer {
     private final String name;
     private double balance;
@@ -34,7 +33,7 @@ public class Customer {
             this.balance = balance;
     }
 
-    public Loan createLoan(String loanName, double loanSum, int totalTimeUnit, Type reason, double interestPrecent, int paymentFrequency){
+    public Loan createLoan(String loanName, double loanSum, int totalTimeUnit, Reason reason, double interestPrecent, int paymentFrequency){
         Loan newLoan = new Loan( loanName, this,  loanSum,  totalTimeUnit,  reason,  interestPrecent,  paymentFrequency);
         outgoingLoans.add(newLoan);
         updateCustomerDto();

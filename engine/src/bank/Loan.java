@@ -16,7 +16,7 @@ public class Loan {
     private int totalTimeUnit;
     private int remainTimeUnit;
     private int finishTimeUnit;
-    private Type reason;
+    private Reason reason;
     private double interestPercent;
     private int paymentFrequency;
     private Collection<Fraction> fractions;
@@ -31,7 +31,7 @@ public class Loan {
     private LoanDto loanDto;
 
 
-    public Loan(String loanName, Customer borrower, double loanSum, int totalTimeUnit, Type reason, double interestPercent, int paymentFrequency) {
+    public Loan(String loanName, Customer borrower, double loanSum, int totalTimeUnit, Reason reason, double interestPercent, int paymentFrequency) {
         this.loanName = loanName;
         this.borrower = borrower;
         this.loanSum = loanSum;
@@ -128,7 +128,7 @@ public class Loan {
         return totalTimeUnit;
     }
 
-    protected Type getReason() {
+    protected Reason getReason() {
         return reason;
     }
 

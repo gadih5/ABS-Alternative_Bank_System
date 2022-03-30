@@ -1,9 +1,9 @@
 package bank;
 
 import bank.exception.NegativeBalanceException;
-
 import java.util.ArrayList;
 import java.util.Collection;
+
 public class Bank {
     protected static int globalTimeUnit = 1;
     private Collection<Loan> loans = new ArrayList<>();
@@ -36,7 +36,7 @@ public class Bank {
         return customers;
     }
 
-    public void addLoan(Customer customer, double loanSum, int totalTimeUnit, Type reason, double interestPercent, int paymentFrequency) {
+    public void addLoan(Customer customer, double loanSum, int totalTimeUnit, Reason reason, double interestPercent, int paymentFrequency) {
         Loan newLoan = customer.createLoan(customer.getName(), loanSum, totalTimeUnit, reason, interestPercent, paymentFrequency);
         loans.add(newLoan);
     }
@@ -45,7 +45,6 @@ public class Bank {
         Customer newCustomer = new Customer(name, balance);
         customers.add(newCustomer);
     }
-
 
     public Collection<LoanDto> getLoansDto() {
         Collection<LoanDto> loansDto = null;

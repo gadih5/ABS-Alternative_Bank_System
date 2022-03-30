@@ -11,7 +11,7 @@ public class LoanDto {
     private int totalTimeUnit;
     private int remainTimeUnit;
     private int finishTimeUnit;
-    private Type reason;
+    private Reason reason;
     private double interestPrecent;
     private int paymentFrequency;
     private Collection<Fraction> fractions;
@@ -92,7 +92,7 @@ public class LoanDto {
         return finishTimeUnit;
     }
 
-    public Type getReason() {
+    public Reason getReason() {
         return reason;
     }
 
