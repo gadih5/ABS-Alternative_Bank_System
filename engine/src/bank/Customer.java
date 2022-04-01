@@ -66,5 +66,14 @@ public class Customer {
     public CustomerDto getCustomerDto() {
         return this.customerDto;
     }
+
+    public void depositToAccount(int amount){
+        try {
+            Transaction deposit = new Transaction(Bank.getGlobalTimeUnit(),this,this,amount);
+            this.addTransaction(deposit);
+            updateCustomerDto();
+        } catch (NegativeBalanceException e) { //can't be negative balance, because it's a self deposit.
+        }
+    }
 }
 

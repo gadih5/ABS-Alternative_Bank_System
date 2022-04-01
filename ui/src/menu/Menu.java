@@ -3,6 +3,7 @@ package menu;
 import java.io.FileNotFoundException;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Scanner;
 
 import bank.*;
@@ -45,13 +46,16 @@ public class Menu {
                     break;
 
                 case "3":
+
                     this.printCustomerInfo(myBank.getCustomersDto());
                     this.run();
                     break;
 
                 case "4":
-
+                    this.depositMoneyToCustomer();
+                    this.run();
                     break;
+
                 case "5":
 
                     break;
@@ -66,7 +70,7 @@ public class Menu {
                     System.exit(0);
                     break;
                 default:
-                    System.out.println("Must be a number from 1 to 8, please enter your choice again:");
+                    System.out.println("Must be a number between 1 to 8, please enter your choice again:\n");
             }
         }while(true);
     }
@@ -188,6 +192,40 @@ public class Menu {
             }
         }
 
+    }
+
+    public void depositMoneyToCustomer(){
+        if(myBank.getCustomers().isEmpty()){
+            System.out.println("There are no customers in the system!\n");
+        }
+        else{
+          chooseCustomer();
+        }
+    }
+
+    public void chooseCustomer(){
+
+        int counter = 1;
+        System.out.println("List of all the customers, choose a customer by number:\n");
+        for(Customer customer: myBank.getCustomers()){
+            System.out.println(counter + ". " + customer.getName() + "\n");
+            counter++;
+        }
+        Scanner scanner = new Scanner(System.in);
+        int choice = scanner.nextInt();
+        while(!(choice > 0 && choice < counter)){
+            System.out.println("Must enter a number between 1 to " + (counter-1) + ", please enter your choice again:");
+            choice = scanner.nextInt();
+        }
+        Customer customer = myBank.getCustomers().get(choice);
+        System.out.println("Enter an amount for a deposit to " + customer.getName() +"'s account:");
+        int amount = scanner.nextInt();
+        while(!(amount <= 0)){
+            System.out.println("The amount for a deposit must be a positive integer!, please enter amount again:");
+            amount = scanner.nextInt();
+        }
+        customer.depositToAccount(amount);
+        System.out.println("The deposit made successfully, the new customer's account balance: " + customer.getBalance());
     }
 
 

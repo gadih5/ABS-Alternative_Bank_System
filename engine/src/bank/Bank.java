@@ -7,7 +7,7 @@ import java.util.Collection;
 public class Bank {
     protected static int globalTimeUnit = 1;
     private Collection<Loan> loans = new ArrayList<>();
-    private Collection<Customer> customers = new ArrayList<>();
+    private ArrayList<Customer> customers = new ArrayList<>();
 
     public static int getGlobalTimeUnit() {
         return globalTimeUnit;
@@ -32,7 +32,7 @@ public class Bank {
         return loans;
     }
 
-    public Collection getCustomers() {
+    public ArrayList<Customer> getCustomers() {
         return customers;
     }
 
