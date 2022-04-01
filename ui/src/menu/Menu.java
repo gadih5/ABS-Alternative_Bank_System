@@ -217,7 +217,7 @@ public class Menu {
             System.out.println("Must enter a number between 1 to " + (counter-1) + ", please enter your choice again:");
             choice = scanner.nextInt();
         }
-        Customer customer = myBank.getCustomers().get(choice);
+        Customer customer = myBank.getCustomers().get(choice-1);
         System.out.println("Enter an amount for a deposit to " + customer.getName() +"'s account:");
         int amount = scanner.nextInt();
         while(!(amount <= 0)){
