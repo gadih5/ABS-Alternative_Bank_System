@@ -3,6 +3,7 @@ package menu;
 import java.io.FileNotFoundException;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.InputMismatchException;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -14,6 +15,7 @@ import javax.xml.bind.JAXBException;
 
 public class Menu {
     public Bank myBank=new Bank();
+    private boolean xmlLoadedSuccessfully = false;
     public void run(){
         System.out.println("Please choose a command by number:");
         System.out.println("1)Read File");
@@ -36,53 +38,66 @@ public class Menu {
 
             switch (command) {
                 case "1":
-                    try {
-                        myBank.loadXmlData(getXmlPath().getDescriptor());
-                    } catch (NegativeBalanceException e) {
-                        e.printStackTrace();
-                    } catch (UndefinedReasonException e) {
-                        e.printStackTrace();
-                    } catch (UndefinedCustomerException e) {
-                        e.printStackTrace();
-                    } catch (NegativeLoanSumException e) {
-                        e.printStackTrace();
-                    } catch (NegativeTotalTimeUnitException e) {
-                        e.printStackTrace();
-                    } catch (NegativeInterestPercentException e) {
-                        e.printStackTrace();
-                    } catch (NegativePaymentFrequencyException e) {
-                        e.printStackTrace();
-                    } catch (OverPaymentFrequencyException e) {
-                        e.printStackTrace();
-                    }
+                    xmlReadAndLoadHandler();
                     this.run();
                     break;
 
                 case "2":
-                    this.printLoanInfo(myBank.getLoansDto());
+                    if(!xmlLoadedSuccessfully)
+                        System.out.println("No Xml file is loaded, please load first a Xml file!\n");
+                    else {
+                        this.printLoanInfo(myBank.getLoansDto());
+                    }
                     this.run();
                     break;
 
                 case "3":
-
-                    this.printCustomerInfo(myBank.getCustomersDto());
+                    if(!xmlLoadedSuccessfully)
+                        System.out.println("No Xml file is loaded, please load first a Xml file!\n");
+                    else {
+                        this.printCustomerInfo(myBank.getCustomersDto());
+                    }
                     this.run();
                     break;
 
                 case "4":
-                    this.depositMoneyToCustomer();
+                    if(!xmlLoadedSuccessfully)
+                        System.out.println("No Xml file is loaded, please load first a Xml file!\n");
+                    else {
+                        this.depositMoneyToCustomer();
+                    }
                     this.run();
                     break;
 
                 case "5":
-
+                    if(!xmlLoadedSuccessfully)
+                        System.out.println("No Xml file is loaded, please load first a Xml file!\n");
+                    else{
+                        chooseCustomerToWithdraw();
+                    }
+                    this.run();
                     break;
+
                 case "6":
+                    if(!xmlLoadedSuccessfully)
+                        System.out.println("No Xml file is loaded, please load first a Xml file!\n");
 
+
+
+
+                    this.run();
                     break;
+
                 case "7":
+                    if(!xmlLoadedSuccessfully)
+                        System.out.println("No Xml file is loaded, please load first a Xml file!\n");
 
+
+
+
+                    this.run();
                     break;
+
                 case "8":
                     System.out.println("Thank you for using ABS, cya next time!");
                     System.exit(0);
@@ -93,40 +108,78 @@ public class Menu {
         }while(true);
     }
 
-    private XmlReader getXmlPath() {
+    private void xmlReadAndLoadHandler() {
+        boolean res = false;
+        Bank newBank = new Bank();
+        while(!res) {
+            try {
+                newBank.loadXmlData(getXmlPath().getDescriptor());
+                res = true;
+            } catch (NegativeBalanceException e) {
+                System.out.println(e.toString());
+            } catch (UndefinedReasonException e) {
+                System.out.println(e.toString());
+            } catch (UndefinedCustomerException e) {
+                System.out.println(e.toString());
+            } catch (NegativeLoanSumException e) {
+                System.out.println(e.toString());
+            } catch (NegativeTotalTimeUnitException e) {
+                System.out.println(e.toString());
+            } catch (NegativeInterestPercentException e) {
+                System.out.println(e.toString());
+            } catch (NegativePaymentFrequencyException e) {
+                System.out.println(e.toString());
+            } catch (OverPaymentFrequencyException e) {
+                System.out.println(e.toString());
+            } catch (UndividedPaymentFrequencyException e) {
+                System.out.println(e.toString());
+            } catch (ExitXmlLoadFileException e) {
+                return;
+            }
+        }
+        xmlLoadedSuccessfully = true;
+        myBank = newBank;
+    }
+
+    private XmlReader getXmlPath() throws ExitXmlLoadFileException {
 
         boolean succeed = false;
         XmlReader myXml = null;
+        String command = "";
         while (!succeed) {
-            System.out.println("Please enter a Xml file path:\n");
+            System.out.println("Please enter a Xml file path:");
             String xmlString;
             Scanner obj = new Scanner(System.in);
             xmlString = obj.nextLine();
             try {
                 myXml = new XmlReader(Paths.get(xmlString));
                 succeed = true;
+                System.out.println("File loaded successfully!\n");
+
             } catch (FileNotFoundException e) {
                 System.out.println("File not found! Please try again or press 'Q' to return to the main menu..");
-                String command = obj.next();
+                command = obj.next();
                 if (command.equals("q") || command.equals('Q')) {
                     break;
                 }
 
             } catch (NotXmlException e) {
                 System.out.println("Not Xml file! Please try again or press 'Q' to return to the main menu..");
-                String command = obj.next();
+                command = obj.next();
                 if (command.equals("q") || command.equals('Q')) {
                     break;
                 }
             } catch (Exception b) {
                 System.out.println("Something went wrong! Please try again or press 'Q' to return to the main menu..");
-                String command = obj.next();
+                command = obj.next();
                 if (command.equals("q") || command.equals('Q')) {
                     break;
                 }
             }
         }
-        System.out.println("File loaded successfully!\n");
+        if(myXml == null && (command.equals("q") || command.equals('Q')))
+            throw new ExitXmlLoadFileException();
+
         return myXml;
     }
 
@@ -199,9 +252,9 @@ public class Menu {
         String res = "Customer's name: " + customerDto.getName() + "\n";
         for(Transaction transaction: customerDto.getTransactions()){
             res += "Time performed: " + transaction.getTimeUnit() +
-                    "Amount transferred: " + transaction.getSign() + transaction.getAmount() +
-                    "Previous balance: " + transaction.getPreviousBalance() +
-                    "After balance: " + transaction.getAfterBalance() + "\n";
+                    ", Amount transferred: " + transaction.getSign() + transaction.getAmount() +
+                    ", Previous balance: " + transaction.getPreviousBalance() +
+                    ", After balance: " + transaction.getAfterBalance() + "\n";
         }
         if(!customerDto.getOutgoingLoans().isEmpty()) {
             res += "All loans that the customer has borrowed: " + "\n";
@@ -232,34 +285,90 @@ public class Menu {
             System.out.println("There are no customers in the system!\n");
         }
         else{
-          chooseCustomer();
+          chooseCustomerToDeposit();
         }
     }
 
-    public void chooseCustomer(){
+    public void chooseCustomerToDeposit() {
+        Scanner scanner = new Scanner(System.in);
+        Customer customer = chooseCustomer();
+        System.out.println("Enter an amount for a deposit to " + customer.getName() + "'s account:");
+        String amount = "";
+        int intAmount = -1;
 
+        while (true) {
+            amount = scanner.next();
+            try {
+                intAmount = Integer.parseInt(amount);
+                if (intAmount > 0) {
+                    customer.selfTransaction(intAmount);
+                    System.out.println("The deposit made successfully, the new customer's account balance: " + customer.getBalance() + "\n");
+                    break;
+                } else {
+                    System.out.println("The amount for a deposit must be a positive integer!, please enter amount again:");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("The amount for a deposit must be a positive integer!, please enter amount again:");
+            } catch (NumberFormatException e) {
+                System.out.println("The amount for a withdraw must be a positive integer!, please enter amount again:");
+            } catch (NegativeBalanceException e) {
+            }
+        }
+    }
+
+    public void chooseCustomerToWithdraw() {
+        Scanner scanner = new Scanner(System.in);
+        Customer customer = chooseCustomer();
+        System.out.println("Enter an amount to withdraw from " + customer.getName() + "'s account:");
+        String amount = "";
+        int intAmount = -1;
+
+        while (true) {
+            amount = scanner.next();
+            try {
+                intAmount = Integer.parseInt(amount);
+                if (intAmount > 0) {
+                    customer.selfTransaction(-intAmount);
+                    System.out.println("The deposit made successfully, the new customer's account balance: " + customer.getBalance() + "\n");
+                    break;
+                } else {
+                    System.out.println("The amount for a withdraw must be a positive integer!, please enter amount again:");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("The amount for a withdraw must be a positive integer!, please enter amount again:");
+            } catch (NumberFormatException e) {
+                System.out.println("The amount for a withdraw must be a positive integer!, please enter amount again:");
+            } catch (NegativeBalanceException e) {
+                System.out.println(customer.getName() + "'s account doesn't have enough balance to this withdraw!, please enter amount again:");
+            }
+        }
+    }
+    private Customer chooseCustomer(){
         int counter = 1;
-        System.out.println("List of all the customers, choose a customer by number:\n");
-        for(Customer customer: myBank.getCustomers()){
-            System.out.println(counter + ". " + customer.getName());
+        String choice = "";
+        int intChoice = -1;
+        System.out.println("List of all the customers, choose a customer by number:");
+        for (Customer customer : myBank.getCustomers()) {
+            System.out.println(counter + ". " + customer.getName() + " ,    Balance: " + customer.getBalance());
             counter++;
         }
         Scanner scanner = new Scanner(System.in);
-        int choice = scanner.nextInt();
-        while(!(choice > 0 && choice < counter)){
-            System.out.println("Must enter a number between 1 to " + (counter-1) + ", please enter your choice again:");
-            choice = scanner.nextInt();
+
+        while (true) {
+            choice = scanner.next();
+            try {
+                intChoice = Integer.parseInt(choice);
+                if (intChoice > 0 && intChoice < counter) {
+                    break;
+                } else {
+                    System.out.println("Must enter a number between 1 to " + (counter - 1) + ", please enter your choice again:");
+                }
+            } catch (Exception e) {
+                System.out.println("Must enter a number between 1 to " + (counter - 1) + ", please enter your choice again:");
+            }
         }
-        Customer customer = myBank.getCustomers().get(choice-1);
-        System.out.println("Enter an amount for a deposit to " + customer.getName() +"'s account:");
-        int amount = scanner.nextInt();
-        while(amount <= 0){
-            System.out.println("The amount for a deposit must be a positive integer!, please enter amount again:");
-            amount = scanner.nextInt();
-        }
-        customer.depositToAccount(amount);
-        System.out.println("The deposit made successfully, the new customer's account balance: " + customer.getBalance() + "\n");
+
+        Customer customer = myBank.getCustomers().get(intChoice - 1);
+        return customer;
     }
-
-
 }

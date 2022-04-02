@@ -31,7 +31,7 @@ public class Loan {
     private LoanDto loanDto;
 
 
-    public Loan(String loanName, Customer borrower, double loanSum, int totalTimeUnit, String reason, double interestPercent, int paymentFrequency) throws UndefinedReasonException, NegativeLoanSumException, NegativeTotalTimeUnitException, NegativeInterestPercentException, NegativePaymentFrequencyException, OverPaymentFrequencyException {
+    public Loan(String loanName, Customer borrower, double loanSum, int totalTimeUnit, String reason, double interestPercent, int paymentFrequency) throws UndefinedReasonException, NegativeLoanSumException, NegativeTotalTimeUnitException, NegativeInterestPercentException, NegativePaymentFrequencyException, OverPaymentFrequencyException, UndividedPaymentFrequencyException {
         this.loanName = loanName;
         this.borrower = borrower;
         setLoanSum(loanSum);
@@ -56,11 +56,13 @@ public class Loan {
         this.loanDto = new LoanDto(this);
     }
 
-    private void setPaymentFrequency(int paymentFrequency) throws NegativePaymentFrequencyException, OverPaymentFrequencyException {
+    private void setPaymentFrequency(int paymentFrequency) throws NegativePaymentFrequencyException, OverPaymentFrequencyException,UndividedPaymentFrequencyException {
         if(paymentFrequency <= 0)
             throw new NegativePaymentFrequencyException(this.getLoanName() + " payment frequency cannot be non-positive value!");
         if(paymentFrequency > totalTimeUnit)
-            throw new OverPaymentFrequencyException(this.getLoanName() + " payment frequency cannot be greater than total time unit!");
+            throw new OverPaymentFrequencyException(this.getLoanName() + " payment frequency cannot be greater than total loan time!");
+        if(totalTimeUnit%paymentFrequency != 0 && paymentFrequency!=1)
+            throw new UndividedPaymentFrequencyException(this.getLoanName() + " payment frequency must divide the total loan time!");
         else
             this.paymentFrequency = paymentFrequency;
     }

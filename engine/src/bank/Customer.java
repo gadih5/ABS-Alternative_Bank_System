@@ -33,7 +33,7 @@ public class Customer {
             this.balance = balance;
     }
 
-    public Loan createLoan(String loanName, double loanSum, int totalTimeUnit, String reason, double interestPrecent, int paymentFrequency) throws UndefinedReasonException, NegativeLoanSumException, NegativeTotalTimeUnitException, NegativeInterestPercentException, NegativePaymentFrequencyException, OverPaymentFrequencyException {
+    public Loan createLoan(String loanName, double loanSum, int totalTimeUnit, String reason, double interestPrecent, int paymentFrequency) throws UndefinedReasonException, NegativeLoanSumException, NegativeTotalTimeUnitException, NegativeInterestPercentException, NegativePaymentFrequencyException, OverPaymentFrequencyException, UndividedPaymentFrequencyException {
         Loan newLoan = new Loan( loanName, this,  loanSum,  totalTimeUnit,  reason,  interestPrecent,  paymentFrequency);
         outgoingLoans.add(newLoan);
         updateCustomerDto();
@@ -68,13 +68,10 @@ public class Customer {
         return this.customerDto;
     }
 
-    public void depositToAccount(int amount){
-        try {
-            Transaction deposit = new Transaction(Bank.getGlobalTimeUnit(),this,this,amount);
-            this.addTransaction(deposit);
-            updateCustomerDto();
-        } catch (NegativeBalanceException e) { //can't be negative balance, because it's a self deposit.
-        }
+    public void selfTransaction(int amount) throws NegativeBalanceException {
+        Transaction transaction = new Transaction(Bank.getGlobalTimeUnit(), this, this, amount);
+        this.addTransaction(transaction);
+        updateCustomerDto();
     }
 }
 

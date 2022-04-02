@@ -12,7 +12,7 @@ public class Transaction {
     private String sign;
 
     public Transaction(int globalTimeUnit,Customer fromCustomer,Customer toCustomer, double amount) throws NegativeBalanceException {
-        sign = amount>0? "+":"-";
+        sign = amount>0? "+":"";
         this.previousBalance = fromCustomer.getBalance();
         this.timeUnit = globalTimeUnit;
         this.toCustomer = toCustomer;

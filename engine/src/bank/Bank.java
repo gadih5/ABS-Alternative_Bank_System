@@ -39,7 +39,7 @@ public class Bank {
         return customers;
     }
 
-    public void addLoan(Customer customer, double loanSum, int totalTimeUnit, String reason, double interestPercent, int paymentFrequency) throws UndefinedReasonException, NegativeLoanSumException, NegativeTotalTimeUnitException, NegativeInterestPercentException, NegativePaymentFrequencyException, OverPaymentFrequencyException {
+    public void addLoan(Customer customer, double loanSum, int totalTimeUnit, String reason, double interestPercent, int paymentFrequency) throws UndefinedReasonException, NegativeLoanSumException, NegativeTotalTimeUnitException, NegativeInterestPercentException, NegativePaymentFrequencyException, OverPaymentFrequencyException, UndividedPaymentFrequencyException {
         Loan newLoan = customer.createLoan(customer.getName(), loanSum, totalTimeUnit, reason, interestPercent, paymentFrequency);
         loans.add(newLoan);
     }
@@ -65,7 +65,7 @@ public class Bank {
         return customersDto;
     }
 
-    public void loadXmlData(AbsDescriptor descriptor) throws NegativeBalanceException, UndefinedReasonException, UndefinedCustomerException, NegativeLoanSumException, NegativeTotalTimeUnitException, NegativeInterestPercentException, NegativePaymentFrequencyException, OverPaymentFrequencyException {
+    public void loadXmlData(AbsDescriptor descriptor) throws NegativeBalanceException, UndefinedReasonException, UndefinedCustomerException, NegativeLoanSumException, NegativeTotalTimeUnitException, NegativeInterestPercentException, NegativePaymentFrequencyException, OverPaymentFrequencyException, UndividedPaymentFrequencyException {
        AbsCustomers absCustomers = descriptor.getAbsCustomers();
        for (AbsCustomer absCustomer: absCustomers.getAbsCustomer()){
            this.customers.add(new Customer(absCustomer.getName(), absCustomer.getAbsBalance()));
