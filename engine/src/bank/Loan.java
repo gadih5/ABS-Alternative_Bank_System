@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-import bank.exception.NegativeBalanceException;
+import bank.exception.*;
 
 public class Loan {
     private final double startLoanAmount;
@@ -31,16 +31,16 @@ public class Loan {
     private LoanDto loanDto;
 
 
-    public Loan(String loanName, Customer borrower, double loanSum, int totalTimeUnit, Reason reason, double interestPercent, int paymentFrequency) {
+    public Loan(String loanName, Customer borrower, double loanSum, int totalTimeUnit, String reason, double interestPercent, int paymentFrequency) throws UndefinedReasonException, NegativeLoanSumException, NegativeTotalTimeUnitException, NegativeInterestPercentException, NegativePaymentFrequencyException, OverPaymentFrequencyException {
         this.loanName = loanName;
         this.borrower = borrower;
-        this.loanSum = loanSum;
+        setLoanSum(loanSum);
         this.totalTimeUnit = totalTimeUnit;
-        this.reason = reason;
-        this.interestPercent = interestPercent;
-        this.paymentFrequency = paymentFrequency;
+        this.borrower = borrower;
+        setInterestPercent(interestPercent);
+        setPaymentFrequency(paymentFrequency);
         this.status = Status.Pending;
-        this.remainTimeUnit = totalTimeUnit;
+        setTotalTimeUnit(totalTimeUnit);
         this.currentInterest =0;
         this.remainInterest = loanSum * interestPercent;
         this.startLoanAmount = loanSum + remainInterest;
@@ -52,8 +52,42 @@ public class Loan {
         this.transactions = new ArrayList<Transaction>();
         this.uncompletedTransactions = new ArrayList<Debt>();
         this.finishTimeUnit = 0;
+        setReason(reason);
         this.loanDto = new LoanDto(this);
     }
+
+    private void setPaymentFrequency(int paymentFrequency) throws NegativePaymentFrequencyException, OverPaymentFrequencyException {
+        if(paymentFrequency <= 0)
+            throw new NegativePaymentFrequencyException(this.getLoanName() + " payment frequency cannot be non-positive value!");
+        if(paymentFrequency > totalTimeUnit)
+            throw new OverPaymentFrequencyException(this.getLoanName() + " payment frequency cannot be greater than total time unit!");
+        else
+            this.paymentFrequency = paymentFrequency;
+    }
+
+    private void setInterestPercent(double interestPercent) throws NegativeInterestPercentException {
+        if(interestPercent <= 0)
+            throw new NegativeInterestPercentException(this.getLoanName() + " interest percent cannot be non-positive value!");
+        else
+            this.interestPercent = interestPercent;
+    }
+
+    private void setTotalTimeUnit(int totalTimeUnit) throws NegativeTotalTimeUnitException {
+        if(loanSum <= 0)
+            throw new NegativeTotalTimeUnitException(this.getLoanName() + " total time unit cannot be non-positive value!");
+        else
+            this.totalTimeUnit = totalTimeUnit;
+
+    }
+
+    private void setLoanSum(double loanSum) throws NegativeLoanSumException {
+        if(loanSum <= 0)
+            throw new NegativeLoanSumException(this.getLoanName() + " sum cannot be non-positive value!");
+        else
+            this.loanSum = loanSum;
+
+    }
+
 
     public void setStatus(int globalTimeUnit,Status status) {
         if(this.status == Status.Pending && status == Status.Active) {
@@ -82,7 +116,10 @@ public class Loan {
             setStatus(globalTimeUnit,Status.Active);
         }
     }
-    private void addLoaner(int globalTimeUnit,Customer customer, double amount){
+
+
+
+    private void addLoaner(int globalTimeUnit, Customer customer, double amount){
         Fraction newFraction = new Fraction(customer,amount);
         fractions.add(newFraction);
         currentInterest += newFraction.getAmount();
@@ -90,6 +127,7 @@ public class Loan {
         checkStatus(globalTimeUnit);
         updateLoanDto();
     }
+
 
 
     protected Collection<Fraction> getFractions() {
@@ -128,8 +166,48 @@ public class Loan {
         return totalTimeUnit;
     }
 
-    protected Reason getReason() {
-        return reason;
+    public void setReason(String reason) throws UndefinedReasonException {
+
+        switch (reason){
+            case "Setup a business":
+                this.reason = Reason.Setup_a_business;
+                break;
+            case "Overdraft cover":
+                this.reason = Reason.Overdraft_cover;
+                break;
+            case "Investment":
+                this.reason = Reason.Investment;
+                break;
+            case "Happy Event":
+                this.reason = Reason.Happy_Event;
+                break;
+            case "Renovate":
+                this.reason = Reason.Renovate;
+                break;
+            default: throw new UndefinedReasonException(reason + " Undefined");
+        }
+    }
+
+    protected String getReason() {
+        String res = "";
+        switch (reason){
+            case Setup_a_business:
+                res = "Setup a business";
+                break;
+            case Overdraft_cover:
+                res = "Overdraft cover";
+                break;
+            case Investment:
+                res = "Investment";
+                break;
+            case Happy_Event:
+                res = "Happy Event";
+                break;
+            case Renovate:
+                res = "Renovate";
+                break;
+        }
+        return res;
     }
 
     protected double getInterestPercent() {

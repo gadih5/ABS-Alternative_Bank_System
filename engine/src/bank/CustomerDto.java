@@ -11,8 +11,8 @@ public class CustomerDto {
     public CustomerDto(Customer customer) {
         this.name = customer.getName();
         this.transactions = customer.getTransactions();
-        this.ingoingLoans = getIngoingLoans();
-        this.outgoingLoans = getOutgoingLoans();
+        this.ingoingLoans = customer.getIngoingLoans();
+        this.outgoingLoans = customer.getOutgoingLoans();
     }
 
 

@@ -16,6 +16,7 @@ public class XmlReader {
     private final static String JAXB_XML_PACKAGE_NAME = "bank.xml.generated";
     private boolean successfullyLoad;
     private Path xmlPath;
+    AbsDescriptor descriptor;
 
     public XmlReader(Path xmlPath) throws FileNotFoundException, NotXmlException, JAXBException {
         this.xmlPath = xmlPath;
@@ -26,10 +27,13 @@ public class XmlReader {
             InputStream inputStream = new FileInputStream(xmlFile);
             JAXBContext jc = JAXBContext.newInstance(JAXB_XML_PACKAGE_NAME);
             Unmarshaller u = jc.createUnmarshaller();
-            AbsDescriptor absDescriptor =(AbsDescriptor) u.unmarshal(inputStream);
+            this.descriptor =(AbsDescriptor) u.unmarshal(inputStream);
         }
     }
 
+    public AbsDescriptor getDescriptor() {
+        return descriptor;
+    }
 
     public Path getXmlPath() {
 

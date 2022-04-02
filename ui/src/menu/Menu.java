@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 import bank.*;
-import bank.exception.NotXmlException;
+import bank.exception.*;
 import bank.xml.XmlReader;
 
 import javax.xml.bind.JAXBException;
@@ -36,7 +36,25 @@ public class Menu {
 
             switch (command) {
                 case "1":
-                    this.getXmlPath();
+                    try {
+                        myBank.loadXmlData(getXmlPath().getDescriptor());
+                    } catch (NegativeBalanceException e) {
+                        e.printStackTrace();
+                    } catch (UndefinedReasonException e) {
+                        e.printStackTrace();
+                    } catch (UndefinedCustomerException e) {
+                        e.printStackTrace();
+                    } catch (NegativeLoanSumException e) {
+                        e.printStackTrace();
+                    } catch (NegativeTotalTimeUnitException e) {
+                        e.printStackTrace();
+                    } catch (NegativeInterestPercentException e) {
+                        e.printStackTrace();
+                    } catch (NegativePaymentFrequencyException e) {
+                        e.printStackTrace();
+                    } catch (OverPaymentFrequencyException e) {
+                        e.printStackTrace();
+                    }
                     this.run();
                     break;
 
@@ -75,27 +93,41 @@ public class Menu {
         }while(true);
     }
 
-    private void getXmlPath() {
+    private XmlReader getXmlPath() {
 
         boolean succeed = false;
-        while(!succeed) {
+        XmlReader myXml = null;
+        while (!succeed) {
             System.out.println("Please enter a Xml file path:\n");
             String xmlString;
             Scanner obj = new Scanner(System.in);
             xmlString = obj.nextLine();
             try {
-                XmlReader myXml = new XmlReader(Paths.get(xmlString));
+                myXml = new XmlReader(Paths.get(xmlString));
                 succeed = true;
             } catch (FileNotFoundException e) {
-                System.out.println("File not found! Please try again..");
+                System.out.println("File not found! Please try again or press 'Q' to return to the main menu..");
+                String command = obj.next();
+                if (command.equals("q") || command.equals('Q')) {
+                    break;
+                }
 
             } catch (NotXmlException e) {
-                System.out.println("Not Xml file! Please try again..");
+                System.out.println("Not Xml file! Please try again or press 'Q' to return to the main menu..");
+                String command = obj.next();
+                if (command.equals("q") || command.equals('Q')) {
+                    break;
+                }
             } catch (Exception b) {
-                System.out.println("Something went wrong! Please try again..");
+                System.out.println("Something went wrong! Please try again or press 'Q' to return to the main menu..");
+                String command = obj.next();
+                if (command.equals("q") || command.equals('Q')) {
+                    break;
+                }
             }
         }
         System.out.println("File loaded successfully!\n");
+        return myXml;
     }
 
 
@@ -108,13 +140,15 @@ public class Menu {
                 ", interest: " + loanDto.getInterestPercent() +
                 ", Payment Frequency: " + loanDto.getPaymentFrequency() +
                 ", Status: " + loanDto.getStatus() +"\n\r";
-        String frqString="Loaners: \n";
-        for(Fraction frq:loanDto.getFractions()){
-            frqString +=frq.toString();
+        if(!(loanDto.getFractions().isEmpty())){
+           String frqString="Loaners: \n";
+           for(Fraction frq:loanDto.getFractions()){
+              frqString +=frq.toString();
+           }
+           res+=frqString;
         }
-        res+=frqString;
         if(loanDto.getStatus()== Status.Pending){
-            res+="\nThe total amount that being collect so far";
+            res+="The total amount that being collect so far: " + loanDto.getCurrentFund();
             res+="\nThe remaining amount to activate the loan: "+loanDto.getAmountToComplete();
 
         }else{
@@ -146,7 +180,7 @@ public class Menu {
                 res += finishInfo;
             }
         }
-        return res;
+        return res + "\n";
     }
 
     public void printLoanInfo(Collection<LoanDto> loansDto){
@@ -162,8 +196,7 @@ public class Menu {
     }
 
     public String getCustomerDtoToString(CustomerDto customerDto){
-        String res = "Customer full name: " + customerDto.getName() + "\n" +
-                "All customer's transactions made so far: " + "\n";
+        String res = "Customer's name: " + customerDto.getName() + "\n";
         for(Transaction transaction: customerDto.getTransactions()){
             res += "Time performed: " + transaction.getTimeUnit() +
                     "Amount transferred: " + transaction.getSign() + transaction.getAmount() +
@@ -208,7 +241,7 @@ public class Menu {
         int counter = 1;
         System.out.println("List of all the customers, choose a customer by number:\n");
         for(Customer customer: myBank.getCustomers()){
-            System.out.println(counter + ". " + customer.getName() + "\n");
+            System.out.println(counter + ". " + customer.getName());
             counter++;
         }
         Scanner scanner = new Scanner(System.in);
@@ -220,12 +253,12 @@ public class Menu {
         Customer customer = myBank.getCustomers().get(choice-1);
         System.out.println("Enter an amount for a deposit to " + customer.getName() +"'s account:");
         int amount = scanner.nextInt();
-        while(!(amount <= 0)){
+        while(amount <= 0){
             System.out.println("The amount for a deposit must be a positive integer!, please enter amount again:");
             amount = scanner.nextInt();
         }
         customer.depositToAccount(amount);
-        System.out.println("The deposit made successfully, the new customer's account balance: " + customer.getBalance());
+        System.out.println("The deposit made successfully, the new customer's account balance: " + customer.getBalance() + "\n");
     }
 
 

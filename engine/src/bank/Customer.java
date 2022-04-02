@@ -1,6 +1,6 @@
 package bank;
 
-import bank.exception.NegativeBalanceException;
+import bank.exception.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,9 +13,9 @@ public class Customer {
     private Collection outgoingLoans;
     private CustomerDto customerDto;
 
-    public Customer(String name, double balance) {
+    public Customer(String name, double balance) throws NegativeBalanceException {
         this.name = name;
-        this.balance = balance;
+        this.setBalance(balance);
         this.transactions = new ArrayList<>();
         this.ingoingLoans = new ArrayList<>();
         this.outgoingLoans = new ArrayList<>();
@@ -33,7 +33,7 @@ public class Customer {
             this.balance = balance;
     }
 
-    public Loan createLoan(String loanName, double loanSum, int totalTimeUnit, Reason reason, double interestPrecent, int paymentFrequency){
+    public Loan createLoan(String loanName, double loanSum, int totalTimeUnit, String reason, double interestPrecent, int paymentFrequency) throws UndefinedReasonException, NegativeLoanSumException, NegativeTotalTimeUnitException, NegativeInterestPercentException, NegativePaymentFrequencyException, OverPaymentFrequencyException {
         Loan newLoan = new Loan( loanName, this,  loanSum,  totalTimeUnit,  reason,  interestPrecent,  paymentFrequency);
         outgoingLoans.add(newLoan);
         updateCustomerDto();
@@ -50,6 +50,7 @@ public class Customer {
     public Collection getTransactions() {
         return transactions;
     }
+
 
     public Collection getIngoingLoans() {
         return ingoingLoans;
