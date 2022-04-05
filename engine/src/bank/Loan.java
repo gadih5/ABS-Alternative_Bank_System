@@ -264,23 +264,23 @@ public class Loan {
         return uncompletedTransactions;
     }
 
-    public void update(int globalTimeUnit) throws NegativeBalanceException {
+    public void update() throws NegativeBalanceException {
         this.remainTimeUnit--;
         if(this.status==status.Risk){
             Collections.sort(uncompletedTransactions);
             for(Debt debt:uncompletedTransactions){
                 if(debt.getAmount() <= this.getBorrower().getBalance()){
-                    LoanTransaction newLoanTransaction = new LoanTransaction(globalTimeUnit, this.borrower, debt.getToCustomer(), debt.getFundPart(), debt.getInterestPart());
+                    LoanTransaction newLoanTransaction = new LoanTransaction(Bank.getGlobalTimeUnit(), this.borrower, debt.getToCustomer(), debt.getFundPart(), debt.getInterestPart());
                     uncompletedTransactions.remove(debt);
                     transactions.add(newLoanTransaction);
                 }
             }
             if(this.uncompletedTransactions.isEmpty()){
-                setStatus(globalTimeUnit,Status.Active);
+                setStatus(Bank.getGlobalTimeUnit(),Status.Active);
             }
         }
 
-        if(this.isActive && remainTimeUnit >= 0 && ((globalTimeUnit - startTimeUnit)%paymentFrequency==0 || paymentFrequency == 1))
+        if(this.isActive && remainTimeUnit >= 0 && ((Bank.getGlobalTimeUnit() - startTimeUnit)%paymentFrequency==0 || paymentFrequency == 1))
         {
             for(Fraction fraction: fractions)
             {
@@ -288,7 +288,7 @@ public class Loan {
                 try {
                     double fundPart = fraction.getAmount()/(totalTimeUnit/paymentFrequency);
                     double interestPart = fraction.getAmount() * interestPercent /(totalTimeUnit/paymentFrequency);
-                    newLoanTransaction = new LoanTransaction(globalTimeUnit, this.borrower, fraction.getCustomer(), fundPart,interestPart );
+                    newLoanTransaction = new LoanTransaction(Bank.getGlobalTimeUnit(), this.borrower, fraction.getCustomer(), fundPart,interestPart );
                     transactions.add(newLoanTransaction);
                     this.remainFund -= fundPart;
                     this.remainInterest -= interestPart;
@@ -301,7 +301,7 @@ public class Loan {
             }
         }
         if(this.remainTimeUnit == 0 && this.status != Status.Risk && this.remainInterest == 0 && this.remainFund == 0){
-            setStatus(globalTimeUnit,Status.Finished);
+            setStatus(Bank.getGlobalTimeUnit(),Status.Finished);
         }
         this.updateLoanDto();
     }

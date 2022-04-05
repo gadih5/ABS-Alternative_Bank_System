@@ -89,10 +89,9 @@ public class Menu {
                 case "7":
                     if(!xmlLoadedSuccessfully)
                         System.out.println("No Xml file is loaded, please load first a Xml file!\n");
-
-
-
-
+                    else{
+                        moveTimeLine();
+                    }
                     this.run();
                     break;
 
@@ -104,6 +103,15 @@ public class Menu {
                     System.out.println("Must be a number between 1 to 8, please enter your choice again:\n");
             }
         }while(true);
+    }
+
+    private void moveTimeLine() {
+        try {
+            myBank.updateGlobalTimeUnit();
+            System.out.println("The current time is: " + Bank.getGlobalTimeUnit());
+        } catch (NegativeBalanceException e) {
+            e.printStackTrace();
+        }
     }
 
     private void inlayLoan() {

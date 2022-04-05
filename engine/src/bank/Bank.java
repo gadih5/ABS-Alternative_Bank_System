@@ -20,11 +20,11 @@ public class Bank {
         Bank.globalTimeUnit = globalTimeUnit;
     }
 
-    public void setGlobalTimeUnit() throws NegativeBalanceException {
-        int temp = getGlobalTimeUnit();
-        setGlobalTimeUnit(temp++);
+    public void updateGlobalTimeUnit() throws NegativeBalanceException {
+        int curr = getGlobalTimeUnit();
+        setGlobalTimeUnit(++curr);
         for (Loan loan : loans) {
-            loan.update(globalTimeUnit);
+            loan.update();
         }
         for (Customer customer : customers) {
             customer.updateCustomerDto();
