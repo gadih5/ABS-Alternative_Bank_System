@@ -4,13 +4,13 @@ import bank.exception.*;
 import bank.xml.generated.AbsDescriptor;
 import bank.xml.generated.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 
 public class Bank {
     protected static int globalTimeUnit = 1;
     private Collection<Loan> loans = new ArrayList<>();
     private ArrayList<Customer> customers = new ArrayList<>();
+    private Set<String> category=null;
 
     public static int getGlobalTimeUnit() {
         return globalTimeUnit;
@@ -30,6 +30,11 @@ public class Bank {
             customer.updateCustomerDto();
         }
     }
+
+    public Set<String> getCategory() {
+        return category;
+    }
+
 
     public Collection getLoans() {
         return loans;
@@ -65,11 +70,18 @@ public class Bank {
         return customersDto;
     }
 
-    public void loadXmlData(AbsDescriptor descriptor) throws NegativeBalanceException, UndefinedReasonException, UndefinedCustomerException, NegativeLoanSumException, NegativeTotalTimeUnitException, NegativeInterestPercentException, NegativePaymentFrequencyException, OverPaymentFrequencyException, UndividedPaymentFrequencyException {
+    public void loadXmlData(AbsDescriptor descriptor) throws NegativeBalanceException, UndefinedReasonException, UndefinedCustomerException, NegativeLoanSumException, NegativeTotalTimeUnitException, NegativeInterestPercentException, NegativePaymentFrequencyException, OverPaymentFrequencyException, UndividedPaymentFrequencyException, NotInCategoryException {
        AbsCustomers absCustomers = descriptor.getAbsCustomers();
        for (AbsCustomer absCustomer: absCustomers.getAbsCustomer()){
            this.customers.add(new Customer(absCustomer.getName(), absCustomer.getAbsBalance()));
        }
+
+
+        Set<String> listOfCategory=new HashSet<>();
+        for(String s:descriptor.getAbsCategories().getAbsCategory()){
+            listOfCategory.add(s);
+        }
+        category=listOfCategory;
 
        AbsLoans absLoans = descriptor.getAbsLoans();
         for(AbsLoan absLoan: absLoans.getAbsLoan()) {
@@ -83,8 +95,14 @@ public class Bank {
             if(loanCustomer == null){
                 throw new UndefinedCustomerException(absLoan.getAbsOwner() + "is not bank's customer!");
             }
-            this.loans.add(new Loan(absLoan.getId(),loanCustomer,absLoan.getAbsCapital(),absLoan.getAbsTotalYazTime(),absLoan.getAbsCategory(),
-                    ((double)absLoan.getAbsIntristPerPayment()*((double)absLoan.getAbsTotalYazTime()/(double)absLoan.getAbsPaysEveryYaz()))/(double)absLoan.getAbsCapital(),absLoan.getAbsPaysEveryYaz()));
+            if(listOfCategory.contains(absLoan.getAbsCategory())) {
+                this.loans.add(new Loan(absLoan.getId(), loanCustomer, absLoan.getAbsCapital(), absLoan.getAbsTotalYazTime(), absLoan.getAbsCategory(),
+                        (double) absLoan.getAbsIntristPerPayment() / 100, absLoan.getAbsPaysEveryYaz()));
+            }else{
+                throw new NotInCategoryException("Missing Category in Xml");
+            }
         }
     }
+
+
 }

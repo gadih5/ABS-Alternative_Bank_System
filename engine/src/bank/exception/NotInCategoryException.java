@@ -1,7 +1,8 @@
 package bank.exception;
 
-public class NotXmlException extends Exception {
-    public NotXmlException(String message) {
+public class NotInCategoryException extends Exception {
+    public NotInCategoryException(String message) {
+
         super(message);
         msg=message;
     }
@@ -11,4 +12,5 @@ public class NotXmlException extends Exception {
     public String toString() {
         return msg;
     }
-}
+    }
+

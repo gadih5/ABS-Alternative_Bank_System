@@ -2,14 +2,12 @@ package menu;
 
 import java.io.FileNotFoundException;
 import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.InputMismatchException;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 import bank.*;
 import bank.exception.*;
 import bank.xml.XmlReader;
+
 
 import javax.xml.bind.JAXBException;
 
@@ -82,6 +80,11 @@ public class Menu {
                     if(!xmlLoadedSuccessfully)
                         System.out.println("No Xml file is loaded, please load first a Xml file!\n");
 
+                else{
+
+                        this.inlayLoan();
+                }
+
 
 
 
@@ -106,6 +109,44 @@ public class Menu {
                     System.out.println("Must be a number between 1 to 8, please enter your choice again:\n");
             }
         }while(true);
+    }
+
+    private void inlayLoan() {
+
+        Customer c= chooseCustomer();
+        int chosenSum= chooseSumToInvest(c.getBalance());
+        Set<String> tempCategory=myBank.getCategory();
+        //System.out.println("Do You Want To Choose A ");
+       // while(!tempCategory.isEmpty()||) {
+        //}
+    //}
+
+    private int chooseSumToInvest(double balance) {
+        System.out.println("Please enter the amount you are interested in investing");
+        int intAmount;
+        while (true) {
+           Scanner scanner=new Scanner(System.in);
+            String amount = scanner.next();
+            try {
+                intAmount = Integer.parseInt(amount);
+                if (intAmount <= balance && intAmount>0) {
+
+                    break;
+                } else {
+                    if (!(intAmount <= balance)){
+                        System.out.println("The amount is Blocked By You Balance with is " + balance + " !, please enter amount again:");
+                }else{
+                        System.out.println("The amount for a deposit must be a positive integer!, please enter amount again:");
+                    }
+
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("The amount for a deposit must be a positive integer!, please enter amount again:");
+            } catch (NumberFormatException e) {
+                System.out.println("The amount for a withdraw must be a positive integer!, please enter amount again:");
+            }
+            }
+        return intAmount;
     }
 
     private void xmlReadAndLoadHandler() {
@@ -135,6 +176,8 @@ public class Menu {
                 System.out.println(e.toString());
             } catch (ExitXmlLoadFileException e) {
                 return;
+            } catch (NotInCategoryException e) {
+                System.out.println(e.toString());
             }
         }
         xmlLoadedSuccessfully = true;
@@ -146,11 +189,16 @@ public class Menu {
         boolean succeed = false;
         XmlReader myXml = null;
         String command = "";
+        String xmlString;
+        Scanner obj = new Scanner(System.in);
+
         while (!succeed) {
-            System.out.println("Please enter a Xml file path:");
-            String xmlString;
-            Scanner obj = new Scanner(System.in);
-            xmlString = obj.nextLine();
+            if(command.equals("")) {
+                System.out.println("Please enter a Xml file path:");
+                xmlString = obj.nextLine();
+            }else{
+                xmlString=command;
+            }
             try {
                 myXml = new XmlReader(Paths.get(xmlString));
                 succeed = true;
@@ -190,7 +238,7 @@ public class Menu {
                 ", Reason: " + loanDto.getReason() +
                 ", Loan Sum: " + loanDto.getLoanSum() +
                 ", Total Loan Time: " + loanDto.getTotalTimeUnit() +
-                ", interest: " + loanDto.getInterestPercent() +
+                ", interest: " +(int)(loanDto.getInterestPercent()*100)+"%" +
                 ", Payment Frequency: " + loanDto.getPaymentFrequency() +
                 ", Status: " + loanDto.getStatus() +"\n\r";
         if(!(loanDto.getFractions().isEmpty())){
