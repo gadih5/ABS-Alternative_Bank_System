@@ -36,7 +36,7 @@ public class Bank {
     }
 
 
-    public Collection getLoans() {
+    public Collection<Loan> getLoans() {
         return loans;
     }
 
@@ -105,4 +105,26 @@ public class Bank {
     }
 
 
+    public ArrayList<Loan> checkLoans(Customer customer, Set<String> chosenCategories, double chosenInterest, int chosenUnitTime) {
+        ArrayList<Loan> possibleLoans = new ArrayList<>();
+        for(Loan loan: loans){
+            if(loan.getStatus() == Status.Pending
+                    && loan.getBorrower() != customer
+                    && chosenCategories.contains(loan.getReason())
+                    && loan.getInterestPercent() >= chosenInterest
+                    && loan.getTotalTimeUnit() >= chosenUnitTime){
+                possibleLoans.add(loan);
+            }
+        }
+        return possibleLoans;
+    }
+
+    public ArrayList<LoanDto> makeDto(ArrayList<Loan> possibleLoans) {
+        ArrayList<LoanDto> loansDto = new ArrayList<>();
+        for (Loan loan: possibleLoans){
+            LoanDto loanDto = new LoanDto(loan);
+            loansDto.add(loanDto);
+        }
+        return loansDto;
+    }
 }

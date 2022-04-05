@@ -81,13 +81,8 @@ public class Menu {
                         System.out.println("No Xml file is loaded, please load first a Xml file!\n");
 
                 else{
-
                         this.inlayLoan();
                 }
-
-
-
-
                     this.run();
                     break;
 
@@ -113,13 +108,194 @@ public class Menu {
 
     private void inlayLoan() {
 
-        Customer c= chooseCustomer();
-        int chosenSum= chooseSumToInvest(c.getBalance());
-        Set<String> tempCategory=myBank.getCategory();
-        //System.out.println("Do You Want To Choose A ");
-       // while(!tempCategory.isEmpty()||) {
-        //}
-    //}
+        Customer customer = chooseCustomer();
+        int chosenSum = chooseSumToInvest(customer.getBalance());
+        Set<String> chosenCategories = chooseCategories();
+        double chosenInterest = chooseMinimumInterestPercent();
+        int chosenUnitTime = chooseMinimumTotalUnitTime();
+        ArrayList<Loan> possibleLoans =  myBank.checkLoans(customer, chosenCategories, chosenInterest, chosenUnitTime);
+        ArrayList<LoanDto> possibleLoansDto = myBank.makeDto(possibleLoans);
+        if(!possibleLoans.isEmpty()) {
+            printLoanInfo(possibleLoansDto);
+
+
+        }
+
+    }
+
+
+    private int chooseMinimumTotalUnitTime() {
+        int chosenTotalUnitTime=1;
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Do you want to choose a minimum total time of loans to invest?");
+        System.out.println("1. Yes");
+        System.out.println("2. No, I want to invest at all loans duration rates.");
+        String choice;
+        int intChoice;
+        while (true) {
+            choice = scanner.next();
+            try {
+                intChoice = Integer.parseInt(choice);
+                if (intChoice > 0 && intChoice <= 2) {
+                    break;
+                } else {
+                    System.out.println("Must enter 1 or 2, please enter your choice again:");
+                }
+            } catch (Exception e) {
+                System.out.println("Must enter 1 or 2, please enter your choice again:");
+            }
+        }
+        if(intChoice == 1){
+            System.out.println("Please enter a minimum duration rate, in time units:");
+            while (true) {
+                choice = scanner.next();
+                try {
+                    intChoice = Integer.parseInt(choice);
+                    if (intChoice > 0) {
+                        chosenTotalUnitTime = intChoice;
+                        break;
+                    } else {
+                        System.out.println("Must enter an integer greater than 0, please enter your choice again:");
+                    }
+                } catch (Exception e) {
+                    System.out.println("Must enter an integer greater than 0, please enter your choice again:");
+                }
+            }
+
+        }
+        return chosenTotalUnitTime;
+    }
+
+    private double chooseMinimumInterestPercent() {
+        double chosenInterestPercent=0;
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Do you want to choose a minimum interest rate of loans to invest?");
+        System.out.println("1. Yes");
+        System.out.println("2. No, I want to invest at all interest rates");
+        String choice;
+        int intChoice;
+        while (true) {
+            choice = scanner.next();
+            try {
+                intChoice = Integer.parseInt(choice);
+                if (intChoice > 0 && intChoice <= 2) {
+                    break;
+                } else {
+                    System.out.println("Must enter 1 or 2, please enter your choice again:");
+                }
+            } catch (Exception e) {
+                System.out.println("Must enter 1 or 2, please enter your choice again:");
+            }
+        }
+        if(intChoice == 1){
+            System.out.println("Please enter a minimum interest rate:");
+            while (true) {
+                choice = scanner.next();
+                try {
+                    double doubleChoice = Double.parseDouble(choice);
+                    if (doubleChoice > 0) {
+                        chosenInterestPercent = doubleChoice;
+                        break;
+                    } else {
+                        System.out.println("Must enter a real number greater than 0, please enter your choice again:");
+                    }
+                } catch (Exception e) {
+                    System.out.println("Must enter a real number greater than 0, please enter your choice again:");
+                }
+            }
+
+        }
+        return chosenInterestPercent;
+    }
+
+
+    private Set<String> chooseCategories() {
+        Set<String> tempCategories = myBank.getCategory();
+        Set<String> chosenCategories = new HashSet<>();
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Do you want to choose a category of loan to invest?");
+        System.out.println("1. Yes");
+        System.out.println("2. No, I want to invest all categories.");
+        String tempCategory="";
+        String choice;
+        int intChoice;
+        while (true) {
+            choice = scanner.next();
+            try {
+                intChoice = Integer.parseInt(choice);
+                if (intChoice > 0 && intChoice <= 2) {
+                    break;
+                } else {
+                    System.out.println("Must enter 1 or 2, please enter your choice again:");
+                }
+            } catch (Exception e) {
+                System.out.println("Must enter 1 or 2, please enter your choice again:");
+            }
+        }
+        if(intChoice == 1) {
+            tempCategory = chooseFrom(tempCategories);
+            chosenCategories.add(tempCategory);
+            tempCategories.remove(tempCategory);
+            while (true) {
+                System.out.println("Do you want to add more categories?");
+                System.out.println("1. Yes");
+                System.out.println("2. No");
+                choice = scanner.next();
+                try {
+                    intChoice = Integer.parseInt(choice);
+                    if (intChoice <= 0 || intChoice > 2)
+                        System.out.println("Must enter 1 or 2, please enter your choice again:");
+                }
+                 catch (Exception e) {
+                    System.out.println("Must enter 1 or 2, please enter your choice again:");
+                }
+                if (intChoice == 1)
+                    tempCategory = chooseFrom(tempCategories);
+                    chosenCategories.add(tempCategory);
+                    tempCategories.remove(tempCategory);
+                if(intChoice == 2)
+                    break;
+            }
+        }
+        else {
+            chosenCategories =  tempCategories;
+
+        }
+        return  chosenCategories;
+    }
+
+    private String chooseFrom(Set<String> tempCategories) {
+        HashMap<Integer,String> mapCategories= new HashMap<>();
+        Integer i = 1;
+        for(String category: tempCategories){
+            mapCategories.put(i,category);
+            i++;
+        }
+        String choice = "";
+        int intChoice = -1;
+        System.out.println("Please choose a category to invest:");
+        for(Integer num:mapCategories.keySet()){
+            System.out.println(num+". "+ mapCategories.get(num));
+        }
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            choice = scanner.next();
+            try {
+                intChoice = Integer.parseInt(choice);
+                if (mapCategories.keySet().contains(intChoice)) {
+                    break;
+                } else {
+                    System.out.println("Must enter a number between 1 to " + mapCategories.size() + ", please enter your choice again:");
+                }
+            } catch (Exception e) {
+                System.out.println("Must enter a number between 1 to " + mapCategories.size() + ", please enter your choice again:");
+            }
+        }
+
+        String res = mapCategories.get(intChoice);
+        return res;
+    }
 
     private int chooseSumToInvest(double balance) {
         System.out.println("Please enter the amount you are interested in investing");
@@ -180,6 +356,8 @@ public class Menu {
                 System.out.println(e.toString());
             }
         }
+
+        System.out.println("File loaded successfully!\n");
         xmlLoadedSuccessfully = true;
         myBank = newBank;
     }
@@ -202,7 +380,6 @@ public class Menu {
             try {
                 myXml = new XmlReader(Paths.get(xmlString));
                 succeed = true;
-                System.out.println("File loaded successfully!\n");
 
             } catch (FileNotFoundException e) {
                 System.out.println("File not found! Please try again or press 'Q' to return to the main menu..");
@@ -230,7 +407,6 @@ public class Menu {
 
         return myXml;
     }
-
 
     public String getLoanDtoToString(LoanDto loanDto){
         String res=    "Loan Name: "+ loanDto.getLoanName() +
@@ -391,13 +567,16 @@ public class Menu {
             }
         }
     }
+
     private Customer chooseCustomer(){
         int counter = 1;
         String choice = "";
         int intChoice = -1;
         System.out.println("List of all the customers, choose a customer by number:");
         for (Customer customer : myBank.getCustomers()) {
-            System.out.println(counter + ". " + customer.getName() + " ,    Balance: " + customer.getBalance());
+            //System.out.println(counter + ". " + customer.getName() + " ,    Balance: " + customer.getBalance());
+            //System.out.format("%f, %1$+020.10f %n", counter,". ",);
+            System.out.printf("%d. %-10s %.1f%n",  counter, customer.getName(), customer.getBalance());
             counter++;
         }
         Scanner scanner = new Scanner(System.in);
