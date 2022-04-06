@@ -24,7 +24,7 @@ public class CustomerDto {
                     ", Category: " + loan.getReason() +
                     ", Fund: " + loan.getLoanSum() +
                     ", Payment frequency: " + loan.getPaymentFrequency() +
-                    ", Interest: " + loan.getInterestPercent() +
+                    ", Interest: " + (int)(loan.getInterestPercent()*100) + "%" +
                     ", Final loan's amount: " + loan.getStartLoanAmount() +
                     ", Status: " + loan.getStatus();
             if(loan.getStatus() == Status.Pending){

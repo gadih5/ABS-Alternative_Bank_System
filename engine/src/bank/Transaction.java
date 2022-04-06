@@ -5,14 +5,18 @@ import bank.exception.NegativeBalanceException;
 public class Transaction {
     private Customer toCustomer;
     private double amount; //positive value
-    private final int timeUnit;
+    private int timeUnit;
     private double previousBalance;
     private double afterBalance;
 
     private String sign;
 
     public Transaction(Customer fromCustomer,Customer toCustomer, double amount) throws NegativeBalanceException {
+        this(fromCustomer,toCustomer,amount,true);
+    }
+    public Transaction(Customer fromCustomer,Customer toCustomer, double amount, boolean firstTime) throws NegativeBalanceException {
         sign = amount>0? "+":"";
+        boolean amountChange = false;
         this.previousBalance = fromCustomer.getBalance();
         this.timeUnit = Bank.getGlobalTimeUnit();
         this.toCustomer = toCustomer;
@@ -26,16 +30,21 @@ public class Transaction {
             if (previousBalance - amount < 0)
                 throw new NegativeBalanceException("Not enough money to complete this transaction");
             else {
+                if(amount < 0 && firstTime) {
+                    amount = -amount;
+                    amountChange = true;
+                }
                 fromCustomer.setBalance(previousBalance - amount);
                 afterBalance = previousBalance - amount;
                 toCustomer.setBalance(toCustomer.getBalance() + amount);
-                if (amount > 0) {
-                    toCustomer.addTransaction(new Transaction(toCustomer, fromCustomer, -amount));
-                }
+                if(amountChange)
+                    amount = -amount;
+                if (firstTime)
+                    toCustomer.addTransaction(new Transaction(toCustomer, fromCustomer, -amount,false));
+
             }
         }
     }
-
     public Customer getToCustomer() {
         return toCustomer;
     }

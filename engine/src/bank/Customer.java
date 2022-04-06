@@ -35,7 +35,7 @@ public class Customer {
 
     public void addIngoingLoan(Loan loan,double amount) throws NegativeBalanceException {
         ingoingLoans.add(loan);
-        Transaction newTransaction = new Transaction(this,loan.getBorrower(),amount);
+        Transaction newTransaction = new Transaction(this,loan.getBorrower(),-amount);
         addTransaction(newTransaction);
         updateCustomerDto();
     }
@@ -78,6 +78,11 @@ public class Customer {
     public void selfTransaction(int amount) throws NegativeBalanceException {
         Transaction transaction = new Transaction(this, this, amount);
         this.addTransaction(transaction);
+        updateCustomerDto();
+    }
+
+    public void addOutgoingLoan(Loan loan) {
+        outgoingLoans.add(loan);
         updateCustomerDto();
     }
 }

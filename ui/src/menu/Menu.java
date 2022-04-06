@@ -126,10 +126,16 @@ public class Menu {
         if(!possibleLoans.isEmpty()) {
             ArrayList<Loan> chosenLoans = chooseLoans(possibleLoans);
             if(!chosenLoans.isEmpty()) {
-                double perLoanInvest = chosenSum / chosenLoans.size();
                 for (Loan loan : chosenLoans) {
+                    double perLoanInvest = chosenSum / chosenLoans.size();
                     try {
-                        loan.addLoaner(customer, perLoanInvest);
+                        if(perLoanInvest > loan.getAmountToComplete()){
+                            perLoanInvest = loan.getAmountToComplete();
+                            loan.addLoaner(customer, perLoanInvest);
+                        }
+                        else {
+                            loan.addLoaner(customer, perLoanInvest);
+                        }
                     } catch (NegativeBalanceException e) {
                         System.out.println(e.toString());
                     }
@@ -460,23 +466,21 @@ public class Menu {
             try {
                 myXml = new XmlReader(Paths.get(xmlString));
                 succeed = true;
-
             } catch (FileNotFoundException e) {
                 System.out.println("File not found! Please try again or press 'Q' to return to the main menu..");
-                command = obj.next();
+                command = obj.nextLine();
                 if (command.equals("q") || command.equals('Q')) {
                     break;
                 }
-
             } catch (NotXmlException e) {
                 System.out.println("Not Xml file! Please try again or press 'Q' to return to the main menu..");
-                command = obj.next();
+                command = obj.nextLine();
                 if (command.equals("q") || command.equals('Q')) {
                     break;
                 }
             } catch (Exception b) {
                 System.out.println("Something went wrong! Please try again or press 'Q' to return to the main menu..");
-                command = obj.next();
+                command = obj.nextLine();
                 if (command.equals("q") || command.equals('Q')) {
                     break;
                 }
@@ -656,8 +660,6 @@ public class Menu {
         int intChoice = -1;
         System.out.println("List of all the customers, choose a customer by number:");
         for (Customer customer : myBank.getCustomers()) {
-            //System.out.println(counter + ". " + customer.getName() + " ,    Balance: " + customer.getBalance());
-            //System.out.format("%f, %1$+020.10f %n", counter,". ",);
             System.out.printf("%d. %-10s %.1f%n",  counter, customer.getName(), customer.getBalance());
             counter++;
         }

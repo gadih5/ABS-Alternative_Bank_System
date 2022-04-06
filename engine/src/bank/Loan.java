@@ -93,6 +93,7 @@ public class Loan {
     public void setStatus(int globalTimeUnit,Status status) {
         if(this.status == Status.Pending && status == Status.Active) {
             setStartTimeUnit(globalTimeUnit);
+            getBorrower().addOutgoingLoan(this);
         }
         if(status == Status.Finished){
             setFinishTimeUnit(globalTimeUnit);
@@ -277,7 +278,7 @@ public class Loan {
             }
         }
 
-        if(this.isActive && remainTimeUnit >= 0 && ((Bank.getGlobalTimeUnit() - startTimeUnit)%paymentFrequency==0 || paymentFrequency == 1))
+        if(this.isActive && (remainTimeUnit >= 0 && ((Bank.getGlobalTimeUnit() - startTimeUnit)%paymentFrequency==0 || paymentFrequency == 1)))
         {
             for(Fraction fraction: fractions)
             {
