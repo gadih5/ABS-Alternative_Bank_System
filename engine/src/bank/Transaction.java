@@ -11,10 +11,10 @@ public class Transaction {
 
     private String sign;
 
-    public Transaction(int globalTimeUnit,Customer fromCustomer,Customer toCustomer, double amount) throws NegativeBalanceException {
+    public Transaction(Customer fromCustomer,Customer toCustomer, double amount) throws NegativeBalanceException {
         sign = amount>0? "+":"";
         this.previousBalance = fromCustomer.getBalance();
-        this.timeUnit = globalTimeUnit;
+        this.timeUnit = Bank.getGlobalTimeUnit();
         this.toCustomer = toCustomer;
         this.amount = amount; //check in ui that positive
         if(fromCustomer == toCustomer){//its a self deposit
@@ -30,7 +30,7 @@ public class Transaction {
                 afterBalance = previousBalance - amount;
                 toCustomer.setBalance(toCustomer.getBalance() + amount);
                 if (amount > 0) {
-                    toCustomer.addTransaction(new Transaction(globalTimeUnit, toCustomer, fromCustomer, -amount));
+                    toCustomer.addTransaction(new Transaction(toCustomer, fromCustomer, -amount));
                 }
             }
         }

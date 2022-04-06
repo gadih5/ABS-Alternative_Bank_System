@@ -21,39 +21,41 @@ public class CustomerDto {
 
         for(Loan loan: loans){
             res += "Loan name: " + loan.getLoanName() +
-                    "Category: " + loan.getReason() +
-                    "Fund: " + loan.getLoanSum() +
-                    "Payment frequency: " + loan.getPaymentFrequency() +
-                    "Interest: " + loan.getInterestPercent() +
-                    "Final loan's amount: " + loan.getStartLoanAmount() +
-                    "Status: " + loan.getStatus();
+                    ", Category: " + loan.getReason() +
+                    ", Fund: " + loan.getLoanSum() +
+                    ", Payment frequency: " + loan.getPaymentFrequency() +
+                    ", Interest: " + loan.getInterestPercent() +
+                    ", Final loan's amount: " + loan.getStartLoanAmount() +
+                    ", Status: " + loan.getStatus();
             if(loan.getStatus() == Status.Pending){
-                res += "Amount missing become 'Active': " + loan.getAmountToComplete();
+                res += ", Amount missing become 'Active': " + loan.getAmountToComplete();
             }
-            if(loan.getStatus() == Status.Active){
-                res += "Next payment at: " + checkNextPayment(loan.getStartTimeUnit(), loan.getPaymentFrequency());
+            if(loan.getStatus() == Status.Active) {
+                res += ", Next payment at: " + checkNextPayment(loan.getStartTimeUnit(), loan.getPaymentFrequency());
+
+                double nextPayment = 0;
+                for (Fraction fraction : loan.getFractions()) {
+                    double fundPart = fraction.getAmount() / (loan.getTotalTimeUnit() / loan.getPaymentFrequency());
+                    double interestPart = fraction.getAmount() * loan.getInterestPercent() / (loan.getTotalTimeUnit() / loan.getPaymentFrequency());
+                    nextPayment += fundPart + interestPart;
+                }
+                res += ", sum to pay: " + nextPayment;
             }
-            double nextPayment = 0;
-            for(Fraction fraction: loan.getFractions()) {
-                double fundPart = fraction.getAmount()/(loan.getTotalTimeUnit()/ loan.getPaymentFrequency());
-                double interestPart = fraction.getAmount() * loan.getInterestPercent() /(loan.getTotalTimeUnit()/loan.getPaymentFrequency());
-                nextPayment += fundPart + interestPart;
-            }
-            res += ", sum to pay: " + nextPayment;
             if(loan.getStatus() == Status.Risk){
-                res += "Number of debts: ";
+                res += ", Number of debts: ";
                 int numberOfDebts = 0;
                 double amountOfDebts = 0;
                 for(Debt debt:loan.getUncompletedTransactions()){
                     numberOfDebts++;
                     amountOfDebts += debt.getAmount();
                 }
-                res += numberOfDebts + "amount to pay: " + amountOfDebts +"\n";
+                res += numberOfDebts + ", amount to pay: " + amountOfDebts;
             }
             if(loan.getStatus() == Status.Finished){
-                res += "Start time: " + loan.getStartTimeUnit()
-                        + ", Finish time: " + loan.getFinishTimeUnit() + "\n";
+                res += ", Start time: " + loan.getStartTimeUnit()
+                        + ", Finish time: " + loan.getFinishTimeUnit();
             }
+            res+="\n";
         }
         return res;
     }

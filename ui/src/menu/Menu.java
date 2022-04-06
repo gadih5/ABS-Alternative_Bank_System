@@ -111,6 +111,7 @@ public class Menu {
             System.out.println("The current time is: " + Bank.getGlobalTimeUnit());
         } catch (NegativeBalanceException e) {
             e.printStackTrace();
+
         }
     }
 
@@ -119,18 +120,90 @@ public class Menu {
         Customer customer = chooseCustomer();
         int chosenSum = chooseSumToInvest(customer.getBalance());
         Set<String> chosenCategories = chooseCategories();
-        double chosenInterest = chooseMinimumInterestPercent();
+        int chosenInterest = chooseMinimumInterestPercent();
         int chosenUnitTime = chooseMinimumTotalUnitTime();
         ArrayList<Loan> possibleLoans =  myBank.checkLoans(customer, chosenCategories, chosenInterest, chosenUnitTime);
-        ArrayList<LoanDto> possibleLoansDto = myBank.makeDto(possibleLoans);
         if(!possibleLoans.isEmpty()) {
-            printLoanInfo(possibleLoansDto);
-
-
+            ArrayList<Loan> chosenLoans = chooseLoans(possibleLoans);
+            if(!chosenLoans.isEmpty()) {
+                double perLoanInvest = chosenSum / chosenLoans.size();
+                for (Loan loan : chosenLoans) {
+                    try {
+                        loan.addLoaner(customer, perLoanInvest);
+                    } catch (NegativeBalanceException e) {
+                        System.out.println(e.toString());
+                    }
+                }
+            }
         }
-
+        else{
+            System.out.println("Sorry, No loan has been found that matches your preferences :(");
+        }
     }
 
+    private ArrayList<Loan> chooseLoans(ArrayList<Loan> possibleLoans) {
+        ArrayList<Loan> chosenLoans = new ArrayList<>();
+        ArrayList<Loan> tempLoans = possibleLoans;
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Please choose a loan to invest by its number:\n");
+        Loan chosenLoan = chooseLoanFrom(tempLoans);
+        chosenLoans.add(chosenLoan);
+        tempLoans.remove(chosenLoan);
+        String choice;
+        int intChoice=-1;
+        while (true && !(tempLoans.isEmpty())) {
+            System.out.println("Do you want to invest in more loans?");
+            System.out.println("1. Yes");
+            System.out.println("2. No");
+            choice = scanner.next();
+            try {
+                intChoice = Integer.parseInt(choice);
+                if (intChoice <= 0 || intChoice > 2)
+                    System.out.println("Must enter 1 or 2, please enter your choice again:");
+            } catch (Exception e) {
+                System.out.println("Must enter 1 or 2, please enter your choice again:");
+            }
+            if (intChoice == 1) {
+                chosenLoan = chooseLoanFrom(tempLoans);
+                chosenLoans.add(chosenLoan);
+                tempLoans.remove(chosenLoan);
+            }
+            if (intChoice == 2)
+                break;
+
+        }
+        return chosenLoans;
+    }
+
+    private Loan chooseLoanFrom(ArrayList<Loan> tempLoans) {
+        HashMap<Integer,Loan> mapLoans= new HashMap<>();
+        Integer i = 1;
+        for(Loan loan: tempLoans){
+            mapLoans.put(i,loan);
+            i++;
+        }
+        String choice = "";
+        int intChoice = -1;
+        printLoanInfo(myBank.makeDto(tempLoans));
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            choice = scanner.next();
+            try {
+                intChoice = Integer.parseInt(choice);
+                if (mapLoans.keySet().contains(intChoice)) {
+                    break;
+                } else {
+                    System.out.println("Must enter a number between 1 to " + mapLoans.size() + ", please enter your choice again:");
+                }
+            } catch (Exception e) {
+                System.out.println("Must enter a number between 1 to " + mapLoans.size() + ", please enter your choice again:");
+            }
+        }
+
+        Loan chosenLoan = mapLoans.get(intChoice);
+        return chosenLoan;
+
+    }
 
     private int chooseMinimumTotalUnitTime() {
         int chosenTotalUnitTime=1;
@@ -174,8 +247,8 @@ public class Menu {
         return chosenTotalUnitTime;
     }
 
-    private double chooseMinimumInterestPercent() {
-        double chosenInterestPercent=0;
+    private int chooseMinimumInterestPercent() {
+        int chosenInterestPercent=0;
         Scanner scanner = new Scanner(System.in);
         System.out.println("Do you want to choose a minimum interest rate of loans to invest?");
         System.out.println("1. Yes");
@@ -200,22 +273,21 @@ public class Menu {
             while (true) {
                 choice = scanner.next();
                 try {
-                    double doubleChoice = Double.parseDouble(choice);
-                    if (doubleChoice > 0) {
-                        chosenInterestPercent = doubleChoice;
+                    int interestChoice = Integer.parseInt(choice);
+                    if (interestChoice > 0) {
+                        chosenInterestPercent = interestChoice;
                         break;
                     } else {
-                        System.out.println("Must enter a real number greater than 0, please enter your choice again:");
+                        System.out.println("Must enter an integer greater than 0, please enter your choice again:");
                     }
                 } catch (Exception e) {
-                    System.out.println("Must enter a real number greater than 0, please enter your choice again:");
+                    System.out.println("Must enter an integer greater than 0, please enter your choice again:");
                 }
             }
 
         }
         return chosenInterestPercent;
     }
-
 
     private Set<String> chooseCategories() {
         Set<String> tempCategories = myBank.getCategory();
@@ -241,10 +313,10 @@ public class Menu {
             }
         }
         if(intChoice == 1) {
-            tempCategory = chooseFrom(tempCategories);
+            tempCategory = chooseCategoryFrom(tempCategories);
             chosenCategories.add(tempCategory);
             tempCategories.remove(tempCategory);
-            while (true) {
+            while (true && !(tempCategories.isEmpty())) {
                 System.out.println("Do you want to add more categories?");
                 System.out.println("1. Yes");
                 System.out.println("2. No");
@@ -258,7 +330,7 @@ public class Menu {
                     System.out.println("Must enter 1 or 2, please enter your choice again:");
                 }
                 if (intChoice == 1)
-                    tempCategory = chooseFrom(tempCategories);
+                    tempCategory = chooseCategoryFrom(tempCategories);
                     chosenCategories.add(tempCategory);
                     tempCategories.remove(tempCategory);
                 if(intChoice == 2)
@@ -272,7 +344,7 @@ public class Menu {
         return  chosenCategories;
     }
 
-    private String chooseFrom(Set<String> tempCategories) {
+    private String chooseCategoryFrom(Set<String> tempCategories) {
         HashMap<Integer,String> mapCategories= new HashMap<>();
         Integer i = 1;
         for(String category: tempCategories){
@@ -438,16 +510,16 @@ public class Menu {
 
         }else{
             int nextPayment = loanDto.checkNextPayment();
-            String activeStr="Become Active at: " + loanDto.getStartTimeUnit() + "Next Payment in: "+nextPayment;
-            activeStr+="/nThe Payments maid so far:\n";
+            String activeStr="Become Active at: " + loanDto.getStartTimeUnit() + ", Next Payment in: "+nextPayment;
+            activeStr+="\nThe Payments maid so far:\n";
 
             for(LoanTransaction transaction:loanDto.getTransactions()){
-                activeStr+="Time unit:"+transaction.getTimeUnit()+" Fund:"+transaction.getFundPart()+" Interest:"+transaction.getInterestPart()+" Total: "+(transaction.getInterestPart()+transaction.getFundPart())+"\n";
+                activeStr+="Time unit:"+transaction.getTimeUnit()+", Fund:"+transaction.getFundPart()+", Interest:"+transaction.getInterestPart()+" Total: "+(transaction.getInterestPart()+transaction.getFundPart())+"\n";
             }
-            activeStr+="Total fund paid:"+loanDto.getCurrentFund()+" Total interest paid:"+loanDto.getCurrentInterest()+" Total remain fund:"+ loanDto.getRemainFund()+" Total remain interest:" +loanDto.getRemainInterest();
+            activeStr+="Total fund paid:"+loanDto.getCurrentFund()+", Total interest paid:"+loanDto.getCurrentInterest()+", Total remain fund:"+ loanDto.getRemainFund()+" Total remain interest:" +loanDto.getRemainInterest();
             res+=activeStr;
             if(loanDto.getStatus()==Status.Risk){
-                String debtsInfo = loanDto.getBorrowerName() + "debts: ";
+                String debtsInfo = loanDto.getBorrowerName() + "Debts: ";
                 double debtAmount = 0;
                 int numOfDebts = 0;
                 for(Debt debt: loanDto.getDebts()){
@@ -473,9 +545,11 @@ public class Menu {
             System.out.println("There is no any loan in the system.\n");
         }
         else{
+            int i =1;
             for(LoanDto loanDto: loansDto){
                 String info = getLoanDtoToString(loanDto);
-                System.out.println(info);
+                System.out.println(i + ". " + info);
+                i++;
             }
         }
     }

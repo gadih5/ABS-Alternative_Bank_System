@@ -90,7 +90,6 @@ public class Loan {
 
     }
 
-
     public void setStatus(int globalTimeUnit,Status status) {
         if(this.status == Status.Pending && status == Status.Active) {
             setStartTimeUnit(globalTimeUnit);
@@ -114,23 +113,21 @@ public class Loan {
     }
 
     private void checkStatus(int globalTimeUnit){
-        if(currentInterest == loanSum){
+        if(currentFund == loanSum){
             setStatus(globalTimeUnit,Status.Active);
         }
     }
 
-
-
-    private void addLoaner(int globalTimeUnit, Customer customer, double amount){
+    public void addLoaner(Customer customer, double amount) throws NegativeBalanceException {
         Fraction newFraction = new Fraction(customer,amount);
         fractions.add(newFraction);
-        currentInterest += newFraction.getAmount();
+        customer.addIngoingLoan(this,amount);
+        currentFund += newFraction.getAmount();
         amountToComplete-= newFraction.getAmount();
-        checkStatus(globalTimeUnit);
+
+        checkStatus(Bank.getGlobalTimeUnit());
         updateLoanDto();
     }
-
-
 
     protected Collection<Fraction> getFractions() {
         return fractions;
@@ -270,7 +267,7 @@ public class Loan {
             Collections.sort(uncompletedTransactions);
             for(Debt debt:uncompletedTransactions){
                 if(debt.getAmount() <= this.getBorrower().getBalance()){
-                    LoanTransaction newLoanTransaction = new LoanTransaction(Bank.getGlobalTimeUnit(), this.borrower, debt.getToCustomer(), debt.getFundPart(), debt.getInterestPart());
+                    LoanTransaction newLoanTransaction = new LoanTransaction(this.borrower, debt.getToCustomer(), debt.getFundPart(), debt.getInterestPart());
                     uncompletedTransactions.remove(debt);
                     transactions.add(newLoanTransaction);
                 }
@@ -288,7 +285,7 @@ public class Loan {
                 try {
                     double fundPart = fraction.getAmount()/(totalTimeUnit/paymentFrequency);
                     double interestPart = fraction.getAmount() * interestPercent /(totalTimeUnit/paymentFrequency);
-                    newLoanTransaction = new LoanTransaction(Bank.getGlobalTimeUnit(), this.borrower, fraction.getCustomer(), fundPart,interestPart );
+                    newLoanTransaction = new LoanTransaction(this.borrower, fraction.getCustomer(), fundPart,interestPart );
                     transactions.add(newLoanTransaction);
                     this.remainFund -= fundPart;
                     this.remainInterest -= interestPart;

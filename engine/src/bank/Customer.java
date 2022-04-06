@@ -33,12 +33,20 @@ public class Customer {
             this.balance = balance;
     }
 
+    public void addIngoingLoan(Loan loan,double amount) throws NegativeBalanceException {
+        ingoingLoans.add(loan);
+        Transaction newTransaction = new Transaction(this,loan.getBorrower(),amount);
+        addTransaction(newTransaction);
+        updateCustomerDto();
+    }
+
     public Loan createLoan(String loanName, double loanSum, int totalTimeUnit, String reason, double interestPrecent, int paymentFrequency) throws UndefinedReasonException, NegativeLoanSumException, NegativeTotalTimeUnitException, NegativeInterestPercentException, NegativePaymentFrequencyException, OverPaymentFrequencyException, UndividedPaymentFrequencyException {
         Loan newLoan = new Loan( loanName, this,  loanSum,  totalTimeUnit,  reason,  interestPrecent,  paymentFrequency);
         outgoingLoans.add(newLoan);
         updateCustomerDto();
         return newLoan;
     }
+
     public String getName() {
         return name;
     }
@@ -50,7 +58,6 @@ public class Customer {
     public Collection getTransactions() {
         return transactions;
     }
-
 
     public Collection getIngoingLoans() {
         return ingoingLoans;
@@ -69,7 +76,7 @@ public class Customer {
     }
 
     public void selfTransaction(int amount) throws NegativeBalanceException {
-        Transaction transaction = new Transaction(Bank.getGlobalTimeUnit(), this, this, amount);
+        Transaction transaction = new Transaction(this, this, amount);
         this.addTransaction(transaction);
         updateCustomerDto();
     }

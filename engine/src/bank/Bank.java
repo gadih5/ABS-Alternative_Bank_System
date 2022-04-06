@@ -35,7 +35,6 @@ public class Bank {
         return category;
     }
 
-
     public Collection<Loan> getLoans() {
         return loans;
     }
@@ -104,14 +103,13 @@ public class Bank {
         }
     }
 
-
-    public ArrayList<Loan> checkLoans(Customer customer, Set<String> chosenCategories, double chosenInterest, int chosenUnitTime) {
+    public ArrayList<Loan> checkLoans(Customer customer, Set<String> chosenCategories, int chosenInterest, int chosenUnitTime) {
         ArrayList<Loan> possibleLoans = new ArrayList<>();
         for(Loan loan: loans){
             if(loan.getStatus() == Status.Pending
                     && loan.getBorrower() != customer
                     && chosenCategories.contains(loan.getReason())
-                    && loan.getInterestPercent() >= chosenInterest
+                    && loan.getInterestPercent()*100 >= chosenInterest
                     && loan.getTotalTimeUnit() >= chosenUnitTime){
                 possibleLoans.add(loan);
             }
