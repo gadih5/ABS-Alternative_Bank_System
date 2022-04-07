@@ -94,6 +94,8 @@ public class Loan {
         if(this.status == Status.Pending && status == Status.Active) {
             setStartTimeUnit();
             getBorrower().addOutgoingLoan(this);
+            isActive = true;
+            remainTimeUnit = totalTimeUnit;
         }
         if(status == Status.Finished){
             setFinishTimeUnit();
@@ -263,7 +265,8 @@ public class Loan {
     }
 
     public void update() throws NegativeBalanceException {
-        this.remainTimeUnit--;
+        if(this.isActive)
+            this.remainTimeUnit--;
         if(this.status==status.Risk){
             Collections.sort(uncompletedTransactions);
             for(Debt debt:uncompletedTransactions){

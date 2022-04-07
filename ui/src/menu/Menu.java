@@ -112,7 +112,7 @@ public class Menu {
             myBank.updateGlobalTimeUnit();
             System.out.println("The current time is: " + Bank.getGlobalTimeUnit());
         } catch (NegativeBalanceException e) {
-            e.printStackTrace();
+            System.out.println(e);
 
         }
     }
