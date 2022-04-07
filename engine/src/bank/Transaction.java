@@ -15,35 +15,32 @@ public class Transaction {
         this(fromCustomer,toCustomer,amount,true);
     }
     public Transaction(Customer fromCustomer,Customer toCustomer, double amount, boolean firstTime) throws NegativeBalanceException {
-        sign = amount>0? "+":"";
+        sign = firstTime ? "-" : "+";
         boolean amountChange = false;
         this.previousBalance = fromCustomer.getBalance();
         this.timeUnit = Bank.getGlobalTimeUnit();
         this.toCustomer = toCustomer;
         this.amount = amount; //check in ui that positive
-        if(fromCustomer == toCustomer){//its a self deposit
+        if (fromCustomer == toCustomer) {//its a self deposit
+            sign=amount>0?"+":"-";
             afterBalance = previousBalance + amount;
             toCustomer.setBalance(afterBalance);
         }
         else {
             previousBalance = fromCustomer.getBalance();
-            if (previousBalance - amount < 0)
+            if (firstTime&&previousBalance - amount < 0)
+
                 throw new NegativeBalanceException("Not enough money to complete this transaction");
             else {
-                if(amount < 0 && firstTime) {
-                    amount = -amount;
-                    amountChange = true;
-                }
                 fromCustomer.setBalance(previousBalance - amount);
                 afterBalance = previousBalance - amount;
-                toCustomer.setBalance(toCustomer.getBalance() + amount);
-                if(amountChange)
-                    amount = -amount;
-                if (firstTime)
-                    toCustomer.addTransaction(new Transaction(toCustomer, fromCustomer, -amount,false));
-
+                if(firstTime)
+                toCustomer.addTransaction(new Transaction(toCustomer, fromCustomer, -amount, false));
             }
+
+
         }
+
     }
     public Customer getToCustomer() {
         return toCustomer;

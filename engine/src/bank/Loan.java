@@ -90,13 +90,13 @@ public class Loan {
 
     }
 
-    public void setStatus(int globalTimeUnit,Status status) {
+    public void setStatus(Status status) {
         if(this.status == Status.Pending && status == Status.Active) {
-            setStartTimeUnit(globalTimeUnit);
+            setStartTimeUnit();
             getBorrower().addOutgoingLoan(this);
         }
         if(status == Status.Finished){
-            setFinishTimeUnit(globalTimeUnit);
+            setFinishTimeUnit();
         }
         this.status = status;
     }
@@ -105,17 +105,17 @@ public class Loan {
         return loanDto;
     }
 
-    private void setFinishTimeUnit(int globalTimeUnit) {
-        this.finishTimeUnit = globalTimeUnit;
+    private void setFinishTimeUnit() {
+        this.finishTimeUnit = Bank.getGlobalTimeUnit();
     }
 
-    public void setStartTimeUnit(int globalTimeUnit) {
-        this.startTimeUnit = globalTimeUnit;
+    public void setStartTimeUnit() {
+        this.startTimeUnit = Bank.getGlobalTimeUnit();
     }
 
-    private void checkStatus(int globalTimeUnit){
+    private void checkStatus(){
         if(currentFund == loanSum){
-            setStatus(globalTimeUnit,Status.Active);
+            setStatus(Status.Active);
         }
     }
 
@@ -126,7 +126,7 @@ public class Loan {
         currentFund += newFraction.getAmount();
         amountToComplete-= newFraction.getAmount();
 
-        checkStatus(Bank.getGlobalTimeUnit());
+        checkStatus();
         updateLoanDto();
     }
 
@@ -274,7 +274,7 @@ public class Loan {
                 }
             }
             if(this.uncompletedTransactions.isEmpty()){
-                setStatus(Bank.getGlobalTimeUnit(),Status.Active);
+                setStatus(Status.Active);
             }
         }
 
@@ -299,7 +299,7 @@ public class Loan {
             }
         }
         if(this.remainTimeUnit == 0 && this.status != Status.Risk && this.remainInterest == 0 && this.remainFund == 0){
-            setStatus(Bank.getGlobalTimeUnit(),Status.Finished);
+            setStatus(Status.Finished);
         }
         this.updateLoanDto();
     }

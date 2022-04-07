@@ -11,6 +11,8 @@ import bank.xml.XmlReader;
 
 import javax.xml.bind.JAXBException;
 
+import static java.lang.Math.abs;
+
 public class Menu {
     public Bank myBank=new Bank();
     private boolean xmlLoadedSuccessfully = false;
@@ -379,8 +381,7 @@ public class Menu {
             }
         }
 
-        String res = mapCategories.get(intChoice);
-        return res;
+        return mapCategories.get(intChoice);
     }
 
     private int chooseSumToInvest(double balance) {
@@ -562,7 +563,7 @@ public class Menu {
         String res = "Customer's name: " + customerDto.getName() + "\n";
         for(Transaction transaction: customerDto.getTransactions()){
             res += "Time performed: " + transaction.getTimeUnit() +
-                    ", Amount transferred: " + transaction.getSign() + transaction.getAmount() +
+                    ", Amount transferred: " + transaction.getSign() + abs(transaction.getAmount()) +
                     ", Previous balance: " + transaction.getPreviousBalance() +
                     ", After balance: " + transaction.getAfterBalance() + "\n";
         }
