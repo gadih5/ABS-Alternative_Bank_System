@@ -117,7 +117,7 @@ public class Loan {
     }
 
     private void checkStatus(){
-        if(currentFund == loanSum){
+        if(amountToComplete == 0){
             setStatus(Status.Active);
         }
     }
@@ -126,8 +126,8 @@ public class Loan {
         Fraction newFraction = new Fraction(customer,amount);
         fractions.add(newFraction);
         customer.addIngoingLoan(this,amount);
-        currentFund += newFraction.getAmount();
-        amountToComplete-= newFraction.getAmount();
+       // currentFund += newFraction.getAmount();
+        amountToComplete -= newFraction.getAmount();
 
         checkStatus();
         updateLoanDto();
@@ -284,32 +284,41 @@ public class Loan {
 
 
     public void update() throws NegativeBalanceException {
-        if (this.isActive)
-            this.remainTimeUnit--;
-
         if(this.isActive && (remainTimeUnit >= 0 && ((Bank.getGlobalTimeUnit() - startTimeUnit)%paymentFrequency==0 || paymentFrequency == 1)))
         {
+            this.remainTimeUnit--;
             if (this.status == status.Risk) {
                 Collections.sort(uncompletedTransactions);
                 payDebts(uncompletedTransactions);
             }
-            for(Fraction fraction: fractions)
-            {
-                LoanTransaction newLoanTransaction = null;
-                try {
-                    double fundPart = fraction.getAmount()/(totalTimeUnit/paymentFrequency);
-                    double interestPart = fraction.getAmount() * interestPercent /(totalTimeUnit/paymentFrequency);
-                    newLoanTransaction = new LoanTransaction(this.borrower, fraction.getCustomer(), fundPart,interestPart );
-                    transactions.add(newLoanTransaction);
-                    this.remainFund -= fundPart;
-                    this.remainInterest -= interestPart;
+            double debtAmount = 0;
 
-                } catch (NegativeBalanceException e) {
-                   uncompletedTransactions.add(new Debt(fraction.getCustomer(),fraction.getAmount()/(totalTimeUnit/paymentFrequency),fraction.getAmount() * interestPercent /(totalTimeUnit/paymentFrequency)));
-                   setStatus(Status.Risk);
-                   throw new NegativeBalanceException("Negative Balance: " + this.getBorrowerName() +"'s account not have enough balance pay to "+fraction.getCustomerName() +" for \"" + getLoanName() +"\" loan!");
+            for(Debt debt: uncompletedTransactions){
+                debtAmount += debt.getAmount();
+            }
+            if(debtAmount != getLoanSum() + getLoanSum()*getInterestPercent()) {
+                for (Fraction fraction : fractions) {
+                    LoanTransaction newLoanTransaction = null;
+                    try {
+                        double fundPart = fraction.getAmount() / (totalTimeUnit / paymentFrequency);
+                        double interestPart = fraction.getAmount() * interestPercent / (totalTimeUnit / paymentFrequency);
+                        newLoanTransaction = new LoanTransaction(this.borrower, fraction.getCustomer(), fundPart, interestPart);
+                        transactions.add(newLoanTransaction);
+                        this.remainFund -= fundPart;
+                        this.remainInterest -= interestPart;
+                        this.currentFund += fundPart;
+                        this.currentInterest += interestPart;
+
+                    } catch (NegativeBalanceException e) {
+
+                        if (debtAmount < getRemainFund() + getRemainInterest()) {
+                            uncompletedTransactions.add(new Debt(fraction.getCustomer(), fraction.getAmount() / (totalTimeUnit / paymentFrequency), fraction.getAmount() * interestPercent / (totalTimeUnit / paymentFrequency)));
+                            setStatus(Status.Risk);
+                        }
+                        throw new NegativeBalanceException("Negative Balance: " + this.getBorrowerName() + "'s account not have enough balance pay to " + fraction.getCustomerName() + " for \"" + getLoanName() + "\" loan!");
+                    }
+
                 }
-
             }
         }
         if(this.remainTimeUnit == 0 && this.status != Status.Risk && this.remainInterest == 0 && this.remainFund == 0){

@@ -17,6 +17,7 @@ public class Menu {
     public Bank myBank=new Bank();
     private boolean xmlLoadedSuccessfully = false;
     public void run(){
+        System.out.println("The current time is: " + Bank.getGlobalTimeUnit());
         System.out.println("Please choose a command by number:");
         System.out.println("1)Read File");
         System.out.println("2)Show all loans info");
@@ -116,10 +117,8 @@ public class Menu {
     private void moveTimeLine() {
         try {
             myBank.updateGlobalTimeUnit();
-            System.out.println("The current time is: " + Bank.getGlobalTimeUnit());
         } catch (NegativeBalanceException e) {
             System.out.println(e);
-
         }
     }
 
@@ -269,7 +268,7 @@ public class Menu {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Do you want to choose a minimum interest rate of loans to invest?");
         System.out.println("1. Yes");
-        System.out.println("2. No, I want to invest at all interest rates");
+        System.out.println("2. No, I want to invest at all interest rates.");
         String choice;
         int intChoice;
         while (true) {
@@ -394,7 +393,7 @@ public class Menu {
     }
 
     private int chooseSumToInvest(double balance) {
-        System.out.println("Please enter the amount you are interested in investing");
+        System.out.println("Please enter the amount you are interested to invest:");
         int intAmount;
         while (true) {
            Scanner scanner=new Scanner(System.in);
@@ -449,6 +448,8 @@ public class Menu {
             } catch (ExitXmlLoadFileException e) {
                 return;
             } catch (NotInCategoryException e) {
+                System.out.println(e.toString());
+            } catch (AlreadyExistCustomerException e) {
                 System.out.println(e.toString());
             }
         }

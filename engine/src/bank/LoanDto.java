@@ -48,15 +48,16 @@ public class LoanDto {
     }
 
     public int checkNextPayment() {
-        int nextPayment;
-        if((Bank.getGlobalTimeUnit() - startTimeUnit)%paymentFrequency==0 || paymentFrequency == 1){
-            nextPayment = Bank.getGlobalTimeUnit();
-        }
+        int nextPayment=0;
         if(Bank.getGlobalTimeUnit() == startTimeUnit){
             nextPayment = Bank.getGlobalTimeUnit() + paymentFrequency;
         }
-        else{
-            nextPayment = (Bank.getGlobalTimeUnit() - startTimeUnit)%paymentFrequency + Bank.getGlobalTimeUnit();
+        else {
+            if ((Bank.getGlobalTimeUnit() - startTimeUnit) % paymentFrequency == 0 || paymentFrequency == 1) {
+                nextPayment = Bank.getGlobalTimeUnit() + paymentFrequency;
+            } else {
+                nextPayment = ((Bank.getGlobalTimeUnit() - startTimeUnit) % paymentFrequency) + Bank.getGlobalTimeUnit() + 1;
+            }
         }
         return nextPayment;
     }

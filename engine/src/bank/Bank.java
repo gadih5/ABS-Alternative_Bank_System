@@ -69,12 +69,15 @@ public class Bank {
         return customersDto;
     }
 
-    public void loadXmlData(AbsDescriptor descriptor) throws NegativeBalanceException, UndefinedReasonException, UndefinedCustomerException, NegativeLoanSumException, NegativeTotalTimeUnitException, NegativeInterestPercentException, NegativePaymentFrequencyException, OverPaymentFrequencyException, UndividedPaymentFrequencyException, NotInCategoryException {
+    public void loadXmlData(AbsDescriptor descriptor) throws NegativeBalanceException, UndefinedReasonException, UndefinedCustomerException, NegativeLoanSumException, NegativeTotalTimeUnitException, NegativeInterestPercentException, NegativePaymentFrequencyException, OverPaymentFrequencyException, UndividedPaymentFrequencyException, NotInCategoryException, AlreadyExistCustomerException {
        AbsCustomers absCustomers = descriptor.getAbsCustomers();
+       Set<String> customerNames = new HashSet<>();
        for (AbsCustomer absCustomer: absCustomers.getAbsCustomer()){
-           this.customers.add(new Customer(absCustomer.getName(), absCustomer.getAbsBalance()));
+           if(customerNames.add(absCustomer.getName()))
+               this.customers.add(new Customer(absCustomer.getName(), absCustomer.getAbsBalance()));
+           else
+               throw new AlreadyExistCustomerException("There is already a customer named \"" + absCustomer.getName() +"\", can't be two customers with the same name!");
        }
-
 
         Set<String> listOfCategory=new HashSet<>();
         for(String s:descriptor.getAbsCategories().getAbsCategory()){
@@ -92,7 +95,7 @@ public class Bank {
                 }
             }
             if(loanCustomer == null){
-                throw new UndefinedCustomerException(absLoan.getAbsOwner() + "is not bank's customer!");
+                throw new UndefinedCustomerException("\"" + absLoan.getAbsOwner() + "\" is not bank's customer!");
             }
             if(listOfCategory.contains(absLoan.getAbsCategory())) {
                 this.loans.add(new Loan(absLoan.getId(), loanCustomer, absLoan.getAbsCapital(), absLoan.getAbsTotalYazTime(), absLoan.getAbsCategory(),
