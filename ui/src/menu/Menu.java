@@ -525,7 +525,9 @@ public class Menu {
 
         }else{
             int nextPayment = loanDto.checkNextPayment();
-            String activeStr="Become Active at: " + loanDto.getStartTimeUnit() + ", Next Payment in: "+nextPayment;
+            String activeStr="Become Active at: " + loanDto.getStartTimeUnit();
+            if(loanDto.getStatus() != Status.Finished && loanDto.getStatus() != Status.Risk)
+                activeStr +=", Next Payment in: "+nextPayment;
             activeStr+="\nThe Payments maid so far:\n";
 
             for(LoanTransaction transaction:loanDto.getTransactions()){
@@ -547,7 +549,7 @@ public class Menu {
                 res += debtsInfo;
             }
             if(loanDto.getStatus()==Status.Finished) {
-                String finishInfo = "Start time: " + loanDto.getStartTimeUnit()
+                String finishInfo = ", Start time: " + loanDto.getStartTimeUnit()
                         + ", Finish time: " + loanDto.getFinishTimeUnit() + "\n";
                 res += finishInfo;
             }

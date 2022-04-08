@@ -3,7 +3,6 @@ package bank;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 
 import bank.exception.*;
 
@@ -17,7 +16,7 @@ public class Loan {
     private int totalTimeUnit;
     private int remainTimeUnit;
     private int finishTimeUnit;
-    private Reason reason;
+    private String reason;
     private double interestPercent;
     private int paymentFrequency;
     private Collection<Fraction> fractions;
@@ -53,7 +52,7 @@ public class Loan {
         this.transactions = new ArrayList<Transaction>();
         this.uncompletedTransactions = new ArrayList<Debt>();
         this.finishTimeUnit = 0;
-        setReason(reason);
+        this.reason = reason;
         this.loanDto = new LoanDto(this);
     }
 
@@ -81,6 +80,10 @@ public class Loan {
         else
             this.totalTimeUnit = totalTimeUnit;
 
+    }
+
+    public String getReason() {
+        return reason;
     }
 
     private void setLoanSum(double loanSum) throws NegativeLoanSumException {
@@ -126,7 +129,6 @@ public class Loan {
         Fraction newFraction = new Fraction(customer,amount);
         fractions.add(newFraction);
         customer.addIngoingLoan(this,amount);
-       // currentFund += newFraction.getAmount();
         amountToComplete -= newFraction.getAmount();
 
         checkStatus();
@@ -167,50 +169,6 @@ public class Loan {
 
     protected int getTotalTimeUnit() {
         return totalTimeUnit;
-    }
-
-    public void setReason(String reason) throws UndefinedReasonException {
-
-        switch (reason){
-            case "Setup a business":
-                this.reason = Reason.Setup_a_business;
-                break;
-            case "Overdraft cover":
-                this.reason = Reason.Overdraft_cover;
-                break;
-            case "Investment":
-                this.reason = Reason.Investment;
-                break;
-            case "Happy Event":
-                this.reason = Reason.Happy_Event;
-                break;
-            case "Renovate":
-                this.reason = Reason.Renovate;
-                break;
-            default: throw new UndefinedReasonException(reason + " Undefined");
-        }
-    }
-
-    protected String getReason() {
-        String res = "";
-        switch (reason){
-            case Setup_a_business:
-                res = "Setup a business";
-                break;
-            case Overdraft_cover:
-                res = "Overdraft cover";
-                break;
-            case Investment:
-                res = "Investment";
-                break;
-            case Happy_Event:
-                res = "Happy Event";
-                break;
-            case Renovate:
-                res = "Renovate";
-                break;
-        }
-        return res;
     }
 
     protected double getInterestPercent() {
@@ -271,7 +229,11 @@ public class Loan {
                 LoanTransaction newLoanTransaction = new LoanTransaction(this.borrower, debt.getToCustomer(), debt.getFundPart(), debt.getInterestPart());
                 debts.remove(debt);
                 transactions.add(newLoanTransaction);
-                this.uncompletedTransactions = debts;
+/*                this.uncompletedTransactions = debts;
+                this.remainFund -= debt.getFundPart();
+                this.remainInterest -= debt.getInterestPart();
+                this.currentFund += debt.getFundPart();
+                this.currentInterest += debt.getInterestPart();*/
                 payDebts(uncompletedTransactions);
                 break;
             }
@@ -284,9 +246,10 @@ public class Loan {
 
 
     public void update() throws NegativeBalanceException {
+        if(isActive)
+            remainTimeUnit--;
         if(this.isActive && (remainTimeUnit >= 0 && ((Bank.getGlobalTimeUnit() - startTimeUnit)%paymentFrequency==0 || paymentFrequency == 1)))
         {
-            this.remainTimeUnit--;
             if (this.status == status.Risk) {
                 Collections.sort(uncompletedTransactions);
                 payDebts(uncompletedTransactions);

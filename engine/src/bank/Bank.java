@@ -101,7 +101,7 @@ public class Bank {
                 this.loans.add(new Loan(absLoan.getId(), loanCustomer, absLoan.getAbsCapital(), absLoan.getAbsTotalYazTime(), absLoan.getAbsCategory(),
                         (double) absLoan.getAbsIntristPerPayment() / 100, absLoan.getAbsPaysEveryYaz()));
             }else{
-                throw new NotInCategoryException("Missing Category in Xml");
+                throw new NotInCategoryException("\"" + absLoan.getAbsCategory() + "\" is missing in the categories list in Xml!");
             }
         }
     }
