@@ -32,6 +32,12 @@ public class Menu {
 
     private void menuController() {
         do {
+            for(Customer customer:myBank.getCustomers()){
+                customer.updateCustomerDto();
+            }
+            for(Loan loan:myBank.getLoans()){
+                loan.updateLoanDto();
+            }
             Scanner scanner = new Scanner(System.in);
 
             String command = scanner.next();
@@ -144,6 +150,7 @@ public class Menu {
                         System.out.println(e.toString());
                     }
                 }
+                System.out.println();
             }
         }
         else{
@@ -526,7 +533,7 @@ public class Menu {
             activeStr+="Total fund paid:"+loanDto.getCurrentFund()+", Total interest paid:"+loanDto.getCurrentInterest()+", Total remain fund:"+ loanDto.getRemainFund()+" Total remain interest:" +loanDto.getRemainInterest();
             res+=activeStr;
             if(loanDto.getStatus()==Status.Risk){
-                String debtsInfo = loanDto.getBorrowerName() + "Debts: ";
+                String debtsInfo = "\n" + loanDto.getBorrowerName() + "'s debts:\n";
                 double debtAmount = 0;
                 int numOfDebts = 0;
                 for(Debt debt: loanDto.getDebts()){
@@ -642,7 +649,7 @@ public class Menu {
                 intAmount = Integer.parseInt(amount);
                 if (intAmount > 0) {
                     customer.selfTransaction(-intAmount);
-                    System.out.println("The deposit made successfully, the new customer's account balance: " + customer.getBalance() + "\n");
+                    System.out.println("The withdraw made successfully, the new customer's account balance: " + customer.getBalance() + "\n");
                     break;
                 } else {
                     System.out.println("The amount for a withdraw must be a positive integer!, please enter amount again:");

@@ -43,7 +43,7 @@ public class Debt implements Comparable<Debt> {
     @Override
     public String toString() {
         return "Debt{" +
-                "to customer:" + toCustomer +
+                "to customer:" + toCustomer.getName() +
                 ", amount:" + amount +
                 '}';
     }

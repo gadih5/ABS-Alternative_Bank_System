@@ -3,6 +3,7 @@ package bank;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 
 import bank.exception.*;
 
@@ -264,27 +265,34 @@ public class Loan {
         return uncompletedTransactions;
     }
 
-    public void update() throws NegativeBalanceException {
-        if(this.isActive)
-            this.remainTimeUnit--;
-        if(this.status==status.Risk){
-            Collections.sort(uncompletedTransactions);
-            for(Debt debt:uncompletedTransactions){
-                if(debt.getAmount() <= this.getBorrower().getBalance()){
-                    LoanTransaction newLoanTransaction = new LoanTransaction(this.borrower, debt.getToCustomer(), debt.getFundPart(), debt.getInterestPart());
-                    uncompletedTransactions.remove(debt);
-                    transactions.add(newLoanTransaction);
-                }
-                if(uncompletedTransactions.isEmpty())
-                    break;
+    private void payDebts(ArrayList<Debt> debts) throws NegativeBalanceException{
+        for(Debt debt:debts) {
+            if (debt.getAmount() <= this.getBorrower().getBalance()) {
+                LoanTransaction newLoanTransaction = new LoanTransaction(this.borrower, debt.getToCustomer(), debt.getFundPart(), debt.getInterestPart());
+                debts.remove(debt);
+                transactions.add(newLoanTransaction);
+                this.uncompletedTransactions = debts;
+                payDebts(uncompletedTransactions);
+                break;
             }
-            if(this.uncompletedTransactions.isEmpty()){
+            if (uncompletedTransactions.isEmpty()) {
                 setStatus(Status.Active);
+                break;
             }
         }
+    }
+
+
+    public void update() throws NegativeBalanceException {
+        if (this.isActive)
+            this.remainTimeUnit--;
 
         if(this.isActive && (remainTimeUnit >= 0 && ((Bank.getGlobalTimeUnit() - startTimeUnit)%paymentFrequency==0 || paymentFrequency == 1)))
         {
+            if (this.status == status.Risk) {
+                Collections.sort(uncompletedTransactions);
+                payDebts(uncompletedTransactions);
+            }
             for(Fraction fraction: fractions)
             {
                 LoanTransaction newLoanTransaction = null;
@@ -310,7 +318,7 @@ public class Loan {
         this.updateLoanDto();
     }
 
-    void updateLoanDto(){
+    public void updateLoanDto(){
         this.loanDto = new LoanDto(this);
     }
 }
