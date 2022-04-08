@@ -275,6 +275,8 @@ public class Loan {
                     uncompletedTransactions.remove(debt);
                     transactions.add(newLoanTransaction);
                 }
+                if(uncompletedTransactions.isEmpty())
+                    break;
             }
             if(this.uncompletedTransactions.isEmpty()){
                 setStatus(Status.Active);
@@ -296,7 +298,8 @@ public class Loan {
 
                 } catch (NegativeBalanceException e) {
                    uncompletedTransactions.add(new Debt(fraction.getCustomer(),fraction.getAmount()/(totalTimeUnit/paymentFrequency),fraction.getAmount() * interestPercent /(totalTimeUnit/paymentFrequency)));
-                   throw new NegativeBalanceException("Negative Balance " + this.getBorrowerName() +" to "+fraction.getCustomerName());
+                   setStatus(Status.Risk);
+                   throw new NegativeBalanceException("Negative Balance: " + this.getBorrowerName() +"'s account not have enough balance pay to "+fraction.getCustomerName() +" for \"" + getLoanName() +"\" loan!");
                 }
 
             }

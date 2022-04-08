@@ -134,9 +134,11 @@ public class Menu {
                         if(perLoanInvest > loan.getAmountToComplete()){
                             perLoanInvest = loan.getAmountToComplete();
                             loan.addLoaner(customer, perLoanInvest);
+                            System.out.println(customer.getName() + " is successfully invest " + perLoanInvest + " in \"" +loan.getLoanName()+"\" loan.");
                         }
                         else {
                             loan.addLoaner(customer, perLoanInvest);
+                            System.out.println(customer.getName() + " is successfully invest " + perLoanInvest + " in \"" +loan.getLoanName()+"\" loan.");
                         }
                     } catch (NegativeBalanceException e) {
                         System.out.println(e.toString());
