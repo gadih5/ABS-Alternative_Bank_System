@@ -2,7 +2,9 @@ package bank;
 
 import bank.exception.NegativeBalanceException;
 
-public class LoanTransaction {
+import java.io.Serializable;
+
+public class LoanTransaction implements Serializable {
     private Transaction transaction;
     private double fundPart;
     private double interestPart;

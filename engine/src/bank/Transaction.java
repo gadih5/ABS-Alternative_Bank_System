@@ -2,7 +2,9 @@ package bank;
 import bank.Customer;
 import bank.exception.NegativeBalanceException;
 
-public class Transaction {
+import java.io.Serializable;
+
+public class Transaction implements Serializable {
     private Customer toCustomer;
     private double amount; //positive value
     private int timeUnit;

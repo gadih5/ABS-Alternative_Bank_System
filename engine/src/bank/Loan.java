@@ -1,12 +1,13 @@
 package bank;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
 import bank.exception.*;
 
-public class Loan {
+public class Loan implements Serializable {
     private final double startLoanAmount;
     private final String loanName;
     private Customer borrower;

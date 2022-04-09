@@ -1,8 +1,9 @@
 package bank;
 
+import java.io.Serializable;
 import java.util.Collection;
 
-public class CustomerDto {
+public class CustomerDto implements Serializable {
     private String name;
     private Collection<Transaction> transactions;
     private Collection<Loan> ingoingLoans;

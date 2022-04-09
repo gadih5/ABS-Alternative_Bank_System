@@ -1,6 +1,8 @@
 package bank;
 
-public class Debt implements Comparable<Debt> {
+import java.io.Serializable;
+
+public class Debt implements Comparable<Debt>, Serializable {
     private Customer toCustomer;
     private double fundPart;
     private double interestPart;

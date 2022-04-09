@@ -2,10 +2,11 @@ package bank;
 
 import bank.exception.*;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class Customer {
+public class Customer implements Serializable {
     private final String name;
     private double balance;
     private Collection transactions;

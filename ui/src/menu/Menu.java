@@ -1,6 +1,6 @@
 package menu;
 
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -28,6 +28,8 @@ public class Menu {
         System.out.println("6)Inlay to a loan");
         System.out.println("7)Move the timeline");
         System.out.println("8)Exit");
+        System.out.println("9)Create serialize file");
+        System.out.println("10)Load serialize file");
 
         this.menuController();
     }
@@ -108,6 +110,14 @@ public class Menu {
                 case "8":
                     System.out.println("Thank you for using ABS, cya next time!");
                     System.exit(0);
+                    break;
+                case "9":
+                    SerlizeBank("stam");
+                    this.run();
+                    break;
+                case "10":
+                    DeSerlizeBank("stam");
+                    this.run();
                     break;
                 default:
                     System.out.println("Must be a number between 1 to 8, please enter your choice again:\n");
@@ -695,5 +705,93 @@ public class Menu {
 
         Customer customer = myBank.getCustomers().get(intChoice - 1);
         return customer;
+    }
+
+    private void  SerlizeBank(String path){
+        boolean succeed = false;
+
+        String command = "";
+        String filePath;
+        Scanner obj = new Scanner(System.in);
+
+        while (!succeed) {
+            if(command.equals("")) {
+                System.out.println("Please enter a path to Load file path including The name that end with ser for Exmple c:\\mensh\\file.ser:");
+                filePath = obj.nextLine();
+            }else{
+                filePath=command;
+            }
+            try {
+                if(!filePath.endsWith(".ser")){
+
+
+                    FileOutputStream fileOut =
+                        new FileOutputStream(filePath);
+                ObjectOutputStream out = new ObjectOutputStream(fileOut);
+                out.writeObject(myBank);
+                out.close();
+                fileOut.close();
+
+                succeed = true;
+            } catch (FileNotFoundException e) {
+                System.out.println("File not found! Please try again or press 'Q' to return to the main menu..");
+                command = obj.nextLine();
+                if (command.equals("q") || command.equals('Q')) {
+                    break;
+                }
+            } catch (NotSerException e) {
+                System.out.println("Not ser file! Please try again or press 'Q' to return to the main menu..");
+                command = obj.nextLine();
+                if (command.equals("q") || command.equals('Q')) {
+                    break;
+                }
+            } catch (Exception b) {
+                System.out.println("Something went wrong! Please try again or press 'Q' to return to the main menu..");
+                command = obj.nextLine();
+                if (command.equals("q") || command.equals('Q')) {
+                    break;
+                }
+            }
+        }
+
+        try {
+
+            System.out.printf("Serialized data is saved in /tmp/employee.ser");
+        } catch (IOException i) {
+            i.printStackTrace();
+        }
+
+    }
+    private void  DeSerlizeBank(String path){
+        Bank bank=null;
+        try {
+            FileInputStream fileIn = new FileInputStream("C:\\Users\\amits\\IdeaProjects\\ABS-Alternative_Bank_System\\engine\\src\\resources\\s.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            bank = (Bank) in.readObject();
+            in.close();
+            fileIn.close();
+            if(bank!=null){
+                {
+                    myBank=bank;
+                }
+            }
+        } catch (IOException i) {
+            i.printStackTrace();
+            return;
+        } catch (ClassNotFoundException c) {
+            System.out.println("class not found");
+            return;
+        }
+
+
+    }
+
+
+   private String getSerializePath() {
+
+
+
+
+        return myXml;
     }
 }

@@ -4,9 +4,10 @@ import bank.exception.*;
 import bank.xml.generated.AbsDescriptor;
 import bank.xml.generated.*;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class Bank {
+public class Bank  implements Serializable {
     protected static int globalTimeUnit = 1;
     private Collection<Loan> loans = new ArrayList<>();
     private ArrayList<Customer> customers = new ArrayList<>();

@@ -1,8 +1,9 @@
 package bank;
 
+import java.io.Serializable;
 import java.util.Collection;
 
-public class LoanDto {
+public class LoanDto implements Serializable {
     private String loanName;
     private String borrowerName;
     private Status status;

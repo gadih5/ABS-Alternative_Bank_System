@@ -1,6 +1,9 @@
 package bank;
 import bank.Customer;
-public class Fraction {
+
+import java.io.Serializable;
+
+public class Fraction implements Serializable {
     private Customer customer;
     private double amount;
 
