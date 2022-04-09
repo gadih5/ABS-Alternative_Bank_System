@@ -15,6 +15,7 @@ import static java.lang.Math.abs;
 
 public class Menu {
     public Bank myBank=new Bank();
+
     private boolean xmlLoadedSuccessfully = false;
     public void run(){
         System.out.println("The current time is: " + Bank.getGlobalTimeUnit());

@@ -12,6 +12,9 @@ public class Bank {
     private ArrayList<Customer> customers = new ArrayList<>();
     private Set<String> category=null;
 
+    public Bank (){
+        globalTimeUnit =1;
+    }
     public static int getGlobalTimeUnit() {
         return globalTimeUnit;
     }
