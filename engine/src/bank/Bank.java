@@ -9,12 +9,13 @@ import java.util.*;
 
 public class Bank  implements Serializable {
     protected static int globalTimeUnit = 1;
+    private int syncGlobalTimeUnit = 1;
     private Collection<Loan> loans = new ArrayList<>();
     private ArrayList<Customer> customers = new ArrayList<>();
     private Set<String> category=null;
 
     public Bank (){
-        globalTimeUnit =1;
+        globalTimeUnit = 1;
     }
     public static int getGlobalTimeUnit() {
         return globalTimeUnit;
@@ -24,9 +25,14 @@ public class Bank  implements Serializable {
         Bank.globalTimeUnit = globalTimeUnit;
     }
 
+    public int getSyncGlobalTimeUnit() {
+        return syncGlobalTimeUnit;
+    }
+
     public void updateGlobalTimeUnit() throws NegativeBalanceException {
         int curr = getGlobalTimeUnit();
         setGlobalTimeUnit(++curr);
+        syncGlobalTimeUnit++;
         for (Loan loan : loans) {
             loan.update();
         }

@@ -9,14 +9,12 @@ import bank.exception.*;
 import bank.xml.XmlReader;
 
 
-import javax.xml.bind.JAXBException;
-
 import static java.lang.Math.abs;
 
 public class Menu {
     public Bank myBank=new Bank();
 
-    private boolean xmlLoadedSuccessfully = false;
+    private boolean bankLoadedSuccessfully = false;
     public void run(){
         System.out.println("The current time is: " + Bank.getGlobalTimeUnit());
         System.out.println("Please choose a command by number:");
@@ -53,7 +51,7 @@ public class Menu {
                     break;
 
                 case "2":
-                    if(!xmlLoadedSuccessfully)
+                    if(!bankLoadedSuccessfully)
                         System.out.println("No Xml file is loaded, please load first a Xml file!\n");
                     else {
                         this.printLoanInfo(myBank.getLoansDto());
@@ -62,7 +60,7 @@ public class Menu {
                     break;
 
                 case "3":
-                    if(!xmlLoadedSuccessfully)
+                    if(!bankLoadedSuccessfully)
                         System.out.println("No Xml file is loaded, please load first a Xml file!\n");
                     else {
                         this.printCustomerInfo(myBank.getCustomersDto());
@@ -71,7 +69,7 @@ public class Menu {
                     break;
 
                 case "4":
-                    if(!xmlLoadedSuccessfully)
+                    if(!bankLoadedSuccessfully)
                         System.out.println("No Xml file is loaded, please load first a Xml file!\n");
                     else {
                         this.depositMoneyToCustomer();
@@ -80,7 +78,7 @@ public class Menu {
                     break;
 
                 case "5":
-                    if(!xmlLoadedSuccessfully)
+                    if(!bankLoadedSuccessfully)
                         System.out.println("No Xml file is loaded, please load first a Xml file!\n");
                     else{
                         chooseCustomerToWithdraw();
@@ -89,7 +87,7 @@ public class Menu {
                     break;
 
                 case "6":
-                    if(!xmlLoadedSuccessfully)
+                    if(!bankLoadedSuccessfully)
                         System.out.println("No Xml file is loaded, please load first a Xml file!\n");
 
                 else{
@@ -99,7 +97,7 @@ public class Menu {
                     break;
 
                 case "7":
-                    if(!xmlLoadedSuccessfully)
+                    if(!bankLoadedSuccessfully)
                         System.out.println("No Xml file is loaded, please load first a Xml file!\n");
                     else{
                         moveTimeLine();
@@ -112,15 +110,19 @@ public class Menu {
                     System.exit(0);
                     break;
                 case "9":
-                    SerlizeBank("stam");
+                    if(!bankLoadedSuccessfully)
+                        System.out.println("No Xml file is loaded, please load first a Xml file!\n");
+                    else {
+                        SerializeBank();
+                    }
                     this.run();
                     break;
                 case "10":
-                    DeSerlizeBank("stam");
+                    DeSerializeBank();
                     this.run();
                     break;
                 default:
-                    System.out.println("Must be a number between 1 to 8, please enter your choice again:\n");
+                    System.out.println("Must be a number between 1 to 10, please enter your choice again:\n");
             }
         }while(true);
     }
@@ -433,6 +435,7 @@ public class Menu {
 
     private void xmlReadAndLoadHandler() {
         boolean res = false;
+        int currGlobalTimeUnit = Bank.getGlobalTimeUnit();
         Bank newBank = new Bank();
         while(!res) {
             try {
@@ -457,6 +460,7 @@ public class Menu {
             } catch (UndividedPaymentFrequencyException e) {
                 System.out.println(e.toString());
             } catch (ExitXmlLoadFileException e) {
+                Bank.setGlobalTimeUnit(currGlobalTimeUnit);
                 return;
             } catch (NotInCategoryException e) {
                 System.out.println(e.toString());
@@ -466,7 +470,7 @@ public class Menu {
         }
 
         System.out.println("File loaded successfully!\n");
-        xmlLoadedSuccessfully = true;
+        bankLoadedSuccessfully = true;
         myBank = newBank;
     }
 
@@ -707,40 +711,37 @@ public class Menu {
         return customer;
     }
 
-    private void  SerlizeBank(String path){
+    private void SerializeBank(){
         boolean succeed = false;
-
         String command = "";
-        String filePath;
+        String filePath="";
         Scanner obj = new Scanner(System.in);
-
         while (!succeed) {
             if(command.equals("")) {
-                System.out.println("Please enter a path to Load file path including The name that end with ser for Exmple c:\\mensh\\file.ser:");
+                System.out.println("Please enter a path to load file path including The name that end with ser for Example c:\\menash\\file.ser:");
                 filePath = obj.nextLine();
             }else{
                 filePath=command;
             }
             try {
-                if(!filePath.endsWith(".ser")){
-
-
-                    FileOutputStream fileOut =
-                        new FileOutputStream(filePath);
-                ObjectOutputStream out = new ObjectOutputStream(fileOut);
-                out.writeObject(myBank);
-                out.close();
-                fileOut.close();
-
-                succeed = true;
+                if(filePath.endsWith(".ser")) {
+                    FileOutputStream fileOut = new FileOutputStream(filePath);
+                    ObjectOutputStream out = new ObjectOutputStream(fileOut);
+                    out.writeObject(myBank);
+                    out.close();
+                    fileOut.close();
+                    succeed = true;
+                    System.out.println("Serialized data is saved in " + filePath);
+                }
+                else{
+                    System.out.println("This is not a Ser file path!, Please try again or press 'Q' to return to the main menu..");
+                    command = obj.nextLine();
+                    if (command.equals("q") || command.equals('Q')) {
+                        break;
+                    }
+                }
             } catch (FileNotFoundException e) {
                 System.out.println("File not found! Please try again or press 'Q' to return to the main menu..");
-                command = obj.nextLine();
-                if (command.equals("q") || command.equals('Q')) {
-                    break;
-                }
-            } catch (NotSerException e) {
-                System.out.println("Not ser file! Please try again or press 'Q' to return to the main menu..");
                 command = obj.nextLine();
                 if (command.equals("q") || command.equals('Q')) {
                     break;
@@ -753,45 +754,60 @@ public class Menu {
                 }
             }
         }
-
-        try {
-
-            System.out.printf("Serialized data is saved in /tmp/employee.ser");
-        } catch (IOException i) {
-            i.printStackTrace();
-        }
-
     }
-    private void  DeSerlizeBank(String path){
-        Bank bank=null;
-        try {
-            FileInputStream fileIn = new FileInputStream("C:\\Users\\amits\\IdeaProjects\\ABS-Alternative_Bank_System\\engine\\src\\resources\\s.ser");
-            ObjectInputStream in = new ObjectInputStream(fileIn);
-            bank = (Bank) in.readObject();
-            in.close();
-            fileIn.close();
-            if(bank!=null){
-                {
-                    myBank=bank;
+    private void DeSerializeBank() {
+        Bank bank = null;
+
+        boolean succeed = false;
+        String command = "";
+        String filePath = "";
+        Scanner obj = new Scanner(System.in);
+        while (!succeed) {
+            if (command.equals("")) {
+                System.out.println("Please enter a path to load file path including The name that end with ser for Example c:\\menash\\file.ser:");
+                filePath = obj.nextLine();
+            } else {
+                filePath = command;
+            }
+            try {
+                if (filePath.endsWith(".ser")) {
+                    FileInputStream fileIn = new FileInputStream(filePath);
+                    ObjectInputStream in = new ObjectInputStream(fileIn);
+                    bank = (Bank) in.readObject();
+                    in.close();
+                    fileIn.close();
+                    succeed = true;
+                    if (bank != null) {
+                        {
+                            myBank = bank;
+                            Bank.setGlobalTimeUnit(myBank.getSyncGlobalTimeUnit());
+                            System.out.println("File loaded successfully!");
+                            bankLoadedSuccessfully = true;
+                        }
+                    }
+                } else {
+                    System.out.println("This is not a Ser file path!, Please try again or press 'Q' to return to the main menu..");
+                    command = obj.nextLine();
+                    if (command.equals("q") || command.equals('Q')) {
+                        break;
+                    }
+                }
+            } catch (FileNotFoundException e) {
+                System.out.println("File not found! Please try again or press 'Q' to return to the main menu..");
+                command = obj.nextLine();
+                if (command.equals("q") || command.equals('Q')) {
+                    break;
+                }
+            } catch (ClassNotFoundException c) {
+                System.out.println("class not found");
+                return;
+            } catch (Exception b) {
+                System.out.println("Something went wrong! Please try again or press 'Q' to return to the main menu..");
+                command = obj.nextLine();
+                if (command.equals("q") || command.equals('Q')) {
+                    break;
                 }
             }
-        } catch (IOException i) {
-            i.printStackTrace();
-            return;
-        } catch (ClassNotFoundException c) {
-            System.out.println("class not found");
-            return;
         }
-
-
-    }
-
-
-   private String getSerializePath() {
-
-
-
-
-        return myXml;
     }
 }
