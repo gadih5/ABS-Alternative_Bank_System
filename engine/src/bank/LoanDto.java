@@ -25,6 +25,8 @@ public class LoanDto implements Serializable {
     private double amountToComplete;
     private Collection<Debt> debts;
 
+
+
     public LoanDto(Loan loan) {
         this.loanName = loan.getLoanName();
         this.borrowerName = loan.getBorrowerName();
@@ -64,6 +66,10 @@ public class LoanDto implements Serializable {
     }
     public String getLoanName() {
         return loanName;
+    }
+
+    public double getInterestPrecent() {
+        return interestPrecent;
     }
 
     public String getBorrowerName() {

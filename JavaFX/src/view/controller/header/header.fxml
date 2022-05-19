@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+
+
+<HBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="40.0" minWidth="600.0" prefHeight="40.0" prefWidth="600.0" spacing="10.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.controller.header.HeaderController">
+   <children>
+      <ComboBox fx:id="userComboBox" disable="true" maxHeight="35.0" maxWidth="110.0" minHeight="35.0" minWidth="110.0" onAction="#chooseUser" prefHeight="35.0" prefWidth="110.0" promptText="Choose User">
+         <HBox.margin>
+            <Insets right="5.0" />
+         </HBox.margin>
+      </ComboBox>
+      <Label fx:id="path_label" maxHeight="30.0" maxWidth="1.7976931348623157E308" minHeight="30.0" minWidth="340.0" prefHeight="30.0" prefWidth="1920.0" text="Please choose file first" />
+      <Label fx:id="yaz_label" alignment="CENTER" maxHeight="35.0" maxWidth="100.0" minHeight="35.0" minWidth="100.0" prefHeight="35.0" prefWidth="100.0" text="YAZ" textAlignment="RIGHT">
+         <padding>
+            <Insets left="5.0" right="5.0" />
+         </padding>
+      </Label>
+   </children>
+   <padding>
+      <Insets left="5.0" right="5.0" />
+   </padding>
+</HBox>
