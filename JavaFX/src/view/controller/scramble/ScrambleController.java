@@ -5,7 +5,6 @@ import javafx.scene.control.Slider;
 import view.controller.customer.CustomerController;
 
 public class ScrambleController {
-
     @FXML
     private Slider sumInvestSlider;
 

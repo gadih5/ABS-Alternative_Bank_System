@@ -1,51 +1,33 @@
 package view.controller.admin;
 
 import bank.CustomerDto;
-import bank.Loan;
 import bank.LoanDto;
 import bank.exception.*;
 import bank.xml.XmlReader;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import view.controller.app.AppController;
-import view.controller.body.BodyController;
-import view.controller.header.HeaderController;
-
-import javax.swing.*;
 import javax.xml.bind.JAXBException;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Collection;
 
-import static view.controller.header.HeaderController.myBank;
-
-public class AdminController implements BodyController {
+public class AdminController{
+    @FXML
+    private Button increaseYazBtn;
+    @FXML
+    private TableView<CustomerDto> customersTable;
+    @FXML
+    private TableView<LoanDto> loansTable;
     private AppController appController;
     FileChooser fileChooser = new FileChooser();
-
-
-    @FXML
-    private Button increase_yaz_btn;
-
-    @FXML
-    private TableView<CustomerDto> customers_table;
-
-    @FXML
-    private Button load_file_btn;
-
-    @FXML
-    private TableView<LoanDto> loans_table;
-
 
     @FXML
     void makeAdminLoansTable() {
@@ -74,11 +56,11 @@ public class AdminController implements BodyController {
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
 
 
-        loans_table.getColumns().addAll(nameColumn, borrowerNameColumn, reasonColumn, loanSumColumn, totalLoanTimeColumn, interestColumn, paymentFrequencyColumn, statusColumn);
-        Collection<LoanDto> loansDto = myBank.getLoansDto();
-        loans_table.setItems(null);
+        loansTable.getColumns().addAll(nameColumn, borrowerNameColumn, reasonColumn, loanSumColumn, totalLoanTimeColumn, interestColumn, paymentFrequencyColumn, statusColumn);
+        Collection<LoanDto> loansDto = appController.getLoansDto();
+        loansTable.setItems(null);
         ObservableList<LoanDto> listOfLoansDto = FXCollections.observableArrayList(loansDto);
-        loans_table.setItems(listOfLoansDto);
+        loansTable.setItems(listOfLoansDto);
     }
 
     void makeAdminCustomersTable() {
@@ -113,21 +95,22 @@ public class AdminController implements BodyController {
         numOfFinishOutgoingColumn.setCellValueFactory(new PropertyValueFactory<>("numOfFinishOutgoing"));
 
 
-        customers_table.getColumns().addAll(nameColumn, balanceColumn, numOfPendingIngoingColumn, numOfActiveIngoingColumn, numOfRiskIngoingColumn, numOfFinishIngoingColumn, numOfPendingOutgoingColumn, numOfActiveOutgoingColumn, numOfRiskOutgoingColumn, numOfFinishOutgoingColumn);
-        Collection<CustomerDto> customersDto = myBank.getCustomersDto();
+        customersTable.getColumns().addAll(nameColumn, balanceColumn, numOfPendingIngoingColumn, numOfActiveIngoingColumn, numOfRiskIngoingColumn, numOfFinishIngoingColumn, numOfPendingOutgoingColumn, numOfActiveOutgoingColumn, numOfRiskOutgoingColumn, numOfFinishOutgoingColumn);
+        Collection<CustomerDto> customersDto = appController.getCustomersDto();
         ObservableList<CustomerDto> listOfCustomersDto = FXCollections.observableArrayList(customersDto);
-        customers_table.setItems(listOfCustomersDto);
+        customersTable.setItems(listOfCustomersDto);
     }
 
     @FXML
     public void showAdminScreen() {
-
-        loans_table.getColumns().clear();
-        customers_table.getColumns().clear();
-        loans_table.getItems().clear();
+        //TODO clear tables!!!!!!!
+        loansTable.getItems().clear();
+        loansTable.getColumns().clear();
+        customersTable.getColumns().clear();
+        loansTable.getItems().clear();
         makeAdminLoansTable();
         makeAdminCustomersTable();
-        increase_yaz_btn.setDisable(false);
+        increaseYazBtn.setDisable(false);
     }
 
 
@@ -138,69 +121,31 @@ public class AdminController implements BodyController {
         String filePath = file.getPath();
         if (filePath != null) {
             try {
-                XmlReader myXml = null;
-                try {
-                    myXml = new XmlReader(Paths.get(filePath));
-                } catch (FileNotFoundException e) {
+                XmlReader myXml = new XmlReader(Paths.get(filePath));
+                appController.loadXmlData(myXml.getDescriptor());
+                showAdminScreen();
+                appController.initYazLabel();
+                increaseYazBtn.setDisable(false);
+                appController.updatePathLabel(filePath);
+                appController.addUsers();
+                appController.setUserComboBoxEnable();
+                } catch (FileNotFoundException e) { //TODO add ERROR Dialogs
                     e.printStackTrace();
                 } catch (NotXmlException e) {
                     e.printStackTrace();
                 } catch (JAXBException e) {
                     e.printStackTrace();
-                }
-                try {
-                    try {
-                        myBank.loadXmlData(myXml.getDescriptor());
-                        showAdminScreen();
-                        appController.updateYazLabel("YAZ: " + myBank.getSyncGlobalTimeUnit());
-                        increase_yaz_btn.setDisable(false);
-                        appController.updatePathLabel(filePath);
-                        appController.addUsers();
-                        appController.setUserComboboxEnable();
-                    } catch (NegativeBalanceException e) {
-                        e.printStackTrace();
-                    } catch (UndefinedReasonException e) {
-                        e.printStackTrace();
-                    } catch (UndefinedCustomerException e) {
-                        e.printStackTrace();
-                    } catch (NegativeLoanSumException e) {
-                        e.printStackTrace();
-                    } catch (NegativeTotalTimeUnitException e) {
-                        e.printStackTrace();
-                    } catch (NegativeInterestPercentException e) {
-                        e.printStackTrace();
-                    } catch (NegativePaymentFrequencyException e) {
-                        e.printStackTrace();
-                    } catch (OverPaymentFrequencyException e) {
-                        e.printStackTrace();
-                    } catch (UndividedPaymentFrequencyException e) {
-                        e.printStackTrace();
-                    } catch (NotInCategoryException e) {
-                        e.printStackTrace();
-                    } catch (AlreadyExistCustomerException e) {
-                        e.printStackTrace();
-                    }
-
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
-        } else
+         else
             return;
     }
 
     public void moveTimeline(ActionEvent actionEvent) {
-        try {
-            myBank.updateGlobalTimeUnit();
-            appController.updateYazLabel("YAZ: " + String.valueOf(myBank.getSyncGlobalTimeUnit()));
-        } catch (NegativeBalanceException e) {
-            e.printStackTrace();
-        }
+        appController.updateYaz();
     }
-
 
     public void setMainController(AppController appController) {
         this.appController = appController;

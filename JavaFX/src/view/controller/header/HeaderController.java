@@ -1,47 +1,33 @@
 package view.controller.header;
 
-import bank.Bank;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ComboBox;
-import view.controller.admin.AdminController;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
 import view.controller.app.AppController;
 
-
 public class HeaderController {
-
-
     @FXML
-    private Label path_label;
-
+    private Label pathLabel;
     @FXML
-    private Label yaz_label;
-
+    private Label yazLabel;
     @FXML
     private ComboBox<String> userComboBox;
-
-
-
-    private AppController appController;
-    static public Bank myBank=new Bank();
-    @FXML private AdminController adminController;
-    FXMLLoader fxmlLoader = new FXMLLoader();
-
-
     @FXML
-    public void updatePathLabel(String s){
-        path_label.setText(s);
-    }
-
-    public void updateYazLabel(String s) {
-        yaz_label.setText(s);
-    }
+    private AppController appController;
+    @FXML
 
     public void setMainController(AppController appController) {
         this.appController = appController;
+    }
+
+    @FXML
+    public void updatePathLabel(String s){
+        pathLabel.setText(s);
+    }
+
+    public void updateYazLabel(int yaz) {
+        yazLabel.setText("YAZ: " + yaz);
     }
 
     public void addUserBtn(String user) {
@@ -52,16 +38,14 @@ public class HeaderController {
         String userName = userComboBox.getSelectionModel().getSelectedItem();
         if(userName == null)
             return;
-        if(userName.equals("Admin")){
+        if(userName.equals("Admin")) {
+            //TODO Show admin screen
         }
-        else{
+        else
             appController.changeBody(userName);
-        }
-
-
     }
 
-    public void setUserComboboxEnable() {
+    public void setUserComboBoxEnable() {
         userComboBox.setDisable(false);
     }
 
@@ -73,5 +57,9 @@ public class HeaderController {
 
     public void removeAllUsers() {
         userComboBox.getItems().clear();
+    }
+
+    public void initYazLabel() {
+        yazLabel.setText("YAZ: 1");
     }
 }

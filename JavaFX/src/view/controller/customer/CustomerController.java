@@ -1,24 +1,19 @@
 package view.controller.customer;
 
-
-
+import bank.Customer;
 import bank.CustomerDto;
 import javafx.fxml.FXML;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.GridPane;
-import view.controller.admin.AdminController;
 import view.controller.app.AppController;
 import view.controller.information.InformationController;
 import view.controller.payment.PaymentController;
 import view.controller.scramble.ScrambleController;
-
 import java.util.Collection;
 
-import static view.controller.header.HeaderController.myBank;
-
 public class CustomerController {
+    @FXML
     private AppController appController;
-
     @FXML
     private SplitPane paymentComponent;
     @FXML
@@ -32,10 +27,20 @@ public class CustomerController {
     @FXML
     private ScrambleController scrambleComponentController;
 
+    private CustomerDto selectedCustomer = null;
+
+    public void setMainController(AppController appController) {
+        this.appController = appController;
+    }
 
     @FXML
-    private AdminController adminComponentController;
-
+    public void initialize() {
+        if (informationComponentController != null && paymentComponentController != null && scrambleComponentController != null) {
+            informationComponentController.setMainController(this);
+            paymentComponentController.setMainController(this);
+            scrambleComponentController.setMainController(this);
+        }
+    }
 
     public void setPaymentComponentController(PaymentController paymentComponentController) {
         this.paymentComponentController = paymentComponentController;
@@ -51,31 +56,33 @@ public class CustomerController {
         this.scrambleComponentController = scrambleComponentController;
         scrambleComponentController.setMainController(this);
     }
-    @FXML
-    public void initialize() {
-        if (informationComponentController != null && paymentComponentController != null && scrambleComponentController != null) {
-            informationComponentController.setMainController(this);
-            paymentComponentController.setMainController(this);
-            scrambleComponentController.setMainController(this);
-        }
-    }
 
-    public void setMainController(AppController appController) {
-        this.appController = appController;
+    public CustomerDto getSelectedCustomer() {
+        return selectedCustomer;
     }
 
     public void loadCustomerDetails(String userName) {
-        Collection<CustomerDto> customersDto = myBank.getCustomersDto();
-        CustomerDto selectedCustomer = null;
+        Collection<CustomerDto> customersDto = appController.getCustomersDto();
         for(CustomerDto customerDto : customersDto){
             if(customerDto.getName().equals(userName))
                 selectedCustomer = customerDto;
         }
         if(selectedCustomer == null)
             return;
+        else if(userName.equals("Admin")){
+            //TODO switch to admin screen
+        }
+        else { //Bank's customer
+            informationComponentController.showInfoTable(selectedCustomer);
 
+        }
+    }
 
-        informationComponentController.showInfoTable(selectedCustomer);
+    public Collection<Customer> getCustomers() {
+        return appController.getCustomers();
+    }
 
+    public Collection<CustomerDto> getCustomersDto() {
+        return appController.getCustomersDto();
     }
 }

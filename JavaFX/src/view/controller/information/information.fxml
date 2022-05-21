@@ -36,8 +36,8 @@
                <bottom>
                   <HBox alignment="BOTTOM_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="40.0" minWidth="210.0" prefHeight="40.0" prefWidth="210.0" spacing="30.0" BorderPane.alignment="CENTER">
                      <children>
-                        <Button fx:id="chargeBtn" maxHeight="28.0" maxWidth="80.0" minHeight="28.0" minWidth="80.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="80.0" text="Charge" />
-                        <Button fx:id="withdrowBtn" maxHeight="28.0" maxWidth="80.0" minHeight="28.0" minWidth="80.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="80.0" text="Withdrow" />
+                        <Button fx:id="chargeBtn" maxHeight="28.0" maxWidth="80.0" minHeight="28.0" minWidth="80.0" mnemonicParsing="false" onAction="#chargeMoney" prefHeight="28.0" prefWidth="80.0" text="Charge" />
+                        <Button fx:id="withdrawBtn" maxHeight="28.0" maxWidth="80.0" minHeight="28.0" minWidth="80.0" mnemonicParsing="false" onAction="#withdrawMoney" prefHeight="28.0" prefWidth="80.0" text="Withdrow" />
                      </children>
                      <BorderPane.margin>
                         <Insets />
@@ -51,9 +51,9 @@
                   <TableView fx:id="accountTransTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="350.0" minWidth="210.0" prefHeight="350.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
                </center>
                <top>
-                  <Label fx:id="balanceLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" text="Balance:" BorderPane.alignment="CENTER">
+                  <Label fx:id="balanceLabel" alignment="TOP_CENTER" maxWidth="1.7976931348623157E308" prefHeight="16.0" prefWidth="210.0" text="Balance:" BorderPane.alignment="CENTER">
                      <font>
-                        <Font size="14.0" />
+                        <Font size="18.0" />
                      </font></Label>
                </top>
             </BorderPane>
