@@ -38,9 +38,6 @@ public class HeaderController {
         String userName = userComboBox.getSelectionModel().getSelectedItem();
         if(userName == null)
             return;
-        if(userName.equals("Admin")) {
-            //TODO Show admin screen
-        }
         else
             appController.changeBody(userName);
     }

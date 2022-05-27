@@ -2,14 +2,15 @@ package view.controller.customer;
 
 import bank.Customer;
 import bank.CustomerDto;
+import bank.LoanDto;
 import javafx.fxml.FXML;
 import javafx.scene.control.SplitPane;
-import javafx.scene.layout.GridPane;
 import view.controller.app.AppController;
 import view.controller.information.InformationController;
 import view.controller.payment.PaymentController;
 import view.controller.scramble.ScrambleController;
 import java.util.Collection;
+import java.util.Set;
 
 public class CustomerController {
     @FXML
@@ -23,7 +24,7 @@ public class CustomerController {
     @FXML
     private InformationController informationComponentController;
     @FXML
-    private GridPane scrambleComponent;
+    private SplitPane scrambleComponent;
     @FXML
     private ScrambleController scrambleComponentController;
 
@@ -69,12 +70,9 @@ public class CustomerController {
         }
         if(selectedCustomer == null)
             return;
-        else if(userName.equals("Admin")){
-            //TODO switch to admin screen
-        }
         else { //Bank's customer
             informationComponentController.showInfoTable(selectedCustomer);
-
+            scrambleComponentController.loadScrambleInfo(selectedCustomer);
         }
     }
 
@@ -84,5 +82,25 @@ public class CustomerController {
 
     public Collection<CustomerDto> getCustomersDto() {
         return appController.getCustomersDto();
+    }
+
+    public Set<String> getCategories() {
+        return appController.getCategories();
+    }
+
+    public int calcMaxInterestPercent(CustomerDto selectedCustomer) {
+        return appController.calcMaxInterestPercent(selectedCustomer);
+    }
+
+    public int calcMaxTotalYaz(CustomerDto selectedCustomer) {
+        return appController.calcMaxTotalYaz(selectedCustomer);
+    }
+
+    public int getNumOfLoans() {
+        return appController.getNumOfLoans();
+    }
+
+    public Collection<LoanDto> getLoansDto(int sumInvest, Set<String> chosenCategories, int minInterestPercent, int minTotalYaz, int maxOpenLoans, int maxOwnershipPercent, CustomerDto selectedCustomer) {
+        return appController.getLoansDtoForScramble(sumInvest,chosenCategories,minInterestPercent,minTotalYaz,maxOpenLoans,maxOwnershipPercent, selectedCustomer);
     }
 }

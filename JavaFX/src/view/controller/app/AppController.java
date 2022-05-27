@@ -8,6 +8,7 @@ import bank.exception.*;
 import bank.xml.generated.AbsDescriptor;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -18,6 +19,8 @@ import view.controller.header.HeaderController;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class AppController {
     @FXML
@@ -77,22 +80,31 @@ public class AppController {
     }
 
     public void changeBody(String userName) {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader();
-            URL url = getClass().getResource("../customer/customer.fxml");
-            fxmlLoader.setLocation(url);
-            customerComponent = fxmlLoader.load(url.openStream());
-            customerComponentController = fxmlLoader.getController();
-            bodyAnchorPane.getChildren().set(0,customerComponent);
-            AnchorPane.setBottomAnchor(customerComponent,0.0);
-            AnchorPane.setLeftAnchor(customerComponent,0.0);
-            AnchorPane.setRightAnchor(customerComponent,0.0);
-            AnchorPane.setTopAnchor(customerComponent,0.0);
-            setCustomerComponentController(customerComponentController);
-            customerComponentController.loadCustomerDetails(userName);
-            //TODO load scramble tab & payment tab
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (userName.equals("Admin")) {
+            bodyAnchorPane.getChildren().set(0, adminComponent);
+            AnchorPane.setBottomAnchor(adminComponent, 0.0);
+            AnchorPane.setLeftAnchor(adminComponent, 0.0);
+            AnchorPane.setRightAnchor(adminComponent, 0.0);
+            AnchorPane.setTopAnchor(adminComponent, 0.0);
+            adminComponentController.showAdminScreen();
+        } else {
+            try {
+                URL url = getClass().getResource("../customer/customer.fxml");
+                FXMLLoader fxmlLoader = new FXMLLoader();
+                fxmlLoader.setLocation(url);
+                customerComponent = fxmlLoader.load(url.openStream());
+                customerComponentController = fxmlLoader.getController();
+                bodyAnchorPane.getChildren().set(0, customerComponent);
+                AnchorPane.setBottomAnchor(customerComponent, 0.0);
+                AnchorPane.setLeftAnchor(customerComponent, 0.0);
+                AnchorPane.setRightAnchor(customerComponent, 0.0);
+                AnchorPane.setTopAnchor(customerComponent, 0.0);
+                setCustomerComponentController(customerComponentController);
+                customerComponentController.loadCustomerDetails(userName);
+                //TODO load scramble tab & payment tab
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -109,32 +121,47 @@ public class AppController {
         headerComponentController.setUserComboBoxEnable();
     }
 
-    public void loadXmlData(AbsDescriptor descriptor) {
+    public boolean loadXmlData(AbsDescriptor descriptor){
+        boolean res = false;
+        Bank newBank = new Bank();
         try {
-            myBank.loadXmlData(descriptor);
+            newBank.loadXmlData(descriptor);
+            myBank = newBank;
+            res = true;
         } catch (NegativeBalanceException e) {
-            e.printStackTrace();
+            showErrorAlert("Negative Balance!");
         } catch (UndefinedReasonException e) {
-            e.printStackTrace();
+            showErrorAlert("Undefined Reason!");
         } catch (UndefinedCustomerException e) {
-            e.printStackTrace();
+            showErrorAlert("Undefined Customer!");
         } catch (NegativeLoanSumException e) {
-            e.printStackTrace();
+            showErrorAlert("Negative Loan Sum!");
         } catch (NegativeTotalTimeUnitException e) {
-            e.printStackTrace();
+            showErrorAlert("Negative Total YAZ!");
         } catch (NegativeInterestPercentException e) {
-            e.printStackTrace();
+            showErrorAlert("Negative Interest Percent!");
         } catch (NegativePaymentFrequencyException e) {
-            e.printStackTrace();
+            showErrorAlert("Negative Payment Frequency!");
         } catch (OverPaymentFrequencyException e) {
-            e.printStackTrace();
+            showErrorAlert("Over Payment Frequency!");
         } catch (UndividedPaymentFrequencyException e) {
-            e.printStackTrace();
+            showErrorAlert("Undivided Payment Frequency!");
         } catch (NotInCategoryException e) {
-            e.printStackTrace();
+            showErrorAlert("Category is Missing!");
         } catch (AlreadyExistCustomerException e) {
-            e.printStackTrace();
+            showErrorAlert("Already Exist Customer!");
         }
+        finally {
+            return res;
+        }
+    }
+
+    private void showErrorAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error Dialog");
+        alert.setHeaderText("Error: "+ message);
+        alert.setContentText("Cant load this file, please try another file.");
+        alert.showAndWait();
     }
 
     public Collection<LoanDto> getLoansDto() {
@@ -151,5 +178,58 @@ public class AppController {
 
     public void initYazLabel() {
         headerComponentController.initYazLabel();
+    }
+
+    public void eraseBank() {
+        myBank = new Bank();
+    }
+
+    public Set<String> getCategories() {
+        return myBank.getCategory();
+    }
+
+    public int calcMaxInterestPercent(CustomerDto selectedCustomer) {
+        int res=0;
+        for(LoanDto loanDto:myBank.getLoansDto()){
+            if(loanDto.getInterestPercent() > res && !(loanDto.getBorrowerName().equals(selectedCustomer.getName())))
+                res = loanDto.getInterestPercent();
+        }
+        return res;
+    }
+
+    public int calcMaxTotalYaz(CustomerDto selectedCustomer) {
+        int res=0;
+        for(LoanDto loanDto:myBank.getLoansDto()){
+            if(loanDto.getTotalTimeUnit() > res && !(loanDto.getBorrowerName().equals(selectedCustomer.getName())))
+                res = loanDto.getTotalTimeUnit();
+        }
+        return res;
+    }
+
+    public int getNumOfLoans() {
+        return myBank.getLoans().size();
+    }
+
+    public Collection<LoanDto> getLoansDtoForScramble(int sumInvest, Set<String> chosenCategories, int minInterestPercent, int minTotalYaz, int maxOpenLoans, int maxOwnershipPercent, CustomerDto selectedCustomer) {
+        Set<LoanDto> validLoans = new HashSet<>();
+        for(LoanDto loanDto:myBank.getLoansDto()){
+            if(!(loanDto.getBorrowerName().equals(selectedCustomer.getName()))){
+                if(chosenCategories.contains(loanDto.getReason())){
+                    if(loanDto.getInterestPercent() <= minInterestPercent){
+                        if(loanDto.getTotalTimeUnit() <= minTotalYaz){
+                         //   if(loanDto.get)/////////////////////////////////////////////////////////////TODO this....
+                        }
+                    }
+                }
+            }
+
+
+
+
+        }
+
+
+    return validLoans;
+
     }
 }

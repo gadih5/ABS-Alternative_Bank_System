@@ -18,12 +18,12 @@
               <items>
                 <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="200.0" minWidth="390.0" prefHeight="200.0" prefWidth="390.0">
                      <children>
-                        <TableView maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="200.0" minWidth="390.0" prefHeight="200.0" prefWidth="390.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <TableView fx:id="borrowerLoansTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="200.0" minWidth="390.0" prefHeight="200.0" prefWidth="390.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>
                   </AnchorPane>
                 <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="200.0" minWidth="390.0" prefHeight="200.0" prefWidth="390.0">
                      <children>
-                        <TableView maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="200.0" minWidth="390.0" prefHeight="200.0" prefWidth="390.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <TableView fx:id="loanerLoansTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="200.0" minWidth="390.0" prefHeight="200.0" prefWidth="390.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>
                   </AnchorPane>
               </items>
@@ -37,7 +37,7 @@
                   <HBox alignment="BOTTOM_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="40.0" minWidth="210.0" prefHeight="40.0" prefWidth="210.0" spacing="30.0" BorderPane.alignment="CENTER">
                      <children>
                         <Button fx:id="chargeBtn" maxHeight="28.0" maxWidth="80.0" minHeight="28.0" minWidth="80.0" mnemonicParsing="false" onAction="#chargeMoney" prefHeight="28.0" prefWidth="80.0" text="Charge" />
-                        <Button fx:id="withdrawBtn" maxHeight="28.0" maxWidth="80.0" minHeight="28.0" minWidth="80.0" mnemonicParsing="false" onAction="#withdrawMoney" prefHeight="28.0" prefWidth="80.0" text="Withdrow" />
+                        <Button fx:id="withdrawBtn" maxHeight="28.0" maxWidth="80.0" minHeight="28.0" minWidth="80.0" mnemonicParsing="false" onAction="#withdrawMoney" prefHeight="28.0" prefWidth="80.0" text="Withdraw" />
                      </children>
                      <BorderPane.margin>
                         <Insets />

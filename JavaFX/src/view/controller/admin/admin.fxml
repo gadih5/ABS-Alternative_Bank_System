@@ -16,7 +16,7 @@
             <Insets left="5.0" right="5.0" />
          </padding>
          <children>
-            <Button fx:id="increase_yaz_btn" disable="true" minHeight="35.0" minWidth="110.0" mnemonicParsing="false" onAction="#moveTimeline" prefHeight="35.0" prefWidth="110.0" text="Increase YAZ" />
+            <Button fx:id="increaseYazBtn" disable="true" minHeight="35.0" minWidth="110.0" mnemonicParsing="false" onAction="#moveTimeline" prefHeight="35.0" prefWidth="110.0" text="Increase YAZ" />
             <Label prefHeight="20.0" prefWidth="1750.0" />
             <Button fx:id="load_file_btn" minHeight="35.0" minWidth="110.0" mnemonicParsing="false" onAction="#fileLoaderListener" prefHeight="35.0" prefWidth="110.0" text="Load File" />
          </children>
@@ -25,12 +25,12 @@
         <items>
           <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="180.0" minWidth="600.0" prefHeight="540.0" prefWidth="600.0">
                <children>
-                  <TableView fx:id="loans_table" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="180.0" minWidth="600.0" prefHeight="540.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <TableView fx:id="loansTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="180.0" minWidth="600.0" prefHeight="540.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
           <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="180.0" minWidth="600.0" prefHeight="540.0" prefWidth="600.0">
                <children>
-                  <TableView fx:id="customers_table" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="180.0" minWidth="600.0" prefHeight="540.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <TableView fx:id="customersTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="180.0" minWidth="600.0" prefHeight="540.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
         </items>

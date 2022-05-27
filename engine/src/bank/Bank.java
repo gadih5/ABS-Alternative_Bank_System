@@ -53,7 +53,7 @@ public class Bank  implements Serializable {
         return customers;
     }
 
-    public void addLoan(Customer customer, double loanSum, int totalTimeUnit, String reason, double interestPercent, int paymentFrequency) throws UndefinedReasonException, NegativeLoanSumException, NegativeTotalTimeUnitException, NegativeInterestPercentException, NegativePaymentFrequencyException, OverPaymentFrequencyException, UndividedPaymentFrequencyException {
+    public void addLoan(Customer customer, double loanSum, int totalTimeUnit, String reason, int interestPercent, int paymentFrequency) throws UndefinedReasonException, NegativeLoanSumException, NegativeTotalTimeUnitException, NegativeInterestPercentException, NegativePaymentFrequencyException, OverPaymentFrequencyException, UndividedPaymentFrequencyException {
         Loan newLoan = customer.createLoan(customer.getName(), loanSum, totalTimeUnit, reason, interestPercent, paymentFrequency);
         loans.add(newLoan);
     }
@@ -109,7 +109,7 @@ public class Bank  implements Serializable {
             }
             if(listOfCategory.contains(absLoan.getAbsCategory())) {
                     this.loans.add(new Loan(absLoan.getId(), loanCustomer, absLoan.getAbsCapital(), absLoan.getAbsTotalYazTime(), absLoan.getAbsCategory(),
-                            (double) absLoan.getAbsIntristPerPayment() / 100, absLoan.getAbsPaysEveryYaz()));
+                            (int) absLoan.getAbsIntristPerPayment(), absLoan.getAbsPaysEveryYaz()));
             }else{
                 throw new NotInCategoryException("\"" + absLoan.getAbsCategory() + "\" is missing in the categories list in Xml!");
             }

@@ -101,25 +101,14 @@ public class CustomerDto implements Serializable {
                 res += ", Amount missing become 'Active': " + loan.getAmountToComplete();
             }
             if(loan.getStatus() == Status.Active) {
-                res += ", Next payment at: " + checkNextPayment(loan.getStartTimeUnit(), loan.getPaymentFrequency());
+                res += ", Next payment at: " + loan.getNextPayment();
 
-                double nextPayment = 0;
-                for (Fraction fraction : loan.getFractions()) {
-                    double fundPart = fraction.getAmount() / (loan.getTotalTimeUnit() / loan.getPaymentFrequency());
-                    double interestPart = fraction.getAmount() * loan.getInterestPercent() / (loan.getTotalTimeUnit() / loan.getPaymentFrequency());
-                    nextPayment += fundPart + interestPart;
-                }
-                res += ", sum to pay: " + nextPayment;
+                res += ", sum to pay: " + loan.getNextPaymentValue();
             }
             if(loan.getStatus() == Status.Risk){
-                res += ", Number of debts: ";
-                int numberOfDebts = 0;
-                double amountOfDebts = 0;
-                for(Debt debt:loan.getUncompletedTransactions()){
-                    numberOfDebts++;
-                    amountOfDebts += debt.getAmount();
-                }
-                res += numberOfDebts + ", amount to pay: " + amountOfDebts;
+                res += ", Number of debts: " + loan.getNumOfDebts();
+
+                res += ", amount to pay: " + loan.getSumOfDebts();
             }
             if(loan.getStatus() == Status.Finished){
                 res += ", Start time: " + loan.getStartTimeUnit()
@@ -150,17 +139,4 @@ public class CustomerDto implements Serializable {
         return outgoingLoans;
     }
 
-    public int checkNextPayment(int startTimeUnit, int paymentFrequency) {
-        int nextPayment;
-        if((Bank.getGlobalTimeUnit() - startTimeUnit)%paymentFrequency==0 || paymentFrequency == 1){
-            nextPayment = Bank.getGlobalTimeUnit();
-        }
-        if(Bank.getGlobalTimeUnit() == startTimeUnit){
-            nextPayment = Bank.getGlobalTimeUnit() + paymentFrequency;
-        }
-        else{
-            nextPayment = (Bank.getGlobalTimeUnit() - startTimeUnit)%paymentFrequency + Bank.getGlobalTimeUnit();
-        }
-        return nextPayment;
-    }
 }

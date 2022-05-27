@@ -13,7 +13,7 @@ public class LoanDto implements Serializable {
     private int remainTimeUnit;
     private int finishTimeUnit;
     private String reason;
-    private double interestPrecent;
+    private int interestPrecent;
     private int paymentFrequency;
     private Collection<Fraction> fractions;
     private double currentInterest;
@@ -104,7 +104,7 @@ public class LoanDto implements Serializable {
         return reason;
     }
 
-    public double getInterestPercent() {
+    public int getInterestPercent() {
         return interestPrecent;
     }
 

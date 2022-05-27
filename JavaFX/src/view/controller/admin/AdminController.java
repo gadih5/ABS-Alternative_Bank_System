@@ -103,7 +103,6 @@ public class AdminController{
 
     @FXML
     public void showAdminScreen() {
-        //TODO clear tables!!!!!!!
         loansTable.getItems().clear();
         loansTable.getColumns().clear();
         customersTable.getColumns().clear();
@@ -122,23 +121,22 @@ public class AdminController{
         if (filePath != null) {
             try {
                 XmlReader myXml = new XmlReader(Paths.get(filePath));
-                appController.loadXmlData(myXml.getDescriptor());
-                showAdminScreen();
-                appController.initYazLabel();
-                increaseYazBtn.setDisable(false);
-                appController.updatePathLabel(filePath);
-                appController.addUsers();
-                appController.setUserComboBoxEnable();
-                } catch (FileNotFoundException e) { //TODO add ERROR Dialogs
-                    e.printStackTrace();
-                } catch (NotXmlException e) {
-                    e.printStackTrace();
-                } catch (JAXBException e) {
-                    e.printStackTrace();
-                } catch (Exception e) {
-                    e.printStackTrace();
+                if(appController.loadXmlData(myXml.getDescriptor())) {
+                    showAdminScreen();
+                    appController.initYazLabel();
+                    increaseYazBtn.setDisable(false);
+                    appController.updatePathLabel(filePath);
+                    appController.addUsers();
+                    appController.setUserComboBoxEnable();
                 }
+            } catch (JAXBException e) {
+                e.printStackTrace();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (NotXmlException e) {
+                e.printStackTrace();
             }
+        }
          else
             return;
     }

@@ -41,7 +41,7 @@ public class Customer implements Serializable {
         updateCustomerDto();
     }
 
-    public Loan createLoan(String loanName, double loanSum, int totalTimeUnit, String reason, double interestPrecent, int paymentFrequency) throws UndefinedReasonException, NegativeLoanSumException, NegativeTotalTimeUnitException, NegativeInterestPercentException, NegativePaymentFrequencyException, OverPaymentFrequencyException, UndividedPaymentFrequencyException {
+    public Loan createLoan(String loanName, double loanSum, int totalTimeUnit, String reason, int interestPrecent, int paymentFrequency) throws UndefinedReasonException, NegativeLoanSumException, NegativeTotalTimeUnitException, NegativeInterestPercentException, NegativePaymentFrequencyException, OverPaymentFrequencyException, UndividedPaymentFrequencyException {
         Loan newLoan = new Loan( loanName, this,  loanSum,  totalTimeUnit,  reason,  interestPrecent,  paymentFrequency);
         outgoingLoans.add(newLoan);
         updateCustomerDto();

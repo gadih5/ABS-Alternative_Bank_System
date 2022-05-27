@@ -1,8 +1,6 @@
 package view.controller.information;
 
-import bank.Customer;
-import bank.CustomerDto;
-import bank.Transaction;
+import bank.*;
 import bank.exception.NegativeBalanceException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -26,6 +24,10 @@ public class InformationController {
         @FXML
         private TableView<Transaction> accountTransTable;
         @FXML
+        private TableView<Loan> borrowerLoansTable;
+        @FXML
+        private TableView<Loan> loanerLoansTable;
+        @FXML
         private CustomerController customerController;
         @FXML
         private ScrollPane chargeDialogComponent;
@@ -42,12 +44,112 @@ public class InformationController {
 
     @FXML
     public void showInfoTable(CustomerDto selectedCustomer) {
+        accountTransTable.getItems().clear();
         accountTransTable.getColumns().clear();
         makeTransactionsTable(selectedCustomer.getTransactions());
         balanceLabel.setText("Balance: " + selectedCustomer.getBalance());
-        //TODO Show 'borrower loans table' & 'loaner loans table'
 
+        borrowerLoansTable.getItems().clear();
+        borrowerLoansTable.getColumns().clear();
+        makeBorrowerLoansTable(selectedCustomer.getOutgoingLoans());
 
+        loanerLoansTable.getItems().clear();
+        loanerLoansTable.getColumns().clear();
+        makeLoanerLoansTable(selectedCustomer.getIngoingLoans());
+    }
+
+    @FXML
+    private void makeLoanerLoansTable(Collection<Loan> ingoingLoans) {
+        TableColumn loanNameColumn = new TableColumn("Loan Name");
+        loanNameColumn.setCellValueFactory(new PropertyValueFactory<>("loanName"));
+
+        TableColumn reasonColumn = new TableColumn("Category");
+        reasonColumn.setCellValueFactory(new PropertyValueFactory<>("reason"));
+
+        TableColumn loanSumColumn = new TableColumn("Fund Sum");
+        loanSumColumn.setCellValueFactory(new PropertyValueFactory<>("loanSum"));
+
+        TableColumn paymentFrequencyColumn = new TableColumn("Payment Frequency");
+        paymentFrequencyColumn.setCellValueFactory(new PropertyValueFactory<>("paymentFrequency"));
+
+        TableColumn interestPercentColumn = new TableColumn("Interest");
+        interestPercentColumn.setCellValueFactory(new PropertyValueFactory<>("interestPercent"));
+
+        TableColumn statusColumn = new TableColumn("Status");
+        statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
+
+        TableColumn amountToCompleteColumn = new TableColumn("Remain Invest Sum");
+        amountToCompleteColumn.setCellValueFactory(new PropertyValueFactory<>("amountToComplete"));
+
+        TableColumn nextPaymentColumn = new TableColumn("Next Payment YAZ");
+        nextPaymentColumn.setCellValueFactory(new PropertyValueFactory<>("nextPayment"));
+
+        TableColumn nextPaymentValueColumn = new TableColumn("Next Payment Sum");
+        nextPaymentValueColumn.setCellValueFactory(new PropertyValueFactory<>("nextPaymentValue"));
+
+        TableColumn numOfDebtsColumn = new TableColumn("Number of Debts");
+        numOfDebtsColumn.setCellValueFactory(new PropertyValueFactory<>("numOfDebts"));
+
+        TableColumn sumOfDebtsColumn = new TableColumn("Sum of Debts");
+        sumOfDebtsColumn.setCellValueFactory(new PropertyValueFactory<>("sumOfDebts"));
+
+        TableColumn startTimeUnitColumn = new TableColumn("Start YAZ");
+        startTimeUnitColumn.setCellValueFactory(new PropertyValueFactory<>("startTimeUnit"));
+
+        TableColumn finishTimeUnitColumn = new TableColumn("Finish YAZ");
+        finishTimeUnitColumn.setCellValueFactory(new PropertyValueFactory<>("finishTimeUnit"));
+
+        loanerLoansTable.getColumns().addAll(loanNameColumn, reasonColumn, loanSumColumn, paymentFrequencyColumn, interestPercentColumn, statusColumn, amountToCompleteColumn, nextPaymentColumn, nextPaymentValueColumn, numOfDebtsColumn, sumOfDebtsColumn, startTimeUnitColumn, finishTimeUnitColumn);
+        loanerLoansTable.setItems(null);
+        ObservableList<Loan> listOfLoans = FXCollections.observableArrayList(ingoingLoans);
+        loanerLoansTable.setItems(listOfLoans);
+    }
+
+    @FXML
+    private void makeBorrowerLoansTable(Collection<Loan> outgoingLoans) {
+        TableColumn loanNameColumn = new TableColumn("Loan Name");
+        loanNameColumn.setCellValueFactory(new PropertyValueFactory<>("loanName"));
+
+        TableColumn reasonColumn = new TableColumn("Category");
+        reasonColumn.setCellValueFactory(new PropertyValueFactory<>("reason"));
+
+        TableColumn loanSumColumn = new TableColumn("Fund Sum");
+        loanSumColumn.setCellValueFactory(new PropertyValueFactory<>("loanSum"));
+
+        TableColumn paymentFrequencyColumn = new TableColumn("Payment Frequency");
+        paymentFrequencyColumn.setCellValueFactory(new PropertyValueFactory<>("paymentFrequency"));
+
+        TableColumn interestPercentColumn = new TableColumn("Interest");
+        interestPercentColumn.setCellValueFactory(new PropertyValueFactory<>("interestPercent"));
+
+        TableColumn statusColumn = new TableColumn("Status");
+        statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
+
+        TableColumn amountToCompleteColumn = new TableColumn("Remain Invest Sum");
+        amountToCompleteColumn.setCellValueFactory(new PropertyValueFactory<>("amountToComplete"));
+
+        TableColumn nextPaymentColumn = new TableColumn("Next Payment YAZ");
+        nextPaymentColumn.setCellValueFactory(new PropertyValueFactory<>("nextPayment"));
+
+        TableColumn nextPaymentValueColumn = new TableColumn("Next Payment Sum");
+        nextPaymentValueColumn.setCellValueFactory(new PropertyValueFactory<>("nextPaymentValue"));
+
+        TableColumn numOfDebtsColumn = new TableColumn("Number of Debts");
+        numOfDebtsColumn.setCellValueFactory(new PropertyValueFactory<>("numOfDebts"));
+
+        TableColumn sumOfDebtsColumn = new TableColumn("Sum of Debts");
+        sumOfDebtsColumn.setCellValueFactory(new PropertyValueFactory<>("sumOfDebts"));
+
+        TableColumn startTimeUnitColumn = new TableColumn("Start YAZ");
+        startTimeUnitColumn.setCellValueFactory(new PropertyValueFactory<>("startTimeUnit"));
+
+        TableColumn finishTimeUnitColumn = new TableColumn("Finish YAZ");
+        finishTimeUnitColumn.setCellValueFactory(new PropertyValueFactory<>("finishTimeUnit"));
+
+        borrowerLoansTable.getColumns().addAll(loanNameColumn, reasonColumn, loanSumColumn, paymentFrequencyColumn, interestPercentColumn, statusColumn, amountToCompleteColumn, nextPaymentColumn, nextPaymentValueColumn, numOfDebtsColumn, sumOfDebtsColumn, startTimeUnitColumn, finishTimeUnitColumn);
+        borrowerLoansTable.setItems(null);
+        ObservableList<Loan> listOfLoans = FXCollections.observableArrayList(outgoingLoans);
+        borrowerLoansTable.setItems(listOfLoans);
     }
 
     @FXML
