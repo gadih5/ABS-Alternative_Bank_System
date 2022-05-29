@@ -100,7 +100,7 @@ public class CustomerController {
         return appController.getNumOfLoans();
     }
 
-    public Collection<LoanDto> getLoansDto(int sumInvest, Set<String> chosenCategories, int minInterestPercent, int minTotalYaz, int maxOpenLoans, int maxOwnershipPercent, CustomerDto selectedCustomer) {
-        return appController.getLoansDtoForScramble(sumInvest,chosenCategories,minInterestPercent,minTotalYaz,maxOpenLoans,maxOwnershipPercent, selectedCustomer);
+    public Collection<LoanDto> getLoansDto(int categoriesChosed, Set<String> chosenCategories, int minInterestPercent, int minTotalYaz, int maxOpenLoans, int maxOwnershipPercent, CustomerDto selectedCustomer) {
+        return appController.getLoansDtoForScramble(categoriesChosed, chosenCategories,minInterestPercent,minTotalYaz,maxOpenLoans,maxOwnershipPercent, selectedCustomer);
     }
 }

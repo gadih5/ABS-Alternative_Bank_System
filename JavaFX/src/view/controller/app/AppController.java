@@ -1,9 +1,6 @@
 package view.controller.app;
 
-import bank.Bank;
-import bank.Customer;
-import bank.CustomerDto;
-import bank.LoanDto;
+import bank.*;
 import bank.exception.*;
 import bank.xml.generated.AbsDescriptor;
 import javafx.fxml.FXML;
@@ -111,7 +108,7 @@ public class AppController {
     public void addUsers() {
         headerComponentController.removeAllUsers();
         headerComponentController.addAdminBtn();
-        for(bank.Customer customer: myBank.getCustomers()){
+        for (bank.Customer customer : myBank.getCustomers()) {
             String name = customer.getName();
             headerComponentController.addUserBtn(name);
         }
@@ -121,7 +118,7 @@ public class AppController {
         headerComponentController.setUserComboBoxEnable();
     }
 
-    public boolean loadXmlData(AbsDescriptor descriptor){
+    public boolean loadXmlData(AbsDescriptor descriptor) {
         boolean res = false;
         Bank newBank = new Bank();
         try {
@@ -150,8 +147,7 @@ public class AppController {
             showErrorAlert("Category is Missing!");
         } catch (AlreadyExistCustomerException e) {
             showErrorAlert("Already Exist Customer!");
-        }
-        finally {
+        } finally {
             return res;
         }
     }
@@ -159,13 +155,13 @@ public class AppController {
     private void showErrorAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error Dialog");
-        alert.setHeaderText("Error: "+ message);
+        alert.setHeaderText("Error: " + message);
         alert.setContentText("Cant load this file, please try another file.");
         alert.showAndWait();
     }
 
     public Collection<LoanDto> getLoansDto() {
-       return myBank.getLoansDto();
+        return myBank.getLoansDto();
     }
 
     public Collection<CustomerDto> getCustomersDto() {
@@ -189,18 +185,18 @@ public class AppController {
     }
 
     public int calcMaxInterestPercent(CustomerDto selectedCustomer) {
-        int res=0;
-        for(LoanDto loanDto:myBank.getLoansDto()){
-            if(loanDto.getInterestPercent() > res && !(loanDto.getBorrowerName().equals(selectedCustomer.getName())))
+        int res = 0;
+        for (LoanDto loanDto : myBank.getLoansDto()) {
+            if (loanDto.getInterestPercent() > res && !(loanDto.getBorrowerName().equals(selectedCustomer.getName())))
                 res = loanDto.getInterestPercent();
         }
         return res;
     }
 
     public int calcMaxTotalYaz(CustomerDto selectedCustomer) {
-        int res=0;
-        for(LoanDto loanDto:myBank.getLoansDto()){
-            if(loanDto.getTotalTimeUnit() > res && !(loanDto.getBorrowerName().equals(selectedCustomer.getName())))
+        int res = 0;
+        for (LoanDto loanDto : myBank.getLoansDto()) {
+            if (loanDto.getTotalTimeUnit() > res && !(loanDto.getBorrowerName().equals(selectedCustomer.getName())))
                 res = loanDto.getTotalTimeUnit();
         }
         return res;
@@ -210,26 +206,46 @@ public class AppController {
         return myBank.getLoans().size();
     }
 
-    public Collection<LoanDto> getLoansDtoForScramble(int sumInvest, Set<String> chosenCategories, int minInterestPercent, int minTotalYaz, int maxOpenLoans, int maxOwnershipPercent, CustomerDto selectedCustomer) {
+    public Collection<LoanDto> getLoansDtoForScramble(int categoriesChosed, Set<String> chosenCategories, int minInterestPercent, int minTotalYaz, int maxOpenLoans, int maxOwnershipPercent, CustomerDto selectedCustomer) {
         Set<LoanDto> validLoans = new HashSet<>();
-        for(LoanDto loanDto:myBank.getLoansDto()){
-            if(!(loanDto.getBorrowerName().equals(selectedCustomer.getName()))){
-                if(chosenCategories.contains(loanDto.getReason())){
-                    if(loanDto.getInterestPercent() <= minInterestPercent){
-                        if(loanDto.getTotalTimeUnit() <= minTotalYaz){
-                         //   if(loanDto.get)/////////////////////////////////////////////////////////////TODO this....
+        for (LoanDto loanDto : myBank.getLoansDto()) {
+            if (!(loanDto.getBorrowerName().equals(selectedCustomer.getName()))) {
+                if (chosenCategories.contains(loanDto.getReason()) || categoriesChosed == -1) {
+                    if (loanDto.getInterestPercent() <= minInterestPercent || minInterestPercent == -1) {
+                        if (loanDto.getTotalTimeUnit() <= minTotalYaz || minTotalYaz == -1) {
+                            if ((loanDto.getRemainFund()) / (loanDto.getLoanSum()) <= maxOwnershipPercent || maxOwnershipPercent == -1) {
+                                if (maxOpenLoans == -1)
+                                    validLoans.add(loanDto);
+                                else {
+                                    Customer borrower = null;
+                                    for (Customer customer : myBank.getCustomers()) {
+                                        if (customer.getName().equals(loanDto.getBorrowerName())) {
+                                            borrower = customer;
+                                            break;
+                                        }
+                                    }
+                                    if (borrower != null) {
+                                        Set<LoanDto> loans = new HashSet<>();
+                                        for (Loan loan : myBank.getLoans()) {
+                                            if (loan.getStatus() != Status.Finished && loan.getBorrower().getName().equals(borrower.getName())) {
+                                                loans.add(loan.getLoanDto());
+                                            }
+                                        }
+                                        if (loans.size() <= maxOpenLoans) {
+                                            validLoans.add(loanDto);
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             }
-
-
-
-
         }
-
-
     return validLoans;
+    }
 
+    public void updateBankDtos() {
+        myBank.updateAllDtos();
     }
 }

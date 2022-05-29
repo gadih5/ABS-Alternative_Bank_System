@@ -138,4 +138,17 @@ public class Bank  implements Serializable {
         }
         return loansDto;
     }
+
+    public void updateAllDtos() {
+        for (Loan loan : loans) {
+            try {
+                loan.update();
+            } catch (NegativeBalanceException e) {
+                e.printStackTrace();
+            }
+        }
+        for (Customer customer : customers) {
+            customer.updateCustomerDto();
+        }
+    }
 }

@@ -160,7 +160,7 @@ public class Loan implements Serializable {
         return loanName;
     }
 
-    protected Status getStatus() {
+    public Status getStatus() {
         return status;
     }
 

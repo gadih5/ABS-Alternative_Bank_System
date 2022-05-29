@@ -2,14 +2,17 @@ package view.controller.scramble;
 
 import bank.CustomerDto;
 import bank.LoanDto;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import view.controller.customer.CustomerController;
 import javafx.scene.layout.VBox;
 
@@ -24,6 +27,12 @@ public class ScrambleController {
 
     @FXML
     private VBox categoriesVBox;
+
+    @FXML
+    private ScrollPane categoriesScrollPane;
+
+    @FXML
+    private AnchorPane categoriesAnchorPane;
 
     @FXML
     private Slider maxOwnershipPercentSlider;
@@ -69,6 +78,9 @@ public class ScrambleController {
 
     @FXML
     private TextField maxOwnerShipPercentTextField;
+
+    @FXML
+    private Button investButton;
 
     @FXML
     private TableView<LoanDto> loansTable;
@@ -159,15 +171,15 @@ public class ScrambleController {
         loansTable.getItems().clear();
         loansTable.getColumns().clear();
         showValidLoansInTable();
-
-
-
-
-
-
+        loansTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        investButton.setDisable(false);
+        investButton.setVisible(true);
     }
 
     private void showValidLoansInTable() {
+        TableColumn checkColumn = new TableColumn("Select");
+        checkColumn.setCellFactory( tc -> new CheckBoxTableCell<>());
+
         TableColumn nameColumn = new TableColumn("Loan Name");
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("loanName"));
 
@@ -184,7 +196,7 @@ public class ScrambleController {
         totalLoanTimeColumn.setCellValueFactory(new PropertyValueFactory<>("totalTimeUnit"));
 
         TableColumn interestColumn = new TableColumn("Interest");
-        interestColumn.setCellValueFactory(new PropertyValueFactory<>("interestPrecent"));
+        interestColumn.setCellValueFactory(new PropertyValueFactory<>("interestPercent"));
 
         TableColumn paymentFrequencyColumn = new TableColumn("Payment Frequency");
         paymentFrequencyColumn.setCellValueFactory(new PropertyValueFactory<>("paymentFrequency"));
@@ -193,9 +205,11 @@ public class ScrambleController {
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
 
 
-        loansTable.getColumns().addAll(nameColumn, borrowerNameColumn, reasonColumn, loanSumColumn, totalLoanTimeColumn, interestColumn, paymentFrequencyColumn, statusColumn);
+        loansTable.getColumns().addAll(checkColumn,nameColumn, borrowerNameColumn, reasonColumn, loanSumColumn, totalLoanTimeColumn, interestColumn, paymentFrequencyColumn, statusColumn);
         Set<String> chosenCategories = new HashSet<>();
+        int categoriesChosed = -1;
         if(!categoriesVBox.isDisable()) {
+            categoriesChosed = 1;
             for(int i=0;i<categoriesVBox.getChildren().size();i++){
                 CheckBox currCategory = (CheckBox)categoriesVBox.getChildren().get(i);
                 if(currCategory.isSelected()){
@@ -221,10 +235,36 @@ public class ScrambleController {
 
 
 
-        Collection<LoanDto> loansDto = customerController.getLoansDto((int)sumInvestSlider.getValue(), chosenCategories, minInterestPercent, minTotalYaz, maxOpenLoans, maxOwnershipPercent, selectedCustomer);
+        Collection<LoanDto> loansDto = customerController.getLoansDto(categoriesChosed,chosenCategories, minInterestPercent, minTotalYaz, maxOpenLoans, maxOwnershipPercent, selectedCustomer);
         loansTable.setItems(null);
         ObservableList<LoanDto> listOfLoansDto = FXCollections.observableArrayList(loansDto);
         loansTable.setItems(listOfLoansDto);
+    }
+
+    public void investLoan(ActionEvent actionEvent) {
+        //TODO fix it!!!!!
+        Set<LoanDto> loanDtos = new HashSet<>();
+        TableColumn selectColumn = loansTable.getColumns().get(0);
+        int i=0;
+
+        ObservableValue<CheckBox> checkBox =  selectColumn.getCellObservableValue(i);
+        while(checkBox != null){
+            if(checkBox.getValue().isSelected()){
+                loanDtos.add(loansTable.getItems().get(i));
+            }
+            i++;
+            checkBox =  selectColumn.getCellObservableValue(i);
+        }
+        if(loanDtos.isEmpty()){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Dialog");
+            alert.setHeaderText("Error: No Loan Selected");
+            alert.setContentText("Please make any selection, click OK and try again:");
+            alert.showAndWait();
+        }
+        else{
+            System.out.println("bank scramble");
+        }
 
     }
 }

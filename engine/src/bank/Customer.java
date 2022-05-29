@@ -11,7 +11,7 @@ public class Customer implements Serializable {
     private double balance;
     private Collection transactions;
     private Collection ingoingLoans;
-    private Collection outgoingLoans;
+    private Collection<Loan> outgoingLoans;
     private CustomerDto customerDto;
 
     public Customer(String name, double balance) throws NegativeBalanceException {
@@ -64,7 +64,7 @@ public class Customer implements Serializable {
         return ingoingLoans;
     }
 
-    public Collection getOutgoingLoans() {
+    public Collection<Loan>getOutgoingLoans() {
         return outgoingLoans;
     }
 

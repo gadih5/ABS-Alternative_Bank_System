@@ -128,6 +128,7 @@ public class AdminController{
                     appController.updatePathLabel(filePath);
                     appController.addUsers();
                     appController.setUserComboBoxEnable();
+                    appController.updateBankDtos();
                 }
             } catch (JAXBException e) {
                 e.printStackTrace();
