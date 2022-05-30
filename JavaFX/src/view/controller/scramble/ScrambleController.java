@@ -6,7 +6,9 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -88,43 +90,43 @@ public class ScrambleController {
     private CustomerDto selectedCustomer;
 
     private CustomerController customerController;
-    private int maxInterestPercent=0;
-    private int maxTotalYaz=0;
+    private int maxInterestPercent = 0;
+    private int maxTotalYaz = 0;
 
     public void setMainController(CustomerController customerController) {
         this.customerController = customerController;
     }
 
     public void categoriesCheckBoxPressed(ActionEvent actionEvent) {
-        if(categoriesCheckBox.isSelected())
+        if (categoriesCheckBox.isSelected())
             categoriesVBox.setDisable(false);
         else
             categoriesVBox.setDisable(true);
     }
 
     public void minInterestPercentCheckBoxPressed(ActionEvent actionEvent) {
-        if(minInterestPercentCheckBox.isSelected())
+        if (minInterestPercentCheckBox.isSelected())
             minInterestPercentSlider.setDisable(false);
         else
             minInterestPercentSlider.setDisable(true);
     }
 
     public void minTotalYazCheckBoxPressed(ActionEvent actionEvent) {
-        if(minTotalYazCheckBox.isSelected())
+        if (minTotalYazCheckBox.isSelected())
             minTotalYazSlider.setDisable(false);
         else
             minTotalYazSlider.setDisable(true);
     }
 
     public void maxOpenLoansCheckBoxPressed(ActionEvent actionEvent) {
-        if(maxOpenLoansCheckBox.isSelected())
+        if (maxOpenLoansCheckBox.isSelected())
             maxOpenLoansSlider.setDisable(false);
         else
             maxOpenLoansSlider.setDisable(true);
     }
 
     public void maxOwnerShipPercentCheckBoxPressed(ActionEvent actionEvent) {
-        if(maxOwnerShipPercentCheckBox.isSelected())
+        if (maxOwnerShipPercentCheckBox.isSelected())
             maxOwnershipPercentSlider.setDisable(false);
         else
             maxOwnershipPercentSlider.setDisable(true);
@@ -134,7 +136,7 @@ public class ScrambleController {
         this.selectedCustomer = selectedCustomer;
         sumInvestSlider.setMax(selectedCustomer.getBalance());
         Set<String> categories = customerController.getCategories();
-        for(String category:categories) {
+        for (String category : categories) {
             categoriesVBox.getChildren().add(new CheckBox(category));
         }
         maxInterestPercent = customerController.calcMaxInterestPercent(selectedCustomer);
@@ -177,8 +179,6 @@ public class ScrambleController {
     }
 
     private void showValidLoansInTable() {
-        TableColumn checkColumn = new TableColumn("Select");
-        checkColumn.setCellFactory( tc -> new CheckBoxTableCell<>());
 
         TableColumn nameColumn = new TableColumn("Loan Name");
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("loanName"));
@@ -205,66 +205,89 @@ public class ScrambleController {
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
 
 
-        loansTable.getColumns().addAll(checkColumn,nameColumn, borrowerNameColumn, reasonColumn, loanSumColumn, totalLoanTimeColumn, interestColumn, paymentFrequencyColumn, statusColumn);
+        loansTable.getColumns().addAll( nameColumn, borrowerNameColumn, reasonColumn, loanSumColumn, totalLoanTimeColumn, interestColumn, paymentFrequencyColumn, statusColumn);
+        loansTable.getSelectionModel().selectionModeProperty().setValue(SelectionMode.MULTIPLE);
+        loansTable.getSelectionModel().setSelectionMode (SelectionMode.MULTIPLE);
+        loansTable.addEventFilter(MouseEvent.MOUSE_PRESSED, evt -> {
+            Node node = evt.getPickResult().getIntersectedNode();
+
+            // go up from the target node until a row is found or it's clear the
+            // target node wasn't a node.
+            while (node != null && node != loansTable && !(node instanceof TableRow)) {
+                node = node.getParent();
+            }
+
+            // if is part of a row or the row,
+            // handle event instead of using standard handling
+            if (node instanceof TableRow) {
+                // prevent further handling
+                evt.consume();
+
+                TableRow row = (TableRow) node;
+                TableView tv = row.getTableView();
+
+                // focus the tableview
+                tv.requestFocus();
+
+                if (!row.isEmpty()) {
+                    // handle selection for non-empty nodes
+                    int index = row.getIndex();
+                    if (row.isSelected()) {
+                        tv.getSelectionModel().clearSelection(index);
+                    } else {
+                        tv.getSelectionModel().select(index);
+                    }
+                }
+            }
+        });
+
         Set<String> chosenCategories = new HashSet<>();
         int categoriesChosed = -1;
-        if(!categoriesVBox.isDisable()) {
+        if (!categoriesVBox.isDisable()) {
             categoriesChosed = 1;
-            for(int i=0;i<categoriesVBox.getChildren().size();i++){
-                CheckBox currCategory = (CheckBox)categoriesVBox.getChildren().get(i);
-                if(currCategory.isSelected()){
+            for (int i = 0; i < categoriesVBox.getChildren().size(); i++) {
+                CheckBox currCategory = (CheckBox) categoriesVBox.getChildren().get(i);
+                if (currCategory.isSelected()) {
                     chosenCategories.add(currCategory.getText());
                 }
             }
         }
-        int minInterestPercent= -1;
-        if(minInterestPercentCheckBox.isSelected())
-            minInterestPercent = (int)minInterestPercentSlider.getValue();
+        int minInterestPercent = -1;
+        if (minInterestPercentCheckBox.isSelected())
+            minInterestPercent = (int) minInterestPercentSlider.getValue();
 
-        int minTotalYaz= -1;
-        if(minTotalYazCheckBox.isSelected())
-            minTotalYaz = (int)minTotalYazSlider.getValue();
+        int minTotalYaz = -1;
+        if (minTotalYazCheckBox.isSelected())
+            minTotalYaz = (int) minTotalYazSlider.getValue();
 
         int maxOpenLoans = -1;
-        if(maxOpenLoansCheckBox.isSelected())
-            maxOpenLoans = (int)maxOpenLoansSlider.getValue();
+        if (maxOpenLoansCheckBox.isSelected())
+            maxOpenLoans = (int) maxOpenLoansSlider.getValue();
 
         int maxOwnershipPercent = -1;
-        if(maxOwnerShipPercentCheckBox.isSelected())
-            maxOwnershipPercent = (int)maxOwnershipPercentSlider.getValue();
+        if (maxOwnerShipPercentCheckBox.isSelected())
+            maxOwnershipPercent = (int) maxOwnershipPercentSlider.getValue();
 
 
-
-        Collection<LoanDto> loansDto = customerController.getLoansDto(categoriesChosed,chosenCategories, minInterestPercent, minTotalYaz, maxOpenLoans, maxOwnershipPercent, selectedCustomer);
+        Collection<LoanDto> loansDto = customerController.getLoansDto(categoriesChosed, chosenCategories, minInterestPercent, minTotalYaz, maxOpenLoans, maxOwnershipPercent, selectedCustomer);
         loansTable.setItems(null);
         ObservableList<LoanDto> listOfLoansDto = FXCollections.observableArrayList(loansDto);
         loansTable.setItems(listOfLoansDto);
     }
 
     public void investLoan(ActionEvent actionEvent) {
-        //TODO fix it!!!!!
-        Set<LoanDto> loanDtos = new HashSet<>();
-        TableColumn selectColumn = loansTable.getColumns().get(0);
-        int i=0;
 
-        ObservableValue<CheckBox> checkBox =  selectColumn.getCellObservableValue(i);
-        while(checkBox != null){
-            if(checkBox.getValue().isSelected()){
-                loanDtos.add(loansTable.getItems().get(i));
+          ObservableList<LoanDto>list =  loansTable.getSelectionModel().getSelectedItems();
+          loansTable.getSelectionModel().clearSelection();
+            if (list.isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error Dialog");
+                alert.setHeaderText("Error: No Loan Selected");
+                alert.setContentText("Please make any selection, click OK and try again:");
+                alert.showAndWait();
+            } else {
+                System.out.println("bank scramble");
             }
-            i++;
-            checkBox =  selectColumn.getCellObservableValue(i);
-        }
-        if(loanDtos.isEmpty()){
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error Dialog");
-            alert.setHeaderText("Error: No Loan Selected");
-            alert.setContentText("Please make any selection, click OK and try again:");
-            alert.showAndWait();
-        }
-        else{
-            System.out.println("bank scramble");
-        }
 
+        }
     }
-}
