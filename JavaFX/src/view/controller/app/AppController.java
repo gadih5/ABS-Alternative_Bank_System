@@ -248,4 +248,24 @@ public class AppController {
     public void updateBankDtos() {
         myBank.updateAllDtos();
     }
+
+    public Loan getSpecificLoan(String loanName) {
+        Loan resLoan = null;
+        for(Loan loan : myBank.getLoans()){
+            if(loan.getLoanName().equals(loanName)){
+                resLoan = loan;
+            }
+        }
+        return resLoan;
+    }
+
+    public Customer getSpecificCustomer(String name) {
+        Customer resCustomer = null;
+        for(Customer customer : myBank.getCustomers()){
+            if(customer.getName().equals(name)){
+                resCustomer = customer;
+            }
+        }
+        return resCustomer;
+    }
 }

@@ -2,6 +2,7 @@ package view.controller.customer;
 
 import bank.Customer;
 import bank.CustomerDto;
+import bank.Loan;
 import bank.LoanDto;
 import javafx.fxml.FXML;
 import javafx.scene.control.SplitPane;
@@ -102,5 +103,13 @@ public class CustomerController {
 
     public Collection<LoanDto> getLoansDto(int categoriesChosed, Set<String> chosenCategories, int minInterestPercent, int minTotalYaz, int maxOpenLoans, int maxOwnershipPercent, CustomerDto selectedCustomer) {
         return appController.getLoansDtoForScramble(categoriesChosed, chosenCategories,minInterestPercent,minTotalYaz,maxOpenLoans,maxOwnershipPercent, selectedCustomer);
+    }
+
+    public Loan getSpecificLoan(String loanName) {
+        return appController.getSpecificLoan(loanName);
+    }
+
+    public Customer getSpecificCustomer(String name) {
+        return appController.getSpecificCustomer(name);
     }
 }

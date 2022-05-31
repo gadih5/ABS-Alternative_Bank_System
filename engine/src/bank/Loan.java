@@ -290,8 +290,8 @@ public class Loan implements Serializable {
         if(this.isActive && (remainTimeUnit >= 0 && ((Bank.getGlobalTimeUnit() - startTimeUnit)%paymentFrequency==0 || paymentFrequency == 1)))
         {
             if (this.status == status.Risk) {
-                Collections.sort(uncompletedTransactions);
-                payDebts(uncompletedTransactions);
+                //Collections.sort(uncompletedTransactions);
+                //payDebts(uncompletedTransactions);
             }
             double debtAmount = 0;
 
@@ -300,25 +300,25 @@ public class Loan implements Serializable {
             }
             if(debtAmount != getLoanSum() + getLoanSum()*((double)((getInterestPercent()/100)))){
                 for (Fraction fraction : fractions) {
-                    LoanTransaction newLoanTransaction = null;
-                    try {
+                    //LoanTransaction newLoanTransaction = null;
+                    PreTransaction preTransaction = null;
+                    //try {
                         double fundPart = fraction.getAmount() / (totalTimeUnit / paymentFrequency);
                         double interestPart = fraction.getAmount() *((double)((interestPercent/100))) / (totalTimeUnit / paymentFrequency);
-                        newLoanTransaction = new LoanTransaction(this.borrower, fraction.getCustomer(), fundPart, interestPart);
-                        transactions.add(newLoanTransaction);
-                        this.remainFund -= fundPart;
-                        this.remainInterest -= interestPart;
-                        this.currentFund += fundPart;
-                        this.currentInterest += interestPart;
+                        preTransaction = new PreTransaction(fraction.getCustomer(), fundPart, interestPart,this);
+                        //newLoanTransaction = new LoanTransaction(this.borrower, fraction.getCustomer(), fundPart, interestPart);
+                        fraction.getCustomer().addPreTransaction(preTransaction);
+                        //transactions.add(newLoanTransaction);
 
-                    } catch (NegativeBalanceException e) {
+
+                    /* catch (NegativeBalanceException e) {
 
                         if (debtAmount < getRemainFund() + getRemainInterest()) {
                             uncompletedTransactions.add(new Debt(fraction.getCustomer(), fraction.getAmount() / (totalTimeUnit / paymentFrequency), fraction.getAmount() * ((double)((interestPercent/100))) / (totalTimeUnit / paymentFrequency)));
                             setStatus(Status.Risk);
                         }
                         throw new NegativeBalanceException("Negative Balance: " + this.getBorrowerName() + "'s account not have enough balance pay to " + fraction.getCustomerName() + " for \"" + getLoanName() + "\" loan!");
-                    }
+                    }*/
 
                 }
             }
@@ -355,4 +355,19 @@ public class Loan implements Serializable {
         nextPaymentValue = nextPayment;
     }
 
+    public void setCurrentInterest(double currentInterest) {
+        this.currentInterest = currentInterest;
+    }
+
+    public void setRemainInterest(double remainInterest) {
+        this.remainInterest = remainInterest;
+    }
+
+    public void setCurrentFund(double currentFund) {
+        this.currentFund = currentFund;
+    }
+
+    public void setRemainFund(double remainFund) {
+        this.remainFund = remainFund;
+    }
 }

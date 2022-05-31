@@ -13,6 +13,7 @@ public class Customer implements Serializable {
     private Collection ingoingLoans;
     private Collection<Loan> outgoingLoans;
     private CustomerDto customerDto;
+    private Collection<PreTransaction> preTransactions;
 
     public Customer(String name, double balance) throws NegativeBalanceException {
         this.name = name;
@@ -21,6 +22,7 @@ public class Customer implements Serializable {
         this.ingoingLoans = new ArrayList<>();
         this.outgoingLoans = new ArrayList<>();
         this.customerDto = new CustomerDto(this);
+        this.preTransactions = new ArrayList<>();
     }
 
     public void addTransaction(Transaction transaction) {
@@ -85,6 +87,10 @@ public class Customer implements Serializable {
     public void addOutgoingLoan(Loan loan) {
         outgoingLoans.add(loan);
         updateCustomerDto();
+    }
+
+    public void addPreTransaction(PreTransaction preTransaction) {
+        preTransactions.add(preTransaction);
     }
 }
 
