@@ -271,4 +271,13 @@ public class AppController {
         return resCustomer;
     }
 
+    public CustomerDto getSpecificCustomerDto(String name) {
+        CustomerDto resCustomerDto = null;
+        for(CustomerDto customerDto : myBank.getCustomersDto()){
+            if(customerDto.getName().equals(name)){
+                resCustomerDto = customerDto;
+            }
+        }
+        return resCustomerDto;
+    }
 }

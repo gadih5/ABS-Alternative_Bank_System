@@ -261,7 +261,7 @@ public class Loan implements Serializable {
         return finishTimeUnit;
     }
 
-    protected boolean isActive() {
+    public boolean isActive() {
         return isActive;
     }
 

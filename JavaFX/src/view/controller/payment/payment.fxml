@@ -25,7 +25,7 @@
                      <children>
                         <HBox alignment="CENTER" prefHeight="50.0" prefWidth="390.0" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
-                              <Button maxHeight="35.0" maxWidth="100.0" minHeight="35.0" minWidth="100.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="100.0" text="Button" />
+                              <Button fx:id="payButton" disable="true" maxHeight="35.0" maxWidth="100.0" minHeight="35.0" minWidth="100.0" mnemonicParsing="false" onAction="#openPayDialog" prefHeight="35.0" prefWidth="100.0" text="Pay" />
                               <Button maxHeight="35.0" maxWidth="100.0" minHeight="35.0" minWidth="100.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="100.0" text="Button" />
                               <Button maxHeight="35.0" maxWidth="100.0" minHeight="35.0" minWidth="100.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="100.0" text="Button" />
                            </children>

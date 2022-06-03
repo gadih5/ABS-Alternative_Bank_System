@@ -123,4 +123,8 @@ public class CustomerController {
     public void updateBankDtos() {
         appController.updateBankDtos();
     }
+
+    public CustomerDto getSpecificCustomerDto(String name) {
+        return appController.getSpecificCustomerDto(name);
+    }
 }

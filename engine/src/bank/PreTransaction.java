@@ -4,10 +4,12 @@ import bank.exception.NegativeBalanceException;
 
 public class PreTransaction {
     private Loan loan;
+    private String loanName;
     private Customer toCustomer;
     private int payTime;
     private double fundPart;
     private double interestPart; //positive value
+    private double sum;
     private boolean paid = false;
 
     public PreTransaction(Customer toCustomer,int payTime, double fundPart, double interestPart, Loan loan){
@@ -16,19 +18,41 @@ public class PreTransaction {
         this.interestPart = interestPart;
         this.toCustomer = toCustomer;
         this.loan = loan;
+        this.loanName = loan.getLoanName();
+        this.sum = fundPart + interestPart;
     }
 
     public Loan getLoan() {
         return loan;
     }
 
-    public Customer getToCustomer() {
-        return toCustomer;
+    public String getToCustomer() {
+        return toCustomer.getName();
     }
 
+    public String getLoanName() {
+        return loanName;
+    }
+
+    public int getPayTime() {
+        return payTime;
+    }
+
+    public double getFundPart() {
+        return fundPart;
+    }
+
+    public double getSum() {
+        return sum;
+    }
+
+    public double getInterestPart() {
+        return interestPart;
+    }
 
     public void makeTransaction(Customer fromCustomer) throws NegativeBalanceException {
-        new Transaction(fromCustomer,toCustomer,fundPart+interestPart);
+        //new Transaction(fromCustomer,toCustomer,fundPart+interestPart);
+        fromCustomer.addTransaction(new Transaction(fromCustomer,toCustomer,fundPart+interestPart));
         loan.setRemainFund(-fundPart);
         loan.setRemainInterest(-interestPart);
         loan.setCurrentFund(fundPart);
@@ -47,4 +71,9 @@ public class PreTransaction {
                     res += " Unpaid";
         return res;
     }
+
+    public boolean isPaid() {
+        return paid;
+    }
+
 }
