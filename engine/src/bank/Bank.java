@@ -35,6 +35,8 @@ public class Bank  implements Serializable {
         syncGlobalTimeUnit++;
         for (Loan loan : loans) {
             loan.update();
+
+
         }
         for (Customer customer : customers) {
             customer.updateCustomerDto();
@@ -143,14 +145,12 @@ public class Bank  implements Serializable {
 
     public void updateAllDtos() {
         for (Loan loan : loans) {
-            try {
-                loan.update();
-            } catch (NegativeBalanceException e) {
-                e.printStackTrace();
-            }
-        }
+
+                loan.updateLoanDto();
+                   }
         for (Customer customer : customers) {
             customer.updateCustomerDto();
         }
     }
+
 }
