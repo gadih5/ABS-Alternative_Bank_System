@@ -106,9 +106,11 @@ public class Loan implements Serializable {
     public void setStatus(Status status) {
         if(this.status == Status.Pending && status == Status.Active) {
             setStartTimeUnit();
-            getBorrower().addOutgoingLoan(this);
+            //getBorrower().addOutgoingLoan(this);
             isActive = true;
             remainTimeUnit = totalTimeUnit;
+            calcNextPayment();
+            calcNextPaymentValue();
         }
         if(status == Status.Finished){
             setFinishTimeUnit();
@@ -235,7 +237,7 @@ public class Loan implements Serializable {
     }
 
     public int getNextPayment() {
-        calcNextPayment();
+        //calcNextPayment();
         return nextPayment;
     }
 
@@ -292,7 +294,7 @@ public class Loan implements Serializable {
     public void update() throws NegativeBalanceException {
         if(isActive)
             remainTimeUnit--;
-        if(Bank.getGlobalTimeUnit() != startTimeUnit && this.isActive && (remainTimeUnit >= 0 && ((Bank.getGlobalTimeUnit() - startTimeUnit)%paymentFrequency==0 || paymentFrequency == 1)))
+        if(Bank.getGlobalTimeUnit() != startTimeUnit && isActive() && (remainTimeUnit >= 0 && ((Bank.getGlobalTimeUnit() - startTimeUnit)%paymentFrequency==0 || paymentFrequency == 1)))
         {
             if (this.status == status.Risk) {
                 //Collections.sort(uncompletedTransactions);
@@ -303,7 +305,7 @@ public class Loan implements Serializable {
             for(Debt debt: uncompletedTransactions){
                 debtAmount += debt.getAmount();
             }
-            if(debtAmount != getLoanSum() + getLoanSum()*(((double)getInterestPercent()/100))){
+            if(debtAmount != getLoanSum() + getLoanSum()*(((double)getInterestPercent()/100.0))){
                 for (Fraction fraction : fractions) {
                     //LoanTransaction newLoanTransaction = null;
                     //try {
@@ -312,9 +314,16 @@ public class Loan implements Serializable {
                             double fundPart = fraction.getAmount() / (totalTimeUnit / paymentFrequency);
                             double interestPart = fraction.getAmount() * (((double) interestPercent / 100)) / (totalTimeUnit / paymentFrequency);
                             preTransaction = new PreTransaction(fraction.getCustomer(), Bank.getGlobalTimeUnit(), fundPart, interestPart, this);
+
+
+                            uncompletedTransactions.add(new Debt(fraction.getCustomer(), fraction.getAmount() / (totalTimeUnit / paymentFrequency), fraction.getAmount() * ((double)((interestPercent/100))) / (totalTimeUnit / paymentFrequency)));
+                            setStatus(Status.Risk); //TODO make loan in risk status when at least one payment is unpaid
+
                             //newLoanTransaction = new LoanTransaction(this.borrower, fraction.getCustomer(), fundPart, interestPart);
                             getBorrower().addPreTransaction(preTransaction);
                             fraction.setConvertTime(Bank.getGlobalTimeUnit());
+                            calcNextPayment();
+                            calcNextPaymentValue();
                         }
                        // fraction.getCustomer().addPreTransaction(preTransaction);
                         //transactions.add(newLoanTransaction);
@@ -324,7 +333,7 @@ public class Loan implements Serializable {
 
                         if (debtAmount < getRemainFund() + getRemainInterest()) {
                             uncompletedTransactions.add(new Debt(fraction.getCustomer(), fraction.getAmount() / (totalTimeUnit / paymentFrequency), fraction.getAmount() * ((double)((interestPercent/100))) / (totalTimeUnit / paymentFrequency)));
-                            setStatus(Status.Risk);
+                            setStatus(Status.Risk); //TODO make loan in risk status when at least one payment is unpaid
                         }
                         throw new NegativeBalanceException("Negative Balance: " + this.getBorrowerName() + "'s account not have enough balance pay to " + fraction.getCustomerName() + " for \"" + getLoanName() + "\" loan!");
                     }*/
@@ -343,10 +352,10 @@ public class Loan implements Serializable {
     }
 
     public void calcNextPayment() {
-        if((Bank.getGlobalTimeUnit() - startTimeUnit)%paymentFrequency==0 || paymentFrequency == 1){
-            nextPayment = Bank.getGlobalTimeUnit();
+        if((paymentFrequency == 1) || (((Bank.getGlobalTimeUnit() - startTimeUnit)%paymentFrequency)==0)){
+            nextPayment = Bank.getGlobalTimeUnit()+ paymentFrequency;
         }
-        if(Bank.getGlobalTimeUnit() == startTimeUnit){
+        else if(Bank.getGlobalTimeUnit() == startTimeUnit){
             nextPayment = Bank.getGlobalTimeUnit() + paymentFrequency;
         }
         else{
@@ -358,7 +367,7 @@ public class Loan implements Serializable {
         double nextPayment = 0;
         for (Fraction fraction : fractions) {
             double fundPart = fraction.getAmount() / (getTotalTimeUnit() / getPaymentFrequency());
-            double interestPart = fraction.getAmount() * ((double)((getInterestPercent()/100))) / (getTotalTimeUnit() / getPaymentFrequency());
+            double interestPart = fraction.getAmount() * (getInterestPercent()/100.0) / (double)(getTotalTimeUnit() / getPaymentFrequency());
             nextPayment += fundPart + interestPart;
         }
 
