@@ -71,30 +71,31 @@ public class AdminController{
         balanceColumn.setCellValueFactory(new PropertyValueFactory<>("balance"));
 
         TableColumn numOfPendingIngoingColumn = new TableColumn("#Pending loans \nas a loaner");
-        numOfPendingIngoingColumn.setCellValueFactory(new PropertyValueFactory<>("numOfPendingIngoing"));
+        numOfPendingIngoingColumn.setCellValueFactory(new PropertyValueFactory<>("numOfPendingIngoingLoans"));
 
         TableColumn numOfActiveIngoingColumn = new TableColumn("#Active loans \nas a loaner");
-        numOfActiveIngoingColumn.setCellValueFactory(new PropertyValueFactory<>("numOfActiveIngoing"));
+        numOfActiveIngoingColumn.setCellValueFactory(new PropertyValueFactory<>("numOfActiveIngoingLoans"));
 
         TableColumn numOfRiskIngoingColumn = new TableColumn("#Risk loans \nas a loaner");
-        numOfRiskIngoingColumn.setCellValueFactory(new PropertyValueFactory<>("numOfRiskIngoing"));
+        numOfRiskIngoingColumn.setCellValueFactory(new PropertyValueFactory<>("numOfRiskIngoingLoans"));
 
         TableColumn numOfFinishIngoingColumn = new TableColumn("#Finish loans \nas a loaner");
-        numOfFinishIngoingColumn.setCellValueFactory(new PropertyValueFactory<>("numOfFinishIngoing"));
+        numOfFinishIngoingColumn.setCellValueFactory(new PropertyValueFactory<>("numOfFinishIngoingLoans"));
 
         TableColumn numOfPendingOutgoingColumn = new TableColumn("#Pending loans \nas a borrower");
-        numOfPendingOutgoingColumn.setCellValueFactory(new PropertyValueFactory<>("numOfPendingOutgoing"));
+        numOfPendingOutgoingColumn.setCellValueFactory(new PropertyValueFactory<>("numOfPendingOutgoingLoans"));
 
         TableColumn numOfActiveOutgoingColumn = new TableColumn("#Active loans \nas a borrower");
-        numOfActiveOutgoingColumn.setCellValueFactory(new PropertyValueFactory<>("numOfActiveOutgoing"));
+        numOfActiveOutgoingColumn.setCellValueFactory(new PropertyValueFactory<>("numOfActiveOutgoingLoans"));
 
         TableColumn numOfRiskOutgoingColumn = new TableColumn("#Risk loans \nas a borrower");
-        numOfRiskOutgoingColumn.setCellValueFactory(new PropertyValueFactory<>("numOfRiskOutgoing"));
+        numOfRiskOutgoingColumn.setCellValueFactory(new PropertyValueFactory<>("numOfRiskOutgoingLoans"));
 
         TableColumn numOfFinishOutgoingColumn = new TableColumn("#Finish loans \nas a borrower");
-        numOfFinishOutgoingColumn.setCellValueFactory(new PropertyValueFactory<>("numOfFinishOutgoing"));
+        numOfFinishOutgoingColumn.setCellValueFactory(new PropertyValueFactory<>("numOfFinishOutgoingLoans"));
 
 
+        appController.updateBankDtos();
         customersTable.getColumns().addAll(nameColumn, balanceColumn, numOfPendingIngoingColumn, numOfActiveIngoingColumn, numOfRiskIngoingColumn, numOfFinishIngoingColumn, numOfPendingOutgoingColumn, numOfActiveOutgoingColumn, numOfRiskOutgoingColumn, numOfFinishOutgoingColumn);
         Collection<CustomerDto> customersDto = appController.getCustomersDto();
         ObservableList<CustomerDto> listOfCustomersDto = FXCollections.observableArrayList(customersDto);

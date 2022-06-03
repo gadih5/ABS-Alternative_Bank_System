@@ -70,6 +70,10 @@ public class Customer implements Serializable {
         return outgoingLoans;
     }
 
+    public Collection<PreTransaction> getPreTransactions() {
+        return preTransactions;
+    }
+
     public void updateCustomerDto() {
         this.customerDto = new CustomerDto(this);
     }

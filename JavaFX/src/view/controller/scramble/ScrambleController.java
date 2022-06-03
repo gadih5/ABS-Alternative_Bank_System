@@ -154,7 +154,8 @@ public class ScrambleController {
 
     public void changeSumInvest(MouseEvent mouseEvent) {
         sumInvestTextField.textProperty().setValue(String.valueOf(sumInvestSlider.valueProperty().intValue()));
-        applyButton.setDisable(false);
+        if(sumInvestSlider.getValue() > 0)
+            applyButton.setDisable(false);
     }
 
     public void changeInterestPercent(MouseEvent mouseEvent) {
@@ -314,11 +315,16 @@ public class ScrambleController {
                     alert.setContentText(selectedCustomer.getName() + " not have enough money in account balance");
                 }
             }
-            //TODO: give some indication that the investment done.. (cause this dont work :| )
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Information Dialog");
-            alert.setHeaderText("Info: Scramble Succeed!");
-            alert.setContentText(selectedCustomer.getName() + " successfully invested all chosen loans.");
-            }
         }
+        //TODO: give some indication that the investment done.. (cause this dont work :| )
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Information Dialog");
+        alert.setHeaderText("Info: Scramble Succeed!");
+        alert.setContentText(selectedCustomer.getName() + " successfully invested all chosen loans.");
+
+        showValidLoansInTable();
+        //customerController.updateBankDtos();
+        //customerController.showInfoTable(selectedCustomer);
+        customerController.loadCustomerDetails(selectedCustomer.getName(),true);
     }
+}

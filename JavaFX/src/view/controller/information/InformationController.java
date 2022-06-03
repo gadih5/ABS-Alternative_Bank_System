@@ -16,7 +16,12 @@ import view.controller.customer.CustomerController;
 import view.controller.withdrawDialog.WithdrawDialogController;
 import java.io.IOException;
 import java.net.URL;
+import java.text.Format;
+import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class InformationController {
         @FXML
@@ -101,7 +106,9 @@ public class InformationController {
 
         loanerLoansTable.getColumns().addAll(loanNameColumn, reasonColumn, loanSumColumn, paymentFrequencyColumn, interestPercentColumn, statusColumn, amountToCompleteColumn, nextPaymentColumn, nextPaymentValueColumn, numOfDebtsColumn, sumOfDebtsColumn, startTimeUnitColumn, finishTimeUnitColumn);
         loanerLoansTable.setItems(null);
-        ObservableList<Loan> listOfLoans = FXCollections.observableArrayList(ingoingLoans);
+        Set<Loan> setOfLoans = new HashSet<>();
+        setOfLoans.addAll(ingoingLoans);
+        ObservableList<Loan> listOfLoans = FXCollections.observableArrayList(setOfLoans);
         loanerLoansTable.setItems(listOfLoans);
     }
 
@@ -148,7 +155,9 @@ public class InformationController {
 
         borrowerLoansTable.getColumns().addAll(loanNameColumn, reasonColumn, loanSumColumn, paymentFrequencyColumn, interestPercentColumn, statusColumn, amountToCompleteColumn, nextPaymentColumn, nextPaymentValueColumn, numOfDebtsColumn, sumOfDebtsColumn, startTimeUnitColumn, finishTimeUnitColumn);
         borrowerLoansTable.setItems(null);
-        ObservableList<Loan> listOfLoans = FXCollections.observableArrayList(outgoingLoans);
+        Set<Loan> setOfLoans = new HashSet<>();
+        setOfLoans.addAll(outgoingLoans);
+        ObservableList<Loan> listOfLoans = FXCollections.observableArrayList(setOfLoans);
         borrowerLoansTable.setItems(listOfLoans);
     }
 

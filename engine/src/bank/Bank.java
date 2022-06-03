@@ -108,8 +108,10 @@ public class Bank  implements Serializable {
                 throw new UndefinedCustomerException("\"" + absLoan.getAbsOwner() + "\" is not bank's customer!");
             }
             if(listOfCategory.contains(absLoan.getAbsCategory())) {
-                    this.loans.add(new Loan(absLoan.getId(), loanCustomer, absLoan.getAbsCapital(), absLoan.getAbsTotalYazTime(), absLoan.getAbsCategory(),
-                            (int) absLoan.getAbsIntristPerPayment(), absLoan.getAbsPaysEveryYaz()));
+                Loan newLoan = new Loan(absLoan.getId(), loanCustomer, absLoan.getAbsCapital(), absLoan.getAbsTotalYazTime(), absLoan.getAbsCategory(),
+                        (int) absLoan.getAbsIntristPerPayment(), absLoan.getAbsPaysEveryYaz());
+                    this.loans.add(newLoan);
+                    loanCustomer.addOutgoingLoan(newLoan);
             }else{
                 throw new NotInCategoryException("\"" + absLoan.getAbsCategory() + "\" is missing in the categories list in Xml!");
             }

@@ -135,13 +135,18 @@ public class Loan implements Serializable {
     }
 
     public void addLoaner(Customer customer, double amount) throws NegativeBalanceException {
-        Fraction newFraction = new Fraction(customer,amount);
-        fractions.add(newFraction);
-        customer.addIngoingLoan(this,amount);
-        amountToComplete -= newFraction.getAmount();
 
-        checkStatus();
-        updateLoanDto();
+        try {
+            customer.addIngoingLoan(this,amount);
+            Fraction newFraction = new Fraction(customer,amount);
+            fractions.add(newFraction);
+            amountToComplete -= newFraction.getAmount();
+            checkStatus();
+            updateLoanDto();
+
+        } catch (NegativeBalanceException e) {
+            throw new NegativeBalanceException("");
+        }
     }
 
     protected Collection<Fraction> getFractions() {
@@ -168,11 +173,11 @@ public class Loan implements Serializable {
         return startLoanAmount;
     }
 
-    protected double getLoanSum() {
+    public double getLoanSum() {
         return loanSum;
     }
 
-    protected int getStartTimeUnit() {
+    public int getStartTimeUnit() {
         return startTimeUnit;
     }
 
@@ -200,11 +205,11 @@ public class Loan implements Serializable {
         return totalTimeUnit;
     }
 
-    protected int getInterestPercent() {
+    public int getInterestPercent() {
         return interestPercent;
     }
 
-    protected int getPaymentFrequency() {
+    public int getPaymentFrequency() {
         return paymentFrequency;
     }
 
@@ -287,7 +292,7 @@ public class Loan implements Serializable {
     public void update() throws NegativeBalanceException {
         if(isActive)
             remainTimeUnit--;
-        if(this.isActive && (remainTimeUnit >= 0 && ((Bank.getGlobalTimeUnit() - startTimeUnit)%paymentFrequency==0 || paymentFrequency == 1)))
+        if(Bank.getGlobalTimeUnit() != startTimeUnit && this.isActive && (remainTimeUnit >= 0 && ((Bank.getGlobalTimeUnit() - startTimeUnit)%paymentFrequency==0 || paymentFrequency == 1)))
         {
             if (this.status == status.Risk) {
                 //Collections.sort(uncompletedTransactions);
@@ -298,16 +303,20 @@ public class Loan implements Serializable {
             for(Debt debt: uncompletedTransactions){
                 debtAmount += debt.getAmount();
             }
-            if(debtAmount != getLoanSum() + getLoanSum()*((double)((getInterestPercent()/100)))){
+            if(debtAmount != getLoanSum() + getLoanSum()*(((double)getInterestPercent()/100))){
                 for (Fraction fraction : fractions) {
                     //LoanTransaction newLoanTransaction = null;
-                    PreTransaction preTransaction = null;
                     //try {
-                        double fundPart = fraction.getAmount() / (totalTimeUnit / paymentFrequency);
-                        double interestPart = fraction.getAmount() *((double)((interestPercent/100))) / (totalTimeUnit / paymentFrequency);
-                        preTransaction = new PreTransaction(fraction.getCustomer(), fundPart, interestPart,this);
-                        //newLoanTransaction = new LoanTransaction(this.borrower, fraction.getCustomer(), fundPart, interestPart);
-                        fraction.getCustomer().addPreTransaction(preTransaction);
+                        if(fraction.getConvertTime() != Bank.getGlobalTimeUnit()) {
+                            PreTransaction preTransaction = null;
+                            double fundPart = fraction.getAmount() / (totalTimeUnit / paymentFrequency);
+                            double interestPart = fraction.getAmount() * (((double) interestPercent / 100)) / (totalTimeUnit / paymentFrequency);
+                            preTransaction = new PreTransaction(fraction.getCustomer(), Bank.getGlobalTimeUnit(), fundPart, interestPart, this);
+                            //newLoanTransaction = new LoanTransaction(this.borrower, fraction.getCustomer(), fundPart, interestPart);
+                            getBorrower().addPreTransaction(preTransaction);
+                            fraction.setConvertTime(Bank.getGlobalTimeUnit());
+                        }
+                       // fraction.getCustomer().addPreTransaction(preTransaction);
                         //transactions.add(newLoanTransaction);
 
 
@@ -345,6 +354,7 @@ public class Loan implements Serializable {
         }
     }
     private void calcNextPaymentValue() {
+        //TODO fix this calc..
         double nextPayment = 0;
         for (Fraction fraction : fractions) {
             double fundPart = fraction.getAmount() / (getTotalTimeUnit() / getPaymentFrequency());

@@ -4,6 +4,7 @@ import bank.Customer;
 import java.io.Serializable;
 
 public class Fraction implements Serializable {
+    private int convertTime=0;
     private Customer customer;
     private double amount;
 
@@ -20,6 +21,15 @@ public class Fraction implements Serializable {
         return customer.getName();
     }
 
+
+    public int getConvertTime() {
+        return convertTime;
+    }
+
+    public void setConvertTime(int updateConvertTime) {
+        this.convertTime = updateConvertTime;
+    }
+
     public double getAmount() {
         return amount;
     }
@@ -31,5 +41,6 @@ public class Fraction implements Serializable {
                  " , "+ amount +
                 "} " ;
     }
+
 }
 

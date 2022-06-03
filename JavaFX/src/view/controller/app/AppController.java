@@ -97,7 +97,7 @@ public class AppController {
                 AnchorPane.setRightAnchor(customerComponent, 0.0);
                 AnchorPane.setTopAnchor(customerComponent, 0.0);
                 setCustomerComponentController(customerComponentController);
-                customerComponentController.loadCustomerDetails(userName);
+                customerComponentController.loadCustomerDetails(userName,false);
                 //TODO load scramble tab & payment tab
             } catch (IOException e) {
                 e.printStackTrace();
@@ -209,30 +209,32 @@ public class AppController {
     public Collection<LoanDto> getLoansDtoForScramble(int categoriesChosed, Set<String> chosenCategories, int minInterestPercent, int minTotalYaz, int maxOpenLoans, int maxOwnershipPercent, CustomerDto selectedCustomer) {
         Set<LoanDto> validLoans = new HashSet<>();
         for (LoanDto loanDto : myBank.getLoansDto()) {
-            if (!(loanDto.getBorrowerName().equals(selectedCustomer.getName()))) {
-                if (chosenCategories.contains(loanDto.getReason()) || categoriesChosed == -1) {
-                    if (loanDto.getInterestPercent() <= minInterestPercent || minInterestPercent == -1) {
-                        if (loanDto.getTotalTimeUnit() <= minTotalYaz || minTotalYaz == -1) {
-                            if ((loanDto.getRemainFund()) / (loanDto.getLoanSum()) <= maxOwnershipPercent || maxOwnershipPercent == -1) {
-                                if (maxOpenLoans == -1)
-                                    validLoans.add(loanDto);
-                                else {
-                                    Customer borrower = null;
-                                    for (Customer customer : myBank.getCustomers()) {
-                                        if (customer.getName().equals(loanDto.getBorrowerName())) {
-                                            borrower = customer;
-                                            break;
-                                        }
-                                    }
-                                    if (borrower != null) {
-                                        Set<LoanDto> loans = new HashSet<>();
-                                        for (Loan loan : myBank.getLoans()) {
-                                            if (loan.getStatus() != Status.Finished && loan.getBorrower().getName().equals(borrower.getName())) {
-                                                loans.add(loan.getLoanDto());
+            if (loanDto.getStatus() == Status.Pending) {
+                if (!(loanDto.getBorrowerName().equals(selectedCustomer.getName()))) {
+                    if (chosenCategories.contains(loanDto.getReason()) || categoriesChosed == -1) {
+                        if (loanDto.getInterestPercent() <= minInterestPercent || minInterestPercent == -1) {
+                            if (loanDto.getTotalTimeUnit() <= minTotalYaz || minTotalYaz == -1) {
+                                if ((loanDto.getRemainFund()) / (loanDto.getLoanSum()) <= maxOwnershipPercent || maxOwnershipPercent == -1) {
+                                    if (maxOpenLoans == -1)
+                                        validLoans.add(loanDto);
+                                    else {
+                                        Customer borrower = null;
+                                        for (Customer customer : myBank.getCustomers()) {
+                                            if (customer.getName().equals(loanDto.getBorrowerName())) {
+                                                borrower = customer;
+                                                break;
                                             }
                                         }
-                                        if (loans.size() <= maxOpenLoans) {
-                                            validLoans.add(loanDto);
+                                        if (borrower != null) {
+                                            Set<LoanDto> loans = new HashSet<>();
+                                            for (Loan loan : myBank.getLoans()) {
+                                                if (loan.getStatus() != Status.Finished && loan.getBorrower().getName().equals(borrower.getName())) {
+                                                    loans.add(loan.getLoanDto());
+                                                }
+                                            }
+                                            if (loans.size() <= maxOpenLoans) {
+                                                validLoans.add(loanDto);
+                                            }
                                         }
                                     }
                                 }
@@ -268,4 +270,5 @@ public class AppController {
         }
         return resCustomer;
     }
+
 }

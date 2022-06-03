@@ -8,6 +8,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <SplitPane dividerPositions="0.6402640264026402" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.controller.payment.PaymentController">
    <items>
@@ -17,7 +18,7 @@
                <items>
                   <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="350.0" minWidth="390.0" prefHeight="350.0" prefWidth="390.0">
                      <children>
-                        <TableView maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="200.0" minWidth="390.0" prefHeight="200.0" prefWidth="390.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <TableView fx:id="borrowerLoansTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="200.0" minWidth="390.0" prefHeight="200.0" prefWidth="390.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>
                   </AnchorPane>
                   <AnchorPane maxHeight="50.0" maxWidth="1.7976931348623157E308" minHeight="50.0" minWidth="390.0" prefHeight="50.0" prefWidth="390.0">
@@ -39,16 +40,13 @@
          <children>
             <BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="400.0" minWidth="210.0" prefHeight="400.0" prefWidth="210.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <top>
-                  <Label text="Notifications Area" BorderPane.alignment="CENTER" />
+                  <Label text="Notifications Area" BorderPane.alignment="CENTER">
+                     <font>
+                        <Font size="18.0" />
+                     </font></Label>
                </top>
                <center>
-                  <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
-                     <children>
-                        <Label text="Label" />
-                        <Label text="Label" />
-                        <Label text="Label" />
-                     </children>
-                  </VBox>
+                  <VBox fx:id="notificationsVBox" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER" />
                </center>
             </BorderPane>
          </children>

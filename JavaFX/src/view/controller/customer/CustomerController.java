@@ -63,7 +63,8 @@ public class CustomerController {
         return selectedCustomer;
     }
 
-    public void loadCustomerDetails(String userName) {
+    public void loadCustomerDetails(String userName, boolean fromScramble) {
+        appController.updateBankDtos();
         Collection<CustomerDto> customersDto = appController.getCustomersDto();
         for(CustomerDto customerDto : customersDto){
             if(customerDto.getName().equals(userName))
@@ -73,7 +74,9 @@ public class CustomerController {
             return;
         else { //Bank's customer
             informationComponentController.showInfoTable(selectedCustomer);
-            scrambleComponentController.loadScrambleInfo(selectedCustomer);
+            if(!fromScramble)
+                scrambleComponentController.loadScrambleInfo(selectedCustomer);
+            paymentComponentController.showPaymentInfo(selectedCustomer);
         }
     }
 
@@ -111,5 +114,13 @@ public class CustomerController {
 
     public Customer getSpecificCustomer(String name) {
         return appController.getSpecificCustomer(name);
+    }
+
+    public void showInfoTable(CustomerDto selectedCustomer) {
+        informationComponentController.showInfoTable(selectedCustomer);
+    }
+
+    public void updateBankDtos() {
+        appController.updateBankDtos();
     }
 }

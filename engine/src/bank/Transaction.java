@@ -49,7 +49,8 @@ public class Transaction implements Serializable {
     }
 
     public double getAmount() {
-        return amount;
+        double res = Math.abs(amount);
+        return res;
     }
 
     public int getTimeUnit() {

@@ -15,12 +15,11 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-
-<SplitPane dividerPositions="0.45" prefHeight="498.0" prefWidth="1092.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.controller.scramble.ScrambleController">
+<SplitPane dividerPositions="0.5954128440366973" prefHeight="498.0" prefWidth="1092.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.controller.scramble.ScrambleController">
    <items>
       <ScrollPane>
          <content>
-            <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="495.0" prefWidth="484.0">
+            <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="496.0" prefWidth="631.0">
               <columnConstraints>
                   <ColumnConstraints halignment="RIGHT" hgrow="NEVER" maxWidth="96.0" minWidth="3.0" prefWidth="40.0" />
                   <ColumnConstraints hgrow="NEVER" maxWidth="204.0" minWidth="10.0" prefWidth="163.0" />
@@ -39,7 +38,7 @@
                   <RowConstraints maxHeight="190.0" minHeight="10.0" prefHeight="61.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Slider fx:id="sumInvestSlider" blockIncrement="1.0" majorTickUnit="1.0" maxHeight="30.0" maxWidth="200.0" min="1.0" minorTickCount="0" onDragDetected="#changeSumInvest" onMouseClicked="#changeSumInvest" onMouseDragged="#changeSumInvest" prefHeight="30.0" prefWidth="10.0" value="1.0" GridPane.columnIndex="2" />
+                  <Slider fx:id="sumInvestSlider" blockIncrement="1.0" majorTickUnit="1.0" maxHeight="30.0" maxWidth="281.0" min="1.0" minorTickCount="0" onDragDetected="#changeSumInvest" onMouseClicked="#changeSumInvest" onMouseDragged="#changeSumInvest" prefHeight="30.0" prefWidth="281.0" snapToTicks="true" value="1.0" GridPane.columnIndex="2" />
                   <Label text="Sum to Invest:" GridPane.columnIndex="1" />
                   <Label contentDisplay="CENTER" text="Categories:" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                   <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="150.0" prefWidth="206.0" GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.rowSpan="2">
@@ -101,7 +100,7 @@
                         <Insets />
                      </GridPane.margin>
                   </Button>
-                  <Button fx:id="investButton" disable="true" minHeight="50.0" mnemonicParsing="false" onAction="#investLoan" prefHeight="50.0" prefWidth="100.0" text="Invest!" GridPane.columnIndex="2" GridPane.rowIndex="8">
+                  <Button fx:id="investButton" disable="true" minHeight="50.0" mnemonicParsing="false" onAction="#investLoan" prefHeight="50.0" prefWidth="100.0" text="Invest!" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="8">
                      <GridPane.margin>
                         <Insets />
                      </GridPane.margin>
