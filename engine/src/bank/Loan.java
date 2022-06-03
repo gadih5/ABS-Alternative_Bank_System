@@ -294,7 +294,6 @@ public class Loan implements Serializable {
     public void update() throws NegativeBalanceException {
         if(isActive&&remainTimeUnit>=0) {
             remainTimeUnit--;
-            System.out.println("this is the remain time unit after -- is" +remainTimeUnit);
 
         }
         if(Bank.getGlobalTimeUnit() != startTimeUnit && isActive() && (remainTimeUnit >= 0 )&& (((Bank.getGlobalTimeUnit() - startTimeUnit)%paymentFrequency==0) || paymentFrequency == 1))
@@ -325,11 +324,7 @@ public class Loan implements Serializable {
                             //newLoanTransaction = new LoanTransaction(this.borrower, fraction.getCustomer(), fundPart, interestPart);
                             getBorrower().addPreTransaction(preTransaction);
                             fraction.setConvertTime(Bank.getGlobalTimeUnit());
-                            System.out.println("THis is yaz "+Bank.getGlobalTimeUnit());
-                            System.out.println("before the nextpayment clac the nexpay is  "+nextPayment +" and the remain timeunit "+remainTimeUnit);
-
                             calcNextPayment();
-                            System.out.println("This is After "+nextPayment +" and the remain timeunit "+remainTimeUnit);
                             calcNextPaymentValue();
                         }
                        // fraction.getCustomer().addPreTransaction(preTransaction);
