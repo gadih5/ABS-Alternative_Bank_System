@@ -130,7 +130,7 @@ public class Loan implements Serializable {
         this.startTimeUnit = Bank.getGlobalTimeUnit();
     }
 
-    private void checkStatus(){
+    public void checkStatus(){
         if(amountToComplete == 0){
             setStatus(Status.Active);
         }
@@ -390,5 +390,19 @@ public class Loan implements Serializable {
 
     public void setRemainFund(double remainFund) {
         this.remainFund = remainFund;
+    }
+
+    public void checkRiskStatus(Collection<Customer> listOfCustomers) {
+        boolean allPaid = true;
+        for(Customer customer: listOfCustomers){
+            for(PreTransaction preTransaction: customer.getPreTransactions()){
+                if(preTransaction.getLoan() == this) {
+                    if (!preTransaction.isPaid())
+                        allPaid = false;
+                }
+            }
+        }
+        if(allPaid)
+            setStatus(Status.Active);
     }
 }

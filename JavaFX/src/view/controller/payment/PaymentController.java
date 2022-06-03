@@ -165,5 +165,9 @@ public class PaymentController {
     public CustomerDto getSpecificCustomerDto(String name) {
         return customerController.getSpecificCustomerDto(name);
     }
+
+    public void checkLoanStatus(Loan loanToCheck) {
+        customerController.checkLoanStatus(loanToCheck);
+    }
 }
 

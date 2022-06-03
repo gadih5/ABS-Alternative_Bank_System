@@ -67,6 +67,9 @@ public class AppController {
         try {
             myBank.updateGlobalTimeUnit();
             headerComponentController.updateYazLabel(myBank.getSyncGlobalTimeUnit());
+            for(Loan loan: myBank.getLoans()){
+                loan.checkRiskStatus(myBank.getCustomers());
+            }
 
         } catch (NegativeBalanceException e) {
             //TODO in the new version the customers actively pays their payments and debts,
@@ -279,5 +282,9 @@ public class AppController {
             }
         }
         return resCustomerDto;
+    }
+
+    public void checkLoanStatus(Loan loanToCheck) {
+        loanToCheck.checkRiskStatus(myBank.getCustomers());
     }
 }

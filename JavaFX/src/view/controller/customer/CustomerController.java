@@ -127,4 +127,8 @@ public class CustomerController {
     public CustomerDto getSpecificCustomerDto(String name) {
         return appController.getSpecificCustomerDto(name);
     }
+
+    public void checkLoanStatus(Loan loanToCheck) {
+        appController.checkLoanStatus(loanToCheck);
+    }
 }

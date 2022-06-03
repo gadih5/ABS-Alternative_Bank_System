@@ -40,6 +40,7 @@ public class PayDialogController {
     public void payPayment(ActionEvent actionEvent) {
         ObservableList<PreTransaction> listOfPreTransactions = paymentsTableView.getSelectionModel().getSelectedItems();
         if(listOfPreTransactions != null){
+            Loan loanToCheck = listOfPreTransactions.get(0).getLoan();
             Customer fromCustomer = paymentController.getSpecificCustomer((selectedCustomer.getName()));
             for(PreTransaction preTransaction: listOfPreTransactions){
                 try {
@@ -59,6 +60,7 @@ public class PayDialogController {
                     alert.showAndWait();
                 }
             }
+            paymentController.checkLoanStatus(loanToCheck);
         }
         else{
             Alert alert = new Alert(Alert.AlertType.WARNING);
