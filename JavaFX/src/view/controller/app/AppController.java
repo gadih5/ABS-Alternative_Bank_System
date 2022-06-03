@@ -88,7 +88,8 @@ public class AppController {
 
 
             for(Loan loan: myBank.getLoans()){
-                loan.checkRiskStatus(myBank.getCustomers());
+                if(loan.getStatus() != Status.Finished)
+                    loan.checkRiskStatus(myBank.getCustomers());
             }
 
 
@@ -304,6 +305,7 @@ public class AppController {
     }
 
     public void checkLoanStatus(Loan loanToCheck) {
-        loanToCheck.checkRiskStatus(myBank.getCustomers());
+        if(loanToCheck.getStatus() != Status.Finished)
+            loanToCheck.checkRiskStatus(myBank.getCustomers());
     }
 }

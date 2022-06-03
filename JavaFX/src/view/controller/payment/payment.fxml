@@ -18,7 +18,7 @@
                <items>
                   <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="350.0" minWidth="390.0" prefHeight="350.0" prefWidth="390.0">
                      <children>
-                        <TableView fx:id="borrowerLoansTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="200.0" minWidth="390.0" prefHeight="200.0" prefWidth="390.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <TableView fx:id="borrowerLoansTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="200.0" minWidth="390.0" onMouseClicked="#tableClicked" prefHeight="200.0" prefWidth="390.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>
                   </AnchorPane>
                   <AnchorPane maxHeight="50.0" maxWidth="1.7976931348623157E308" minHeight="50.0" minWidth="390.0" prefHeight="50.0" prefWidth="390.0">
@@ -26,8 +26,7 @@
                         <HBox alignment="CENTER" prefHeight="50.0" prefWidth="390.0" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
                               <Button fx:id="payButton" disable="true" maxHeight="35.0" maxWidth="100.0" minHeight="35.0" minWidth="100.0" mnemonicParsing="false" onAction="#openPayDialog" prefHeight="35.0" prefWidth="100.0" text="Pay" />
-                              <Button maxHeight="35.0" maxWidth="100.0" minHeight="35.0" minWidth="100.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="100.0" text="Button" />
-                              <Button maxHeight="35.0" maxWidth="100.0" minHeight="35.0" minWidth="100.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="100.0" text="Button" />
+                              <Button fx:id="payEntireButton" disable="true" maxHeight="35.0" maxWidth="100.0" minHeight="35.0" minWidth="100.0" mnemonicParsing="false" onAction="#payEntireLoan" prefHeight="35.0" prefWidth="100.0" text="Pay Entire Loan" />
                            </children>
                         </HBox>
                      </children>

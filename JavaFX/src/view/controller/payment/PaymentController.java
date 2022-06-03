@@ -1,9 +1,7 @@
 package view.controller.payment;
 
-import bank.Customer;
-import bank.CustomerDto;
-import bank.Loan;
-import bank.PreTransaction;
+import bank.*;
+import bank.exception.NegativeBalanceException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -12,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import view.controller.customer.CustomerController;
@@ -36,6 +35,8 @@ public class PaymentController {
     @FXML
     private ScrollPane payDialogComponent;
     @FXML
+    private Button payEntireButton;
+    @FXML
     private PayDialogController payDialogComponentController;
     private CustomerDto selectedCustomer;
 
@@ -59,8 +60,6 @@ public class PaymentController {
             payButton.setDisable(false);
 
     }
-
-
 
     @FXML
     private void makeBorrowerLoansTable(Collection<Loan> outgoingLoans) {
@@ -107,7 +106,7 @@ public class PaymentController {
         borrowerLoansTable.setItems(null);
         Set<Loan> setOfLoans = new HashSet<>();
         for(Loan loan: outgoingLoans){
-            if(loan.isActive()){
+            if(loan.isActive() && loan.getStatus() != Status.Finished){
                 setOfLoans.add(loan);
             }
         }
@@ -169,6 +168,48 @@ public class PaymentController {
 
     public void checkLoanStatus(Loan loanToCheck) {
         customerController.checkLoanStatus(loanToCheck);
+    }
+
+    public void payEntireLoan(ActionEvent actionEvent) {
+
+        Loan selectedLoan = borrowerLoansTable.getSelectionModel().getSelectedItem();
+        int leftPayments = selectedLoan.getRemainTimeUnit()/selectedLoan.getPaymentFrequency();
+        for(Fraction fraction: selectedLoan.getLoanDto().getFractions()){
+            double singlePayment = (fraction.getAmount() + (fraction.getAmount() * (selectedLoan.getInterestPercent())/100.0)) / (selectedLoan.getTotalTimeUnit() / selectedLoan.getPaymentFrequency());
+            double totalPaymentAmount = singlePayment * leftPayments;
+            Customer customer = customerController.getSpecificCustomer(selectedCustomer.getName());
+            for(PreTransaction preTransaction: customer.getPreTransactions()){
+                if(!preTransaction.isPaid() && preTransaction.getLoan() == selectedLoan){
+                    totalPaymentAmount += preTransaction.getSum();
+                }
+            }
+            try {
+                customer.addTransaction(new Transaction(customer, fraction.getCustomer(),totalPaymentAmount));
+                customer.clearAllPreTransactions(selectedLoan);
+                selectedLoan.clearAllDebts();
+                selectedLoan.setStatus(Status.Finished);
+                customerController.showInfoTable(customer.getCustomerDto());
+                showPaymentInfo(customer.getCustomerDto());
+
+            } catch (NegativeBalanceException e) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Warning Dialog");
+                alert.setHeaderText("Warning: Negative Balance");
+                alert.setContentText(customer.getName() + " not have enough money in account balance");
+                alert.showAndWait();
+            }
+
+        }
+
+    }
+
+    public void tableClicked(MouseEvent mouseEvent) {
+        if(!borrowerLoansTable.getItems().isEmpty()){
+            Loan selectedLoan = borrowerLoansTable.getSelectionModel().getSelectedItem();
+            if(selectedLoan != null){
+                payEntireButton.setDisable(false);
+            }
+        }
     }
 }
 

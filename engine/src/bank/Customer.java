@@ -96,5 +96,16 @@ public class Customer implements Serializable {
     public void addPreTransaction(PreTransaction preTransaction) {
         preTransactions.add(preTransaction);
     }
+
+
+    public void clearAllPreTransactions(Loan selectedLoan) {
+        ArrayList<PreTransaction> preTransactionsToRemove = new ArrayList<>();
+        for(PreTransaction preTransaction: preTransactions){
+            if(preTransaction.getLoan() == selectedLoan){
+                preTransactionsToRemove.add(preTransaction);
+            }
+        }
+        preTransactions.removeAll(preTransactionsToRemove);
+    }
 }
 

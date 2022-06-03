@@ -3,7 +3,6 @@ package bank;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 
 import bank.exception.*;
 
@@ -203,7 +202,7 @@ public class Loan implements Serializable {
         this.sumOfDebts = sumOfDebts;
     }
 
-    protected int getTotalTimeUnit() {
+    public int getTotalTimeUnit() {
         return totalTimeUnit;
     }
 
@@ -223,7 +222,7 @@ public class Loan implements Serializable {
         return fractions;
     }
 
-    protected int getRemainTimeUnit() {
+    public int getRemainTimeUnit() {
         return remainTimeUnit;
     }
 
@@ -296,7 +295,7 @@ public class Loan implements Serializable {
             remainTimeUnit--;
 
         }
-        if(Bank.getGlobalTimeUnit() != startTimeUnit && isActive() && (remainTimeUnit >= 0 )&& (((Bank.getGlobalTimeUnit() - startTimeUnit)%paymentFrequency==0) || paymentFrequency == 1))
+        if(this.getStatus() != Status.Finished && Bank.getGlobalTimeUnit() != startTimeUnit && isActive() && (remainTimeUnit >= 0 )&& (((Bank.getGlobalTimeUnit() - startTimeUnit)%paymentFrequency==0) || paymentFrequency == 1))
         {
             if (this.status == status.Risk) {
                 //Collections.sort(uncompletedTransactions);
@@ -407,5 +406,9 @@ public class Loan implements Serializable {
             }
         }
 
+    }
+
+    public void clearAllDebts() {
+        uncompletedTransactions.clear();
     }
 }

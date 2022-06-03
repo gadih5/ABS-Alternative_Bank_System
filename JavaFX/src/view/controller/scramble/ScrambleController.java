@@ -22,6 +22,7 @@ import javafx.scene.layout.AnchorPane;
 import view.controller.customer.CustomerController;
 import javafx.scene.layout.VBox;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -285,14 +286,22 @@ public class ScrambleController {
     }
 
     public void investLoan(ActionEvent actionEvent) throws InterruptedException {
+        investButton.setText("3");
+        TimeUnit.SECONDS.sleep(1);
+        investButton.setText("2");
+        TimeUnit.SECONDS.sleep(1);
+        investButton.setText("1");
+        TimeUnit.SECONDS.sleep(1);
+        investButton.setText("Invested!!!");
+        TimeUnit.SECONDS.sleep(1);
+        investButton.setText("Invest!");
+
         new Thread(task).start();
         customerController.loadCustomerDetails(selectedCustomer.getName(), true);
-        //showValidLoansInTable();
         customerController.updateBankDtos();
+        showValidLoansInTable();
+
         customerController.refershInfo(selectedCustomer);
-
-
-
 
     }
 
@@ -300,6 +309,11 @@ public class ScrambleController {
     Task<Integer>task= new Task<Integer>() {
         @Override
         protected Integer call() throws InterruptedException {
+
+            taskHelper();
+
+/*
+
             Platform.runLater(() -> {
                     investButton.setText("3");
 
@@ -331,70 +345,76 @@ public class ScrambleController {
                 investButton.setText("Invest!");
 
             });
+*/
 
-
-            ObservableList<LoanDto> list = loansTable.getSelectionModel().getSelectedItems();
-            ArrayList<LoanDto> listOfLoans = new ArrayList<>();
-            listOfLoans.addAll(list);
-            loansTable.getSelectionModel().clearSelection();
-
-            if (listOfLoans.isEmpty()) {
-
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error Dialog");
-                alert.setHeaderText("Error: No Loan Selected");
-                alert.setContentText("Please make any selection, click OK and try again:");
-                alert.showAndWait();
-           } else {
-                double sumToinvest;
-                double  perLoanInvest = (sumInvestSlider.getValue() / listOfLoans.size());
-                for (LoanDto loanDto : listOfLoans) {
-                     if(maxOwnerShipPercentCheckBox.isSelected()) {
-                         double temp = ((loanDto.getLoanSum()) *(((int)maxOwnershipPercentSlider.getValue())/100.0));
-                         if(temp<=perLoanInvest){
-                             sumToinvest=temp;
-                         }
-                         else{
-                             sumToinvest=perLoanInvest;
-                         }
-
-                        }else{
-                         sumToinvest=perLoanInvest;
-                     }
-                    try {
-                        Loan loan = customerController.getSpecificLoan(loanDto.getLoanName());
-                        Customer customer = customerController.getSpecificCustomer(selectedCustomer.getName());
-                        if (sumToinvest > loanDto.getAmountToComplete()) {
-                            sumToinvest = loanDto.getAmountToComplete();
-                            loan.addLoaner(customer, sumToinvest);
-                        } else {
-                            loan.addLoaner(customer, sumToinvest);
-                        }
-
-
-                    } catch (NegativeBalanceException e) {
-                        Alert alert = new Alert(Alert.AlertType.WARNING);
-                        alert.setTitle("Warning Dialog");
-                        alert.setHeaderText("Warning: Negative Balance");
-                        alert.setContentText(selectedCustomer.getName() + " not have enough money in account balance");
-                    }
-                }
-            }
-            //TODO: give some indication that the investment done.. (cause this dont work :| )
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Information Dialog");
-            alert.setHeaderText("Info: Scramble Succeed!");
-            alert.setContentText(selectedCustomer.getName() + " successfully invested all chosen loans.");
-                 //customerController.updateBankDtos();
-            //customerController.showInfoTable(selectedCustomer);
-            customerController.loadCustomerDetails(selectedCustomer.getName(), false);
-            showValidLoansInTable();
-            customerController.refershInfo(selectedCustomer);
 
 
             return 1;
         }
 
     };
-};
+
+    synchronized private void taskHelper(){
+        ObservableList<LoanDto> list = loansTable.getSelectionModel().getSelectedItems();
+        ArrayList<LoanDto> listOfLoans = new ArrayList<>();
+        listOfLoans.addAll(list);
+        loansTable.getSelectionModel().clearSelection();
+
+        if (listOfLoans.isEmpty()) {
+
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Dialog");
+            alert.setHeaderText("Error: No Loan Selected");
+            alert.setContentText("Please make any selection, click OK and try again:");
+            alert.showAndWait();
+        } else {
+            double sumToinvest;
+            double  perLoanInvest = (sumInvestSlider.getValue() / listOfLoans.size());
+            for (LoanDto loanDto : listOfLoans) {
+                if(maxOwnerShipPercentCheckBox.isSelected()) {
+                    double temp = ((loanDto.getLoanSum()) *(((int)maxOwnershipPercentSlider.getValue())/100.0));
+                    if(temp<=perLoanInvest){
+                        sumToinvest=temp;
+                    }
+                    else{
+                        sumToinvest=perLoanInvest;
+                    }
+
+                }else{
+                    sumToinvest=perLoanInvest;
+                }
+                try {
+                    Loan loan = customerController.getSpecificLoan(loanDto.getLoanName());
+                    Customer customer = customerController.getSpecificCustomer(selectedCustomer.getName());
+                    if (sumToinvest > loanDto.getAmountToComplete()) {
+                        sumToinvest = loanDto.getAmountToComplete();
+                        loan.addLoaner(customer, sumToinvest);
+                    } else {
+                        loan.addLoaner(customer, sumToinvest);
+                    }
+
+
+                } catch (NegativeBalanceException e) {
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setTitle("Warning Dialog");
+                    alert.setHeaderText("Warning: Negative Balance");
+                    alert.setContentText(selectedCustomer.getName() + " not have enough money in account balance");
+                }
+            }
+        }
+        //TODO: give some indication that the investment done.. (cause this dont work :| )
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Information Dialog");
+        alert.setHeaderText("Info: Scramble Succeed!");
+        alert.setContentText(selectedCustomer.getName() + " successfully invested all chosen loans.");
+        //customerController.updateBankDtos();
+        //customerController.showInfoTable(selectedCustomer);
+        customerController.loadCustomerDetails(selectedCustomer.getName(), false);
+        showValidLoansInTable();
+        customerController.refershInfo(selectedCustomer);
+
+    }
+}
+
+
 
