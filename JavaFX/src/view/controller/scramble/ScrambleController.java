@@ -5,6 +5,7 @@ import bank.CustomerDto;
 import bank.Loan;
 import bank.LoanDto;
 import bank.exception.NegativeBalanceException;
+import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -25,6 +26,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+import javafx.concurrent.Task;
 
 public class ScrambleController {
 
@@ -183,7 +187,7 @@ public class ScrambleController {
         investButton.setVisible(true);
     }
 
-    private void showValidLoansInTable() {
+    public void showValidLoansInTable() {
 
         TableColumn nameColumn = new TableColumn("Loan Name");
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("loanName"));
@@ -280,51 +284,117 @@ public class ScrambleController {
         loansTable.setItems(listOfLoansDto);
     }
 
-    public void investLoan(ActionEvent actionEvent) {
+    public void investLoan(ActionEvent actionEvent) throws InterruptedException {
+        new Thread(task).start();
+        customerController.loadCustomerDetails(selectedCustomer.getName(), true);
+        //showValidLoansInTable();
+        customerController.updateBankDtos();
+        customerController.refershInfo(selectedCustomer);
 
-        ObservableList<LoanDto>list =  loansTable.getSelectionModel().getSelectedItems();
-        ArrayList<LoanDto> listOfLoans = new ArrayList<>();
-        listOfLoans.addAll(list);
-        loansTable.getSelectionModel().clearSelection();
 
-        if (listOfLoans.isEmpty()){
+
+
+    }
+
+
+    Task<Integer>task= new Task<Integer>() {
+        @Override
+        protected Integer call() throws InterruptedException {
+            Platform.runLater(() -> {
+                    investButton.setText("3");
+
+            });
+            TimeUnit.SECONDS.sleep(1);
+            Platform.runLater(() -> {
+
+                    investButton.setText("2");
+
+              });
+            TimeUnit.SECONDS.sleep(1);
+            Platform.runLater(() -> {
+
+                    investButton.setText("1");
+
+
+                            });
+            TimeUnit.SECONDS.sleep(1);
+            Platform.runLater(() -> {
+
+                investButton.setText("Invested!!!");
+
+
+
+            });
+            TimeUnit.SECONDS.sleep(1);
+            Platform.runLater(() -> {
+
+                investButton.setText("Invest!");
+
+            });
+
+
+            ObservableList<LoanDto> list = loansTable.getSelectionModel().getSelectedItems();
+            ArrayList<LoanDto> listOfLoans = new ArrayList<>();
+            listOfLoans.addAll(list);
+            loansTable.getSelectionModel().clearSelection();
+
+            if (listOfLoans.isEmpty()) {
+
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error Dialog");
                 alert.setHeaderText("Error: No Loan Selected");
                 alert.setContentText("Please make any selection, click OK and try again:");
                 alert.showAndWait();
-            } else {
-            for (LoanDto loanDto : listOfLoans){
-                double perLoanInvest = sumInvestSlider.getValue() / listOfLoans.size();
-                try {
-                    Loan loan = customerController.getSpecificLoan(loanDto.getLoanName());
-                    Customer customer = customerController.getSpecificCustomer(selectedCustomer.getName());
-                    if(perLoanInvest > loanDto.getAmountToComplete()){
-                        perLoanInvest = loanDto.getAmountToComplete();
-                        loan.addLoaner(customer, perLoanInvest);
-                    }
-                    else {
-                        loan.addLoaner(customer, perLoanInvest);
-                    }
+           } else {
+                double sumToinvest;
+                double  perLoanInvest = (sumInvestSlider.getValue() / listOfLoans.size());
+                for (LoanDto loanDto : listOfLoans) {
+                     if(maxOwnerShipPercentCheckBox.isSelected()) {
+                         double temp = ((loanDto.getLoanSum()) *(((int)maxOwnershipPercentSlider.getValue())/100.0));
+                         if(temp<=perLoanInvest){
+                             sumToinvest=temp;
+                         }
+                         else{
+                             sumToinvest=perLoanInvest;
+                         }
+
+                        }else{
+                         sumToinvest=perLoanInvest;
+                     }
+                    try {
+                        Loan loan = customerController.getSpecificLoan(loanDto.getLoanName());
+                        Customer customer = customerController.getSpecificCustomer(selectedCustomer.getName());
+                        if (sumToinvest > loanDto.getAmountToComplete()) {
+                            sumToinvest = loanDto.getAmountToComplete();
+                            loan.addLoaner(customer, sumToinvest);
+                        } else {
+                            loan.addLoaner(customer, sumToinvest);
+                        }
 
 
-                } catch (NegativeBalanceException e) {
-                    Alert alert = new Alert(Alert.AlertType.WARNING);
-                    alert.setTitle("Warning Dialog");
-                    alert.setHeaderText("Warning: Negative Balance");
-                    alert.setContentText(selectedCustomer.getName() + " not have enough money in account balance");
+                    } catch (NegativeBalanceException e) {
+                        Alert alert = new Alert(Alert.AlertType.WARNING);
+                        alert.setTitle("Warning Dialog");
+                        alert.setHeaderText("Warning: Negative Balance");
+                        alert.setContentText(selectedCustomer.getName() + " not have enough money in account balance");
+                    }
                 }
             }
-        }
-        //TODO: give some indication that the investment done.. (cause this dont work :| )
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Information Dialog");
-        alert.setHeaderText("Info: Scramble Succeed!");
-        alert.setContentText(selectedCustomer.getName() + " successfully invested all chosen loans.");
+            //TODO: give some indication that the investment done.. (cause this dont work :| )
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Information Dialog");
+            alert.setHeaderText("Info: Scramble Succeed!");
+            alert.setContentText(selectedCustomer.getName() + " successfully invested all chosen loans.");
+                 //customerController.updateBankDtos();
+            //customerController.showInfoTable(selectedCustomer);
+            customerController.loadCustomerDetails(selectedCustomer.getName(), false);
+            showValidLoansInTable();
+            customerController.refershInfo(selectedCustomer);
 
-        showValidLoansInTable();
-        //customerController.updateBankDtos();
-        //customerController.showInfoTable(selectedCustomer);
-        customerController.loadCustomerDetails(selectedCustomer.getName(),true);
-    }
-}
+
+            return 1;
+        }
+
+    };
+};
+

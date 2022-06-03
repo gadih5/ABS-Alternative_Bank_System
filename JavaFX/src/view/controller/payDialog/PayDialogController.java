@@ -46,8 +46,10 @@ public class PayDialogController {
                 try {
                     preTransaction.makeTransaction(fromCustomer);
                     paymentController.showNotifications();
-                    paymentController.updateAllDtos();
+                    paymentController.showPaymentInfo(selectedCustomer);
+
                     selectedCustomer = paymentController.getSpecificCustomerDto(selectedCustomer.getName());
+                    paymentController.updateAllDtos();
                     paymentController.showInfoTable(selectedCustomer);
                     Stage stage = (Stage) cancelBtn.getScene().getWindow();
                     stage.close();

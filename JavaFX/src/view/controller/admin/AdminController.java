@@ -145,6 +145,7 @@ public class AdminController{
 
     public void moveTimeline(ActionEvent actionEvent) {
         appController.updateYaz();
+
     }
 
     public void setMainController(AppController appController) {

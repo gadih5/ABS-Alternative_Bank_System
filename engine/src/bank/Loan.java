@@ -397,12 +397,15 @@ public class Loan implements Serializable {
         for(Customer customer: listOfCustomers){
             for(PreTransaction preTransaction: customer.getPreTransactions()){
                 if(preTransaction.getLoan() == this) {
-                    if (!preTransaction.isPaid())
+                    if (!preTransaction.isPaid()){
                         allPaid = false;
+
+                    }else{
+                        setStatus(Status.Active);
+                    }
                 }
             }
         }
-        if(allPaid)
-            setStatus(Status.Active);
+
     }
 }

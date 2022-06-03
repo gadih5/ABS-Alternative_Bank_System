@@ -131,4 +131,8 @@ public class CustomerController {
     public void checkLoanStatus(Loan loanToCheck) {
         appController.checkLoanStatus(loanToCheck);
     }
+
+    public void refershInfo(CustomerDto customerDto) {
+        informationComponentController.showInfoTable(customerDto);
+    }
 }

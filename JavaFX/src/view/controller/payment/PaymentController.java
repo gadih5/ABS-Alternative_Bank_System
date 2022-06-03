@@ -136,6 +136,7 @@ public class PaymentController {
                 Stage stage = new Stage();
                 stage.setScene(dialogScene);
                 stage.show();
+
             } catch (IOException e) {
                 e.printStackTrace();
             }

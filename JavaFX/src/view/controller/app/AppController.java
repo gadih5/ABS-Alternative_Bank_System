@@ -13,6 +13,9 @@ import javafx.scene.layout.VBox;
 import view.controller.admin.AdminController;
 import view.controller.customer.CustomerController;
 import view.controller.header.HeaderController;
+import view.controller.payment.PaymentController;
+import view.controller.scramble.ScrambleController;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
@@ -32,6 +35,10 @@ public class AppController {
     private TabPane customerComponent;
     @FXML
     private CustomerController customerComponentController;
+    @FXML
+    private ScrambleController scrambleController;
+    @FXML
+    private PaymentController paymentController;
     @FXML
     private AnchorPane bodyAnchorPane;
     private Bank myBank = new Bank();
@@ -63,13 +70,27 @@ public class AppController {
         headerComponentController.updatePathLabel(filePath);
     }
 
+    public void setScrambleController(ScrambleController scrambleController) {
+        this.scrambleController = scrambleController;
+
+    }
+
+    public void setPaymentController(PaymentController paymentController) {
+        this.paymentController = paymentController;
+
+    }
+
     public void updateYaz() {
         try {
             myBank.updateGlobalTimeUnit();
             headerComponentController.updateYazLabel(myBank.getSyncGlobalTimeUnit());
+            adminComponentController.showAdminScreen();
+
+
             for(Loan loan: myBank.getLoans()){
                 loan.checkRiskStatus(myBank.getCustomers());
             }
+
 
         } catch (NegativeBalanceException e) {
             //TODO in the new version the customers actively pays their payments and debts,
@@ -80,6 +101,7 @@ public class AppController {
     }
 
     public void changeBody(String userName) {
+        adminComponentController.showAdminScreen();
         if (userName.equals("Admin")) {
             bodyAnchorPane.getChildren().set(0, adminComponent);
             AnchorPane.setBottomAnchor(adminComponent, 0.0);
@@ -101,7 +123,6 @@ public class AppController {
                 AnchorPane.setTopAnchor(customerComponent, 0.0);
                 setCustomerComponentController(customerComponentController);
                 customerComponentController.loadCustomerDetails(userName,false);
-                //TODO load scramble tab & payment tab
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -217,8 +238,7 @@ public class AppController {
                     if (chosenCategories.contains(loanDto.getReason()) || categoriesChosed == -1) {
                         if (loanDto.getInterestPercent() <= minInterestPercent || minInterestPercent == -1) {
                             if (loanDto.getTotalTimeUnit() <= minTotalYaz || minTotalYaz == -1) {
-                                if ((loanDto.getRemainFund()) / (loanDto.getLoanSum()) <= maxOwnershipPercent || maxOwnershipPercent == -1) {
-                                    if (maxOpenLoans == -1)
+                                 if (maxOpenLoans == -1)
                                         validLoans.add(loanDto);
                                     else {
                                         Customer borrower = null;
@@ -246,8 +266,7 @@ public class AppController {
                     }
                 }
             }
-        }
-    return validLoans;
+            return validLoans;
     }
 
     public void updateBankDtos() {
