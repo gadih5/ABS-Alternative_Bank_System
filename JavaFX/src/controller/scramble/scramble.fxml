@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<SplitPane dividerPositions="0.5954128440366973" prefHeight="498.0" prefWidth="1092.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.scramble.ScrambleController">
+   <items>
+      <ScrollPane>
+         <content>
+            <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="496.0" prefWidth="631.0">
+              <columnConstraints>
+                  <ColumnConstraints halignment="RIGHT" hgrow="NEVER" maxWidth="96.0" minWidth="3.0" prefWidth="40.0" />
+                  <ColumnConstraints hgrow="NEVER" maxWidth="204.0" minWidth="10.0" prefWidth="163.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="333.0" minWidth="10.0" prefWidth="207.0" />
+                <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" maxWidth="265.0" minWidth="10.0" prefWidth="80.0" />
+              </columnConstraints>
+              <rowConstraints>
+                  <RowConstraints maxHeight="104.0" minHeight="10.0" prefHeight="59.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="114.0" minHeight="10.0" prefHeight="24.0" vgrow="ALWAYS" />
+                  <RowConstraints maxHeight="144.0" minHeight="10.0" prefHeight="130.0" vgrow="ALWAYS" />
+                <RowConstraints maxHeight="143.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="133.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="128.0" minHeight="0.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="139.0" minHeight="0.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="164.0" minHeight="10.0" prefHeight="61.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="190.0" minHeight="10.0" prefHeight="61.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Slider fx:id="sumInvestSlider" blockIncrement="1.0" majorTickUnit="1.0" maxHeight="30.0" maxWidth="281.0" min="1.0" minorTickCount="0" onDragDetected="#changeSumInvest" onMouseClicked="#changeSumInvest" onMouseDragged="#changeSumInvest" prefHeight="30.0" prefWidth="281.0" snapToTicks="true" value="1.0" GridPane.columnIndex="2" />
+                  <Label text="Sum to Invest:" GridPane.columnIndex="1" />
+                  <Label contentDisplay="CENTER" text="Categories:" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="150.0" prefWidth="206.0" GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.rowSpan="2">
+                     <GridPane.margin>
+                        <Insets bottom="5.0" />
+                     </GridPane.margin>
+                     <content>
+                        <AnchorPane prefHeight="146.0" prefWidth="194.0">
+                           <children>
+                              <VBox fx:id="categoriesVBox" disable="true" prefHeight="138.0" prefWidth="188.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <padding>
+                                    <Insets left="5.0" top="5.0" />
+                                 </padding>
+                              </VBox>
+                           </children>
+                        </AnchorPane>
+                     </content>
+                  </ScrollPane>
+                  <Label text="Min Interest Percent:" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <Label text="Min Total YAZ:" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                  <Label text="Max Loaner's Open Loans: " GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                  <Label text="Max Ownership Percent:" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                  <Slider fx:id="maxOwnershipPercentSlider" blockIncrement="1.0" disable="true" majorTickUnit="9.0" min="1.0" minorTickCount="1" onDragDetected="#changeOwnershipPercent" onMouseClicked="#changeOwnershipPercent" onMouseDragged="#changeOwnershipPercent" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+                  <CheckBox fx:id="categoriesCheckBox" mnemonicParsing="false" onAction="#categoriesCheckBoxPressed" GridPane.rowIndex="1">
+                     <GridPane.margin>
+                        <Insets />
+                     </GridPane.margin>
+                  </CheckBox>
+                  <CheckBox fx:id="minInterestPercentCheckBox" mnemonicParsing="false" onAction="#minInterestPercentCheckBoxPressed" GridPane.rowIndex="3">
+                     <GridPane.margin>
+                        <Insets />
+                     </GridPane.margin>
+                  </CheckBox>
+                  <CheckBox fx:id="minTotalYazCheckBox" mnemonicParsing="false" onAction="#minTotalYazCheckBoxPressed" GridPane.rowIndex="4">
+                     <GridPane.margin>
+                        <Insets />
+                     </GridPane.margin>
+                  </CheckBox>
+                  <CheckBox fx:id="maxOpenLoansCheckBox" mnemonicParsing="false" onAction="#maxOpenLoansCheckBoxPressed" GridPane.rowIndex="5">
+                     <GridPane.margin>
+                        <Insets />
+                     </GridPane.margin>
+                  </CheckBox>
+                  <CheckBox fx:id="maxOwnerShipPercentCheckBox" mnemonicParsing="false" onAction="#maxOwnerShipPercentCheckBoxPressed" GridPane.rowIndex="6">
+                     <GridPane.margin>
+                        <Insets />
+                     </GridPane.margin>
+                  </CheckBox>
+                  <TextField fx:id="sumInvestTextField" editable="false" prefHeight="25.0" prefWidth="70.0" GridPane.columnIndex="3" />
+                  <Slider fx:id="minInterestPercentSlider" blockIncrement="1.0" disable="true" onDragDetected="#changeInterestPercent" onMouseClicked="#changeInterestPercent" onMouseDragged="#changeInterestPercent" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                  <Slider fx:id="minTotalYazSlider" blockIncrement="1.0" disable="true" min="1.0" onDragDetected="#changeTotalYaz" onMouseClicked="#changeTotalYaz" onMouseDragged="#changeTotalYaz" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                  <Slider fx:id="maxOpenLoansSlider" blockIncrement="1.0" disable="true" min="1.0" onDragDetected="#changeLoanersOpenLoans" onMouseClicked="#changeLoanersOpenLoans" onMouseDragged="#changeLoanersOpenLoans" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                  <TextField fx:id="minInterestPercentTextField" editable="false" prefWidth="70.0" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                  <TextField fx:id="minTotalYazTextField" editable="false" prefWidth="70.0" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+                  <TextField fx:id="maxOpenLoansTextField" editable="false" prefWidth="70.0" GridPane.columnIndex="3" GridPane.rowIndex="5" />
+                  <TextField fx:id="maxOwnerShipPercentTextField" editable="false" prefWidth="70.0" GridPane.columnIndex="3" GridPane.rowIndex="6" />
+                  <Button fx:id="applyButton" disable="true" mnemonicParsing="false" onAction="#applyButtonClicked" prefHeight="50.0" prefWidth="100.0" text="Apply" GridPane.columnIndex="2" GridPane.rowIndex="7">
+                     <GridPane.margin>
+                        <Insets />
+                     </GridPane.margin>
+                  </Button>
+                  <Button fx:id="investButton" disable="true" minHeight="50.0" mnemonicParsing="false" onAction="#investLoan" prefHeight="50.0" prefWidth="100.0" text="Invest!" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="8">
+                     <GridPane.margin>
+                        <Insets />
+                     </GridPane.margin>
+                  </Button>
+               </children>
+            </GridPane>
+         </content>
+      </ScrollPane>
+      <TableView fx:id="loansTable" editable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="180.0" minWidth="167.0" prefHeight="300.0" prefWidth="600.0" />
+   </items>
+</SplitPane>
