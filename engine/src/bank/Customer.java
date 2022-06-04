@@ -107,5 +107,13 @@ public class Customer implements Serializable {
         }
         preTransactions.removeAll(preTransactionsToRemove);
     }
+
+    public void makeAllPreTransactionsPaid(Loan selectedLoan) {
+        for(PreTransaction preTransaction: preTransactions){
+            if(preTransaction.getLoan() == selectedLoan){
+                preTransaction.setPaid(true);
+            }
+        }
+    }
 }
 

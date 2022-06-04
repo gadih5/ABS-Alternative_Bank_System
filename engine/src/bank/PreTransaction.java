@@ -38,6 +38,10 @@ public class PreTransaction {
         return payTime;
     }
 
+    public void setPaid(boolean paid) {
+        this.paid = paid;
+    }
+
     public double getFundPart() {
         return fundPart;
     }

@@ -185,7 +185,8 @@ public class PaymentController {
             }
             try {
                 customer.addTransaction(new Transaction(customer, fraction.getCustomer(),totalPaymentAmount));
-                customer.clearAllPreTransactions(selectedLoan);
+                //customer.clearAllPreTransactions(selectedLoan);
+                customer.makeAllPreTransactionsPaid(selectedLoan);
                 selectedLoan.clearAllDebts();
                 selectedLoan.setStatus(Status.Finished);
                 customerController.showInfoTable(customer.getCustomerDto());
