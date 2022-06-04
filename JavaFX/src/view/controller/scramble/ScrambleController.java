@@ -5,28 +5,23 @@ import bank.CustomerDto;
 import bank.Loan;
 import bank.LoanDto;
 import bank.exception.NegativeBalanceException;
+import javafx.animation.Animation;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import view.controller.customer.CustomerController;
 import javafx.scene.layout.VBox;
 
 import java.sql.Time;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import javafx.concurrent.Task;
@@ -96,7 +91,19 @@ public class ScrambleController {
     @FXML
     private TableView<LoanDto> loansTable;
 
+    @FXML
+    private Label waitLabel;
+
+
+    private int categoriesChosed;
+    private Set<String> chosenCategories;
+    private int minInterestPercent;
+    private int minTotalYaz;
+    private int maxOpenLoans;
+    private int maxOwnershipPercent;
     private CustomerDto selectedCustomer;
+    private Collection<LoanDto> res;
+
 
     private CustomerController customerController;
     private int maxInterestPercent = 0;
@@ -145,6 +152,7 @@ public class ScrambleController {
         this.selectedCustomer = selectedCustomer;
         sumInvestSlider.setMax(selectedCustomer.getBalance());
         Set<String> categories = customerController.getCategories();
+        categoriesVBox.getChildren().clear();
         for (String category : categories) {
             categoriesVBox.getChildren().add(new CheckBox(category));
         }
@@ -159,7 +167,7 @@ public class ScrambleController {
 
     public void changeSumInvest(MouseEvent mouseEvent) {
         sumInvestTextField.textProperty().setValue(String.valueOf(sumInvestSlider.valueProperty().intValue()));
-        if(sumInvestSlider.getValue() > 0)
+        if (sumInvestSlider.getValue() > 0)
             applyButton.setDisable(false);
     }
 
@@ -183,9 +191,9 @@ public class ScrambleController {
         loansTable.getItems().clear();
         loansTable.getColumns().clear();
         showValidLoansInTable();
+
         loansTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        investButton.setDisable(false);
-        investButton.setVisible(true);
+
     }
 
     public void showValidLoansInTable() {
@@ -215,9 +223,9 @@ public class ScrambleController {
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
 
 
-        loansTable.getColumns().addAll( nameColumn, borrowerNameColumn, reasonColumn, loanSumColumn, totalLoanTimeColumn, interestColumn, paymentFrequencyColumn, statusColumn);
+        loansTable.getColumns().addAll(nameColumn, borrowerNameColumn, reasonColumn, loanSumColumn, totalLoanTimeColumn, interestColumn, paymentFrequencyColumn, statusColumn);
         loansTable.getSelectionModel().selectionModeProperty().setValue(SelectionMode.MULTIPLE);
-        loansTable.getSelectionModel().setSelectionMode (SelectionMode.MULTIPLE);
+        loansTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         loansTable.addEventFilter(MouseEvent.MOUSE_PRESSED, evt -> {
             Node node = evt.getPickResult().getIntersectedNode();
 
@@ -278,90 +286,33 @@ public class ScrambleController {
         if (maxOwnerShipPercentCheckBox.isSelected())
             maxOwnershipPercent = (int) maxOwnershipPercentSlider.getValue();
 
+        this.categoriesChosed = categoriesChosed;
+        this.chosenCategories = chosenCategories;
+        this.minInterestPercent = minInterestPercent;
+        this.minTotalYaz = minTotalYaz;
+        this.maxOpenLoans = maxOpenLoans;
+        this.maxOwnershipPercent = maxOwnershipPercent;
+        this.selectedCustomer = selectedCustomer;
 
-        Collection<LoanDto> loansDto = customerController.getLoansDto(categoriesChosed, chosenCategories, minInterestPercent, minTotalYaz, maxOpenLoans, maxOwnershipPercent, selectedCustomer);
-        loansTable.setItems(null);
-        ObservableList<LoanDto> listOfLoansDto = FXCollections.observableArrayList(loansDto);
-        loansTable.setItems(listOfLoansDto);
+            Thread t = new Thread(task);
+            t.start();
+        try {
+            t.join();
+            loansTable.setItems(null);
+            ObservableList<LoanDto> listOfLoansDto = FXCollections.observableArrayList(res);
+            loansTable.setItems(listOfLoansDto);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public void investLoan(ActionEvent actionEvent) throws InterruptedException {
-        investButton.setText("3");
-        TimeUnit.SECONDS.sleep(1);
-        investButton.setText("2");
-        TimeUnit.SECONDS.sleep(1);
-        investButton.setText("1");
-        TimeUnit.SECONDS.sleep(1);
-        investButton.setText("Invested!!!");
-        TimeUnit.SECONDS.sleep(1);
-        investButton.setText("Invest!");
-
-        new Thread(task).start();
-        customerController.loadCustomerDetails(selectedCustomer.getName(), true);
-        customerController.updateBankDtos();
-        showValidLoansInTable();
-
-        customerController.refershInfo(selectedCustomer);
-
-    }
-
-
-    Task<Integer>task= new Task<Integer>() {
-        @Override
-        protected Integer call() throws InterruptedException {
-
-            taskHelper();
-
-/*
-
-            Platform.runLater(() -> {
-                    investButton.setText("3");
-
-            });
-            TimeUnit.SECONDS.sleep(1);
-            Platform.runLater(() -> {
-
-                    investButton.setText("2");
-
-              });
-            TimeUnit.SECONDS.sleep(1);
-            Platform.runLater(() -> {
-
-                    investButton.setText("1");
-
-
-                            });
-            TimeUnit.SECONDS.sleep(1);
-            Platform.runLater(() -> {
-
-                investButton.setText("Invested!!!");
-
-
-
-            });
-            TimeUnit.SECONDS.sleep(1);
-            Platform.runLater(() -> {
-
-                investButton.setText("Invest!");
-
-            });
-*/
-
-
-
-            return 1;
-        }
-
-    };
-
-    synchronized private void taskHelper(){
         ObservableList<LoanDto> list = loansTable.getSelectionModel().getSelectedItems();
         ArrayList<LoanDto> listOfLoans = new ArrayList<>();
         listOfLoans.addAll(list);
         loansTable.getSelectionModel().clearSelection();
 
         if (listOfLoans.isEmpty()) {
-
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error Dialog");
             alert.setHeaderText("Error: No Loan Selected");
@@ -369,19 +320,17 @@ public class ScrambleController {
             alert.showAndWait();
         } else {
             double sumToinvest;
-            double  perLoanInvest = (sumInvestSlider.getValue() / listOfLoans.size());
+            double perLoanInvest = (sumInvestSlider.getValue() / listOfLoans.size());
             for (LoanDto loanDto : listOfLoans) {
-                if(maxOwnerShipPercentCheckBox.isSelected()) {
-                    double temp = ((loanDto.getLoanSum()) *(((int)maxOwnershipPercentSlider.getValue())/100.0));
-                    if(temp<=perLoanInvest){
-                        sumToinvest=temp;
+                if (maxOwnerShipPercentCheckBox.isSelected()) {
+                    double temp = ((loanDto.getLoanSum()) * (((int) maxOwnershipPercentSlider.getValue()) / 100.0));
+                    if (temp <= perLoanInvest) {
+                        sumToinvest = temp;
+                    } else {
+                        sumToinvest = perLoanInvest;
                     }
-                    else{
-                        sumToinvest=perLoanInvest;
-                    }
-
-                }else{
-                    sumToinvest=perLoanInvest;
+                } else {
+                    sumToinvest = perLoanInvest;
                 }
                 try {
                     Loan loan = customerController.getSpecificLoan(loanDto.getLoanName());
@@ -392,8 +341,6 @@ public class ScrambleController {
                     } else {
                         loan.addLoaner(customer, sumToinvest);
                     }
-
-
                 } catch (NegativeBalanceException e) {
                     Alert alert = new Alert(Alert.AlertType.WARNING);
                     alert.setTitle("Warning Dialog");
@@ -402,19 +349,71 @@ public class ScrambleController {
                 }
             }
         }
-        //TODO: give some indication that the investment done.. (cause this dont work :| )
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Information Dialog");
         alert.setHeaderText("Info: Scramble Succeed!");
         alert.setContentText(selectedCustomer.getName() + " successfully invested all chosen loans.");
-        //customerController.updateBankDtos();
-        //customerController.showInfoTable(selectedCustomer);
         customerController.loadCustomerDetails(selectedCustomer.getName(), false);
         showValidLoansInTable();
         customerController.refershInfo(selectedCustomer);
-
+        customerController.loadCustomerDetails(selectedCustomer.getName(), true);
+        customerController.updateBankDtos();
+        showValidLoansInTable();
+        customerController.refershInfo(selectedCustomer);
     }
+
+    Task<Integer> task = new Task<Integer>(){
+
+    @Override
+    protected Integer call() throws Exception {
+        Thread counter = new Thread(count);
+        counter.start();
+        counter.join();
+
+        res = customerController.getLoansDto(categoriesChosed, chosenCategories, minInterestPercent, minTotalYaz, maxOpenLoans, maxOwnershipPercent, selectedCustomer);
+        investButton.setDisable(false);
+        investButton.setVisible(true);
+        return 1;
+        }
+    };
+
+
+
+    Task<Integer> count = new Task<Integer>() {
+
+        @Override
+        protected Integer call() throws Exception {
+            Platform.runLater(() -> {
+                applyButton.setText("3");
+            });
+            TimeUnit.SECONDS.sleep(1);
+            Platform.runLater(() -> {
+                applyButton.setText("2");
+            });
+            TimeUnit.SECONDS.sleep(1);
+            Platform.runLater(() -> {
+                applyButton.setText("1");
+            });
+            Platform.runLater(() -> {
+                applyButton.setText("Apply");
+            });
+            return 1;
+        }
+    };
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

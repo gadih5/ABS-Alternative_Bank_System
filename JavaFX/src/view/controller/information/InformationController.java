@@ -2,6 +2,7 @@ package view.controller.information;
 
 import bank.*;
 import bank.exception.NegativeBalanceException;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -16,12 +17,11 @@ import view.controller.customer.CustomerController;
 import view.controller.withdrawDialog.WithdrawDialogController;
 import java.io.IOException;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.text.Format;
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.text.ParseException;
+import java.util.*;
 
 public class InformationController {
         @FXML

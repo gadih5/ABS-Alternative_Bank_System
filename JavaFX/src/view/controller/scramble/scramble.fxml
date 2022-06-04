@@ -14,6 +14,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <SplitPane dividerPositions="0.5954128440366973" prefHeight="498.0" prefWidth="1092.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.controller.scramble.ScrambleController">
    <items>
@@ -105,6 +106,11 @@
                         <Insets />
                      </GridPane.margin>
                   </Button>
+                  <Label fx:id="waitLabel" prefHeight="27.0" prefWidth="109.0" text="Please Wait..." visible="false" GridPane.columnIndex="3" GridPane.rowIndex="7">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
                </children>
             </GridPane>
          </content>

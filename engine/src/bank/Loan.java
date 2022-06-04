@@ -289,7 +289,6 @@ public class Loan implements Serializable {
         }
     }
 
-
     public void update() throws NegativeBalanceException {
         if(isActive&&remainTimeUnit>=0) {
             remainTimeUnit--;
@@ -363,6 +362,7 @@ public class Loan implements Serializable {
             nextPayment = (Bank.getGlobalTimeUnit() - startTimeUnit)%paymentFrequency + Bank.getGlobalTimeUnit();
         }
     }
+
     private void calcNextPaymentValue() {
         //TODO fix this calc..
         double nextPayment = 0;
