@@ -18,6 +18,7 @@ import javafx.scene.layout.VBox;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -112,7 +113,7 @@ public class AppController {
             adminComponentController.showAdminScreen();
         } else {
             try {
-                URL url = getClass().getResource("../customer/customer.fxml");
+                URL url = getClass().getResource("/controller/customer/customer.fxml");
                 FXMLLoader fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(url);
                 customerComponent = fxmlLoader.load(url.openStream());

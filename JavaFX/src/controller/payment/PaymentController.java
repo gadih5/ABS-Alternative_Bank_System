@@ -117,7 +117,7 @@ public class PaymentController {
         Loan chosenLoan = borrowerLoansTable.getSelectionModel().getSelectedItem();
         if(chosenLoan != null) {
             FXMLLoader fxmlLoader = new FXMLLoader();
-            URL url = getClass().getResource("../payDialog/payDialog.fxml");
+            URL url = getClass().getResource("/controller/payDialog/payDialog.fxml");
             fxmlLoader.setLocation(url);
             try {
                 payDialogComponent = fxmlLoader.load(url.openStream());

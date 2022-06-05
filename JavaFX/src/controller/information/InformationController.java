@@ -184,7 +184,7 @@ public class InformationController {
 
     public void chargeMoney(ActionEvent actionEvent) {
         FXMLLoader fxmlLoader = new FXMLLoader();
-        URL url = getClass().getResource("../chargeDialog/chargeDialog.fxml");
+        URL url = getClass().getResource("/controller/chargeDialog/chargeDialog.fxml");
         fxmlLoader.setLocation(url);
         try {
             chargeDialogComponent = fxmlLoader.load(url.openStream());
@@ -243,7 +243,7 @@ public class InformationController {
 
     public void withdrawMoney(ActionEvent actionEvent) {
         FXMLLoader fxmlLoader = new FXMLLoader();
-        URL url = getClass().getResource("../withdrawDialog/withdrawDialog.fxml");
+        URL url = getClass().getResource("/controller/withdrawDialog/withdrawDialog.fxml");
         fxmlLoader.setLocation(url);
         try {
             withdrawDialogComponent = fxmlLoader.load(url.openStream());
