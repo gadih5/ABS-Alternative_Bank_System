@@ -5,10 +5,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import org.jetbrains.annotations.NotNull;
 import controller.constants.Constants;
@@ -23,7 +20,8 @@ public class LoginController {
     private AnchorPane bodyAnchorPane;
     @FXML
     private TextField nameTF;
-
+    @FXML
+    private Label doubleError;
     @FXML
     private ScrollPane appComponent;
     @FXML
@@ -68,14 +66,10 @@ public class LoginController {
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                     if (response.code() != 200) {
                         String responseBody = response.body().string();
-                        Alert alert = new Alert(Alert.AlertType.WARNING);
-                        alert.setTitle("Warning Dialog");
-                        alert.setHeaderText("Warning: Something went wrong");
-                        alert.setContentText("Click OK and try again:");
-                        alert.showAndWait();
+                        doubleError.setVisible(true);
                     } else {
                         Platform.runLater(() -> {
-                            URL url = getClass().getResource("/controller/customer/customer.fxml");
+                            URL url = getClass().getResource("/controller/app/app.fxml");
                             FXMLLoader fxmlLoader = new FXMLLoader();
                             fxmlLoader.setLocation(url);
                             try {
