@@ -28,10 +28,10 @@ public class LoginController {
     private ScrollPane appComponent;
     @FXML
     private Button loginBtn;
-    private AppController appController;
+    private AppController appComponentController;
 
     public void setMainController(AppController appController) {
-        this.appController = appController;
+        this.appComponentController = appController;
     }
     @FXML
     void onClick(ActionEvent event) {
@@ -75,20 +75,20 @@ public class LoginController {
                         alert.showAndWait();
                     } else {
                         Platform.runLater(() -> {
-                            URL url = getClass().getResource("/controller/customer/customer.fxml");
+                            URL url = getClass().getResource("/controller/app/app.fxml");
                             FXMLLoader fxmlLoader = new FXMLLoader();
                             fxmlLoader.setLocation(url);
                             try {
                                 appComponent = fxmlLoader.load(url.openStream());
-                                appController = fxmlLoader.getController();
+                                appComponentController = fxmlLoader.getController();
                                 bodyAnchorPane.getChildren().set(0, appComponent);
                                 AnchorPane.setBottomAnchor(appComponent, 0.0);
                                 AnchorPane.setLeftAnchor(appComponent, 0.0);
                                 AnchorPane.setRightAnchor(appComponent, 0.0);
                                 AnchorPane.setTopAnchor(appComponent, 0.0);
                                 //setCustomerComponentController(customerComponentController);
-                                appController.updateUserName(userName);
-                                appController.changeBody(userName);
+                                appComponentController.updateUserName(userName);
+                                appComponentController.changeBody(userName);
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
                             }

@@ -31,7 +31,7 @@ public class AppController {
     @FXML
     private VBox adminComponent;
     @FXML
-    private AdminController adminComponentController;
+    private AdminController adminComponentController = new AdminController();
     @FXML
     private TabPane customerComponent;
     @FXML
@@ -240,26 +240,25 @@ public class AppController {
                     if (chosenCategories.contains(loanDto.getReason()) || categoriesChosed == -1) {
                         if (loanDto.getInterestPercent() <= minInterestPercent || minInterestPercent == -1) {
                             if (loanDto.getTotalTimeUnit() <= minTotalYaz || minTotalYaz == -1) {
-                                 if (maxOpenLoans == -1)
-                                        validLoans.add(loanDto);
-                                    else {
-                                        Customer borrower = null;
-                                        for (Customer customer : myBank.getCustomers()) {
-                                            if (customer.getName().equals(loanDto.getBorrowerName())) {
-                                                borrower = customer;
-                                                break;
+                                if (maxOpenLoans == -1)
+                                    validLoans.add(loanDto);
+                                else {
+                                    Customer borrower = null;
+                                    for (Customer customer : myBank.getCustomers()) {
+                                        if (customer.getName().equals(loanDto.getBorrowerName())) {
+                                            borrower = customer;
+                                            break;
+                                        }
+                                    }
+                                    if (borrower != null) {
+                                        Set<LoanDto> loans = new HashSet<>();
+                                        for (Loan loan : myBank.getLoans()) {
+                                            if (loan.getStatus() != Status.Finished && loan.getBorrower().getName().equals(borrower.getName())) {
+                                                loans.add(loan.getLoanDto());
                                             }
                                         }
-                                        if (borrower != null) {
-                                            Set<LoanDto> loans = new HashSet<>();
-                                            for (Loan loan : myBank.getLoans()) {
-                                                if (loan.getStatus() != Status.Finished && loan.getBorrower().getName().equals(borrower.getName())) {
-                                                    loans.add(loan.getLoanDto());
-                                                }
-                                            }
-                                            if (loans.size() <= maxOpenLoans) {
-                                                validLoans.add(loanDto);
-                                            }
+                                        if (loans.size() <= maxOpenLoans) {
+                                            validLoans.add(loanDto);
                                         }
                                     }
                                 }
@@ -268,7 +267,8 @@ public class AppController {
                     }
                 }
             }
-            return validLoans;
+        }
+        return validLoans;
     }
 
     public void updateBankDtos() {

@@ -3,8 +3,8 @@ package utils;
 import bank.ChatManager;
 import bank.UserManager;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
 
 import static constants.Constants.INT_PARAMETER_ERROR;
 
