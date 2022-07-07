@@ -22,6 +22,20 @@ public class Constants {
     private final static String FULL_SERVER_PATH = BASE_URL + CONTEXT_PATH;
 
     public final static String LOGIN_PAGE = FULL_SERVER_PATH + "/login";
+    public final static String UPDATE_YAZ_PAGE = FULL_SERVER_PATH + "/updateYaz";
+    public final static String GET_CUSTOMERS_NAMES = FULL_SERVER_PATH + "/getCustomersNames";
+    public final static String GET_LOANS = FULL_SERVER_PATH + "/getLoans";
+    public final static String CHECK_RISK_STATUS = FULL_SERVER_PATH + "/checkRiskStatus";
+    public final static String GET_CUSTOMERS = FULL_SERVER_PATH + "/getCustomers";
+    public final static String GET_CUSTOMERS_DTO = FULL_SERVER_PATH + "/getCustomersDto";
+    public final static String GET_LOANS_DTO = FULL_SERVER_PATH + "/getLoansDto";
+
+
+
+
+
+
+
     public final static String USERS_LIST = FULL_SERVER_PATH + "/userslist";
     public final static String LOGOUT = FULL_SERVER_PATH + "/chat/logout";
     public final static String SEND_CHAT_LINE = FULL_SERVER_PATH + "/pages/chatroom/sendChat";

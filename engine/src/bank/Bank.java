@@ -65,6 +65,13 @@ public class Bank  implements Serializable {
         customers.add(newCustomer);
     }
 
+    public void checkRiskStatus(){
+        for(Loan loan: getLoans()){
+            if(loan.getStatus() != Status.Finished)
+                loan.checkRiskStatus(getCustomers());
+        }
+    }
+
     public Collection<LoanDto> getLoansDto() {
         Collection<LoanDto> loansDto = new ArrayList<>();
         for (Loan loan : loans) {
