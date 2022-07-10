@@ -1,32 +1,24 @@
 package servlets;
 
 import bank.Bank;
+import bank.exception.NegativeBalanceException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 
-@WebServlet(name="GetLoansDto" ,urlPatterns="/getLoansDto")
-public class GetLoansDto extends HttpServlet {
-
-
+@WebServlet(name="UpdateUserName" ,urlPatterns="/updateUserName")
+public class UpdateUserName extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Bank myBank = (Bank)getServletContext().getAttribute("myBank");
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
         try {
-            oos.writeObject(myBank.getLoansDto());
-        } finally {
-            oos.close();
+            myBank.addCustumer(req.getParameter("userName"),0, req.getParameter("isAdmin"));
+        } catch (NegativeBalanceException e) {
+            throw new RuntimeException(e);//never thrown
         }
-        byte[] bytes = baos.toByteArray();
-        resp.getOutputStream().write(bytes);
     }
 }

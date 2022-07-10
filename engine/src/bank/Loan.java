@@ -19,13 +19,13 @@ public class Loan implements Serializable {
     private String reason;
     private int interestPercent;
     private int paymentFrequency;
-    private Collection<Fraction> fractions;
+    private ArrayList<Fraction> fractions;
     private double currentInterest;
     private double remainInterest;
     private double currentFund;
     private double remainFund;
     private boolean isActive;
-    private Collection transactions;
+    private ArrayList transactions;
     private double amountToComplete;
     private ArrayList<Debt> uncompletedTransactions;
     private LoanDto loanDto;

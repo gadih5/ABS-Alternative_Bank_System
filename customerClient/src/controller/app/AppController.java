@@ -1,20 +1,19 @@
 package controller.app;
 
 import bank.*;
-import bank.exception.*;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonParser;
 import controller.admin.AdminController;
 import controller.constants.Constants;
+import controller.customer.CustomerController;
 import controller.header.HeaderController;
+import controller.payment.PaymentController;
+import controller.scramble.ScrambleController;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -25,7 +24,10 @@ import utils.HttpClientUtil;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class AppController {
     @FXML

@@ -9,13 +9,14 @@ import java.util.Collection;
 public class Customer implements Serializable {
     private final String name;
     private double balance;
-    private Collection transactions;
-    private Collection ingoingLoans;
-    private Collection<Loan> outgoingLoans;
+    private ArrayList transactions;
+    private ArrayList ingoingLoans;
+    private ArrayList<Loan> outgoingLoans;
     private CustomerDto customerDto;
-    private Collection<PreTransaction> preTransactions;
+    private ArrayList<PreTransaction> preTransactions;
+    private Boolean isAdmin;
 
-    public Customer(String name, double balance) throws NegativeBalanceException {
+    public Customer(String name, double balance, Boolean isAdmin) throws NegativeBalanceException {
         this.name = name;
         this.setBalance(balance);
         this.transactions = new ArrayList<>();
@@ -23,6 +24,7 @@ public class Customer implements Serializable {
         this.outgoingLoans = new ArrayList<>();
         this.customerDto = new CustomerDto(this);
         this.preTransactions = new ArrayList<>();
+        this.isAdmin = isAdmin;
     }
 
     public void addTransaction(Transaction transaction) {
@@ -76,6 +78,10 @@ public class Customer implements Serializable {
 
     public void updateCustomerDto() {
         this.customerDto = new CustomerDto(this);
+    }
+
+    public Boolean getAdmin() {
+        return isAdmin;
     }
 
     public CustomerDto getCustomerDto() {

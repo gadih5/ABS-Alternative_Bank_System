@@ -1,8 +1,12 @@
 package controller.information;
 
-import bank.*;
+import bank.Customer;
+import bank.CustomerDto;
+import bank.Loan;
+import bank.Transaction;
 import bank.exception.NegativeBalanceException;
 import controller.chargeDialog.ChargeDialogController;
+import controller.customer.CustomerController;
 import controller.withdrawDialog.WithdrawDialogController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,7 +17,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import controller.customer.CustomerController;
 
 import java.io.IOException;
 import java.net.URL;

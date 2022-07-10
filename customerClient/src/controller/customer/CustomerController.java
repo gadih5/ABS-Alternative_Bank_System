@@ -4,12 +4,12 @@ import bank.Customer;
 import bank.CustomerDto;
 import bank.Loan;
 import bank.LoanDto;
+import controller.app.AppController;
 import controller.information.InformationController;
+import controller.payment.PaymentController;
 import controller.scramble.ScrambleController;
 import javafx.fxml.FXML;
 import javafx.scene.control.SplitPane;
-import controller.app.AppController;
-import controller.payment.PaymentController;
 
 import java.util.Collection;
 import java.util.Set;

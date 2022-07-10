@@ -5,8 +5,10 @@ import bank.CustomerDto;
 import bank.Loan;
 import bank.LoanDto;
 import bank.exception.NegativeBalanceException;
+import controller.customer.CustomerController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -14,7 +16,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import controller.customer.CustomerController;
 import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
@@ -22,8 +23,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-
-import javafx.concurrent.Task;
 
 public class ScrambleController {
 

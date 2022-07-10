@@ -10,7 +10,6 @@ public class Transaction implements Serializable {
     private int timeUnit;
     private double previousBalance;
     private double afterBalance;
-
     private String sign;
 
     public Transaction(Customer fromCustomer,Customer toCustomer, double amount) throws NegativeBalanceException {

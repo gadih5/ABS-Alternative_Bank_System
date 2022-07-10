@@ -13,7 +13,7 @@ public class adminMain extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader();
-        URL url = getClass().getResource("controller/app/app.fxml");
+        URL url = getClass().getResource("controller/login/adminLogin.fxml");
         fxmlLoader.setLocation(url);
         Parent root = fxmlLoader.load(url.openStream());
         Scene scene = new Scene(root, 1200, 800);

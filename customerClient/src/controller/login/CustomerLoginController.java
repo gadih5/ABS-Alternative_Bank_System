@@ -1,21 +1,23 @@
 package controller.login;
 
 import controller.app.AppController;
+import controller.constants.Constants;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.HttpUrl;
+import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
-import controller.constants.Constants;
-import okhttp3.*;
 import utils.HttpClientUtil;
-import java.io.IOException;
 import java.io.IOException;
 import java.net.URL;
 
-public class LoginController {
+public class CustomerLoginController {
     @FXML
     private AnchorPane bodyAnchorPane;
     @FXML
@@ -81,7 +83,7 @@ public class LoginController {
                                 AnchorPane.setRightAnchor(appComponent, 0.0);
                                 AnchorPane.setTopAnchor(appComponent, 0.0);
                                 //setCustomerComponentController(customerComponentController);
-                                appController.updateUserName(userName);
+                                appController.updateUserName(userName, "false");
                                 appController.changeBody(userName);
                             } catch (IOException e) {
                                 throw new RuntimeException(e);

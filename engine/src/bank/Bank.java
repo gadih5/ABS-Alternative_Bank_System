@@ -10,7 +10,7 @@ import java.util.*;
 public class Bank  implements Serializable {
     protected static int globalTimeUnit = 1;
     private int syncGlobalTimeUnit = 1;
-    private Collection<Loan> loans = new ArrayList<>();
+    private ArrayList<Loan> loans = new ArrayList<>();
     private ArrayList<Customer> customers = new ArrayList<>();
     private Set<String> category=null;
 
@@ -60,8 +60,9 @@ public class Bank  implements Serializable {
         loans.add(newLoan);
     }
 
-    public void addCostumer(String name, double balance) throws NegativeBalanceException {
-        Customer newCustomer = new Customer(name, balance);
+    public void addCustumer(String name, double balance, String isAdmin) throws NegativeBalanceException {
+        Boolean isAdminInt = Boolean.parseBoolean(isAdmin);
+        Customer newCustomer = new Customer(name, balance, isAdminInt);
         customers.add(newCustomer);
     }
 
@@ -88,7 +89,7 @@ public class Bank  implements Serializable {
         return customersDto;
     }
 
-    public void loadXmlData(AbsDescriptor descriptor) throws NegativeBalanceException, UndefinedReasonException, UndefinedCustomerException, NegativeLoanSumException, NegativeTotalTimeUnitException, NegativeInterestPercentException, NegativePaymentFrequencyException, OverPaymentFrequencyException, UndividedPaymentFrequencyException, NotInCategoryException, AlreadyExistCustomerException {
+    /*public void loadXmlData(AbsDescriptor descriptor) throws NegativeBalanceException, UndefinedReasonException, UndefinedCustomerException, NegativeLoanSumException, NegativeTotalTimeUnitException, NegativeInterestPercentException, NegativePaymentFrequencyException, OverPaymentFrequencyException, UndividedPaymentFrequencyException, NotInCategoryException, AlreadyExistCustomerException {
        AbsCustomers absCustomers = descriptor.getAbsCustomers();
        Set<String> customerNames = new HashSet<>();
        for (AbsCustomer absCustomer: absCustomers.getAbsCustomer()){
@@ -125,7 +126,7 @@ public class Bank  implements Serializable {
                 throw new NotInCategoryException("\"" + absLoan.getAbsCategory() + "\" is missing in the categories list in Xml!");
             }
         }
-    }
+    }*/
 
     public ArrayList<Loan> checkLoans(Customer customer, Set<String> chosenCategories, int chosenInterest, int chosenUnitTime) {
         ArrayList<Loan> possibleLoans = new ArrayList<>();
@@ -160,4 +161,19 @@ public class Bank  implements Serializable {
         }
     }
 
+    public ArrayList<String> getCustomersNames() {
+        ArrayList<String> names = null;
+        for(Customer customer: customers){
+            names.add(customer.getName());
+        }
+        return names;
+    }
+
+    public Boolean adminLogged() {
+        for(Customer customer:customers){
+            if(customer.getAdmin() == true)
+                return true;
+        }
+        return false;
+    }
 }

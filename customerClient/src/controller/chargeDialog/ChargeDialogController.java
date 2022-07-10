@@ -1,12 +1,12 @@
 package controller.chargeDialog;
 
+import controller.information.InformationController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import controller.information.InformationController;
 
 public class ChargeDialogController {
     @FXML

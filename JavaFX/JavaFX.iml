@@ -7,9 +7,9 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="engine" />
     <orderEntry type="module" module-name="server" />
     <orderEntry type="library" name="okHttp" level="project" />
     <orderEntry type="library" name="google.code.gson" level="project" />
+    <orderEntry type="module" module-name="engine" />
   </component>
 </module>

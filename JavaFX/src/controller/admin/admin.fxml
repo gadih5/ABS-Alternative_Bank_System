@@ -16,9 +16,8 @@
             <Insets left="5.0" right="5.0" />
          </padding>
          <children>
-            <Button fx:id="increaseYazBtn" disable="true" minHeight="35.0" minWidth="110.0" mnemonicParsing="false" onAction="#moveTimeline" prefHeight="35.0" prefWidth="110.0" text="Increase YAZ" />
+            <Button fx:id="increaseYazBtn" minHeight="35.0" minWidth="110.0" mnemonicParsing="false" onAction="#moveTimeline" prefHeight="35.0" prefWidth="110.0" text="Increase YAZ" />
             <Label prefHeight="20.0" prefWidth="1750.0" />
-            <Button fx:id="load_file_btn" minHeight="35.0" minWidth="110.0" mnemonicParsing="false" onAction="#fileLoaderListener" prefHeight="35.0" prefWidth="110.0" text="Load File" />
          </children>
       </HBox>
       <SplitPane dividerPositions="0.5" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="360.0" minWidth="600.0" orientation="VERTICAL" prefHeight="1080.0" prefWidth="600.0">

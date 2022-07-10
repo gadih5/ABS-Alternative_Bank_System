@@ -3,6 +3,7 @@ package controller.payment;
 import bank.*;
 import bank.exception.NegativeBalanceException;
 import controller.customer.CustomerController;
+import controller.payDialog.PayDialogController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -14,7 +15,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import controller.payDialog.PayDialogController;
 
 import java.io.IOException;
 import java.net.URL;

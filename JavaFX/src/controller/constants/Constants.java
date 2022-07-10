@@ -11,9 +11,9 @@ public class Constants {
     public final static String CHAT_LINE_FORMATTING = "%tH:%tM:%tS | %.10s: %s%n";
 
     // fxml locations
-    public final static String MAIN_PAGE_FXML_RESOURCE_LOCATION = "/chat/client/component/main/chat-app-main.fxml";
-    public final static String LOGIN_PAGE_FXML_RESOURCE_LOCATION = "/chat/client/component/login/login.fxml";
-    public final static String CHAT_ROOM_FXML_RESOURCE_LOCATION = "/chat/client/component/chatroom/chat-room-main.fxml";
+   /* public final static String MAIN_PAGE_FXML_RESOURCE_LOCATION = "/chat/client/component/main/chat-app-main.fxml";
+    public final static String LOGIN_PAGE_FXML_RESOURCE_LOCATION = "/chat/client/component/login/adminLogin.fxml";
+    public final static String CHAT_ROOM_FXML_RESOURCE_LOCATION = "/chat/client/component/chatroom/chat-room-main.fxml";*/
 
     // Server resources locations
     public final static String BASE_DOMAIN = "localhost";
@@ -29,6 +29,15 @@ public class Constants {
     public final static String GET_CUSTOMERS = FULL_SERVER_PATH + "/getCustomers";
     public final static String GET_CUSTOMERS_DTO = FULL_SERVER_PATH + "/getCustomersDto";
     public final static String GET_LOANS_DTO = FULL_SERVER_PATH + "/getLoansDto";
+    public final static String GET_CATEGORIES = FULL_SERVER_PATH + "/getCategories";
+    public final static String GET_NUM_OF_LOANS = FULL_SERVER_PATH + "/getNumOfLoans";
+    public final static String UPDATE_BANK_DTOS = FULL_SERVER_PATH + "/updateBankDtos";
+    public final static String UPDATE_USER_NAME = FULL_SERVER_PATH + "/updateUserName";
+    public final static String IS_ADMIN = FULL_SERVER_PATH + "/isAdmin";
+    public final static String ADMIN_LOGIN_PAGE = FULL_SERVER_PATH + "/adminLoginPage";
+
+
+
 
 
 

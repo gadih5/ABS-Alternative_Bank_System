@@ -114,7 +114,7 @@ public class AdminController{
     }
 
 
-    @FXML
+    /*@FXML
     void fileLoaderListener(ActionEvent event) {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML files", "*.xml"));
         File file = fileChooser.showOpenDialog(new Stage());
@@ -142,7 +142,7 @@ public class AdminController{
          else
             return;
     }
-
+*/
     public void moveTimeline(ActionEvent actionEvent) {
         appController.updateYaz();
 
@@ -150,6 +150,16 @@ public class AdminController{
 
     public void setMainController(AppController appController) {
         this.appController = appController;
+    }
+
+    public void disableAndHideYazBtn() {
+        increaseYazBtn.setDisable(true);
+        increaseYazBtn.setVisible(false);
+    }
+
+    public void enableAndShowYazBtn() {
+        increaseYazBtn.setDisable(false);
+        increaseYazBtn.setVisible(true);
     }
 }
 

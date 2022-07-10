@@ -9,12 +9,11 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet(name="CheckRiskStatus" ,urlPatterns="/checkRiskStatus")
-public class CheckRiskStatus extends HttpServlet {
-
+@WebServlet(name="UpdateBankDtos" ,urlPatterns="/updateBankDtos")
+public class UpdateBankDtos extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Bank myBank = (Bank)getServletContext().getAttribute("myBank");
-        myBank.checkRiskStatus();
+        myBank.updateAllDtos();
     }
 }

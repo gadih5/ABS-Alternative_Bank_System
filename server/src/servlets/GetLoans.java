@@ -1,6 +1,9 @@
 package servlets;
 
 import bank.Bank;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -11,22 +14,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
-@WebServlet(name="GetLoansDto" ,urlPatterns="/getLoansDto")
-public class GetLoansDto extends HttpServlet {
-
+@WebServlet(name="GetLoans" ,urlPatterns="/getLoans")
+public class GetLoans extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Bank myBank = (Bank)getServletContext().getAttribute("myBank");
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
-        try {
-            oos.writeObject(myBank.getLoansDto());
-        } finally {
-            oos.close();
-        }
-        byte[] bytes = baos.toByteArray();
-        resp.getOutputStream().write(bytes);
+        Gson gson = new Gson();
+        String loans = gson.toJson(myBank.getLoans());
+        resp.getWriter().println(loans);
     }
 }
