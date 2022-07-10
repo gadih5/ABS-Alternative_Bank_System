@@ -1,6 +1,6 @@
 package controller.header;
 
-import controller.app.AppController;
+import controller.app.CustomerAppController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
@@ -14,11 +14,11 @@ public class HeaderController {
     @FXML
     private ComboBox<String> userComboBox;
     @FXML
-    private AppController appController;
+    private CustomerAppController customerAppController;
     @FXML
 
-    public void setMainController(AppController appController) {
-        this.appController = appController;
+    public void setMainController(CustomerAppController customerAppController) {
+        this.customerAppController = customerAppController;
     }
 
     @FXML
@@ -39,7 +39,7 @@ public class HeaderController {
         if(userName == null)
             return;
         else
-            appController.changeBody(userName);
+            customerAppController.changeBody(userName);
     }
 
     public void setUserComboBoxEnable() {

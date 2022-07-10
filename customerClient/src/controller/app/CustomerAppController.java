@@ -2,7 +2,6 @@ package controller.app;
 
 import bank.*;
 import com.google.gson.Gson;
-import controller.admin.AdminController;
 import controller.constants.Constants;
 import controller.customer.CustomerController;
 import controller.header.HeaderController;
@@ -29,15 +28,13 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-public class AppController {
+public class CustomerAppController {
     @FXML
     private GridPane headerComponent;
     @FXML
     private HeaderController headerComponentController;
     @FXML
     private VBox adminComponent;
-    @FXML
-    private AdminController adminComponentController;
     @FXML
     private TabPane customerComponent;
     @FXML
@@ -52,9 +49,8 @@ public class AppController {
 
     @FXML
     public void initialize() {
-        if (headerComponentController != null && adminComponentController != null) {
+        if (headerComponentController != null) {
             headerComponentController.setMainController(this);
-            adminComponentController.setMainController(this);
         }
     }
 
@@ -63,10 +59,6 @@ public class AppController {
         headerComponentController.setMainController(this);
     }
 
-    public void setAdminComponentController(AdminController adminComponentController) {
-        this.adminComponentController = adminComponentController;
-        adminComponentController.setMainController(this);
-    }
 
     public void setCustomerComponentController(CustomerController customerComponentController) {
         this.customerComponentController = customerComponentController;
@@ -87,7 +79,7 @@ public class AppController {
 
     }
 
-    public void updateYaz() {
+    /*public void updateYaz() {
 
         try {
 
@@ -149,7 +141,7 @@ public class AppController {
         //TODO in the new version the customers actively pays their payments and debts,
         // so maybe we need to change the way of the bank so that not throw negative balance and updateYaz of bank will not pay automatically payments
 
-    }
+    }*/
     public void changeBody(String userName) {
         String finalUrl = HttpUrl
                 .parse(Constants.IS_ADMIN)
@@ -172,37 +164,26 @@ public class AppController {
                         if (response.code() != 200) {
 
                         } else {
-                            adminComponentController.showAdminScreen();
-                            if (response.message().equals("true")) {
-                                bodyAnchorPane.getChildren().set(0, adminComponent);
-                                AnchorPane.setBottomAnchor(adminComponent, 0.0);
-                                AnchorPane.setLeftAnchor(adminComponent, 0.0);
-                                AnchorPane.setRightAnchor(adminComponent, 0.0);
-                                AnchorPane.setTopAnchor(adminComponent, 0.0);
-                                adminComponentController.enableAndShowYazBtn();
-                                adminComponentController.showAdminScreen();
-                            } else {
+
                                 try {
                                     URL url = getClass().getResource("/controller/customer/customer.fxml");
                                     FXMLLoader fxmlLoader = new FXMLLoader();
                                     fxmlLoader.setLocation(url);
                                     customerComponent = fxmlLoader.load(url.openStream());
                                     customerComponentController = fxmlLoader.getController();
-                                    bodyAnchorPane.getChildren().set(0, customerComponent);
-                                    AnchorPane.setBottomAnchor(customerComponent, 0.0);
-                                    AnchorPane.setLeftAnchor(customerComponent, 0.0);
-                                    AnchorPane.setRightAnchor(customerComponent, 0.0);
-                                    AnchorPane.setTopAnchor(customerComponent, 0.0);
+                                    //bodyAnchorPane.getChildren().set(0, customerComponent);
+                                    //AnchorPane.setBottomAnchor(customerComponent, 0.0);
+                                    //AnchorPane.setLeftAnchor(customerComponent, 0.0);
+                                    //AnchorPane.setRightAnchor(customerComponent, 0.0);
+                                   // AnchorPane.setTopAnchor(customerComponent, 0.0);
                                     setCustomerComponentController(customerComponentController);
-                                    adminComponentController.disableAndHideYazBtn();
                                     customerComponentController.loadCustomerDetails(userName,false);
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
                             }
                         }
-                    }
-                });
+                    });
     }
 
     public void addUsers() {

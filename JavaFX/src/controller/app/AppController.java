@@ -39,12 +39,6 @@ public class AppController {
     @FXML
     private TabPane customerComponent;
     @FXML
-    private CustomerController customerComponentController;
-    @FXML
-    private ScrambleController scrambleController;
-    @FXML
-    private PaymentController paymentController;
-    @FXML
     private AnchorPane bodyAnchorPane;
 
 
@@ -66,24 +60,12 @@ public class AppController {
         adminComponentController.setMainController(this);
     }
 
-    public void setCustomerComponentController(CustomerController customerComponentController) {
-        this.customerComponentController = customerComponentController;
-        customerComponentController.setMainController(this);
-    }
+
 
     public void updatePathLabel(String filePath) {
         headerComponentController.updatePathLabel(filePath);
     }
 
-    public void setScrambleController(ScrambleController scrambleController) {
-        this.scrambleController = scrambleController;
-
-    }
-
-    public void setPaymentController(PaymentController paymentController) {
-        this.paymentController = paymentController;
-
-    }
 
     public void updateYaz() {
 
@@ -171,33 +153,13 @@ public class AppController {
 
                         } else {
                             adminComponentController.showAdminScreen();
-                            if (response.message().equals("true")) {
-                                bodyAnchorPane.getChildren().set(0, adminComponent);
-                                AnchorPane.setBottomAnchor(adminComponent, 0.0);
-                                AnchorPane.setLeftAnchor(adminComponent, 0.0);
-                                AnchorPane.setRightAnchor(adminComponent, 0.0);
-                                AnchorPane.setTopAnchor(adminComponent, 0.0);
-                                adminComponentController.enableAndShowYazBtn();
-                                adminComponentController.showAdminScreen();
-                            } else {
-                                try {
-                                    URL url = getClass().getResource("/controller/customer/customer.fxml");
-                                    FXMLLoader fxmlLoader = new FXMLLoader();
-                                    fxmlLoader.setLocation(url);
-                                    customerComponent = fxmlLoader.load(url.openStream());
-                                    customerComponentController = fxmlLoader.getController();
-                                    bodyAnchorPane.getChildren().set(0, customerComponent);
-                                    AnchorPane.setBottomAnchor(customerComponent, 0.0);
-                                    AnchorPane.setLeftAnchor(customerComponent, 0.0);
-                                    AnchorPane.setRightAnchor(customerComponent, 0.0);
-                                    AnchorPane.setTopAnchor(customerComponent, 0.0);
-                                    setCustomerComponentController(customerComponentController);
-                                    adminComponentController.disableAndHideYazBtn();
-                                    customerComponentController.loadCustomerDetails(userName,false);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
+                            bodyAnchorPane.getChildren().set(0, adminComponent);
+                            AnchorPane.setBottomAnchor(adminComponent, 0.0);
+                            AnchorPane.setLeftAnchor(adminComponent, 0.0);
+                            AnchorPane.setRightAnchor(adminComponent, 0.0);
+                            AnchorPane.setTopAnchor(adminComponent, 0.0);
+                            adminComponentController.enableAndShowYazBtn();
+                            adminComponentController.showAdminScreen();
                         }
                     }
                 });

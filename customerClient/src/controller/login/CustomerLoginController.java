@@ -1,7 +1,8 @@
 package controller.login;
 
-import controller.app.AppController;
+import controller.app.CustomerAppController;
 import controller.constants.Constants;
+import controller.customer.CustomerController;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -25,13 +26,14 @@ public class CustomerLoginController {
     @FXML
     private Label doubleError;
     @FXML
-    private ScrollPane appComponent;
+    private ScrollPane customerAppComponent;
     @FXML
     private Button loginBtn;
-    private AppController appController;
+    @FXML
+    private CustomerAppController customerAppComponentController;
 
-    public void setMainController(AppController appController) {
-        this.appController = appController;
+    public void setMainController(CustomerAppController customerAppController) {
+        this.customerAppComponentController = customerAppController;
     }
     @FXML
     void onClick(ActionEvent event) {
@@ -71,20 +73,20 @@ public class CustomerLoginController {
                         doubleError.setVisible(true);
                     } else {
                         Platform.runLater(() -> {
-                            URL url = getClass().getResource("/controller/app/app.fxml");
+                            URL url = getClass().getResource("/controller/app/customerApp.fxml");
                             FXMLLoader fxmlLoader = new FXMLLoader();
                             fxmlLoader.setLocation(url);
                             try {
-                                appComponent = fxmlLoader.load(url.openStream());
-                                appController = fxmlLoader.getController();
-                                bodyAnchorPane.getChildren().set(0, appComponent);
-                                AnchorPane.setBottomAnchor(appComponent, 0.0);
-                                AnchorPane.setLeftAnchor(appComponent, 0.0);
-                                AnchorPane.setRightAnchor(appComponent, 0.0);
-                                AnchorPane.setTopAnchor(appComponent, 0.0);
+                                customerAppComponent = fxmlLoader.load(url.openStream());
+                                customerAppComponentController = fxmlLoader.getController();
+                                bodyAnchorPane.getChildren().set(0, customerAppComponent);
+                                AnchorPane.setBottomAnchor(customerAppComponent, 0.0);
+                                AnchorPane.setLeftAnchor(customerAppComponent, 0.0);
+                                AnchorPane.setRightAnchor(customerAppComponent, 0.0);
+                                AnchorPane.setTopAnchor(customerAppComponent, 0.0);
                                 //setCustomerComponentController(customerComponentController);
-                                appController.updateUserName(userName, "false");
-                                appController.changeBody(userName);
+                                customerAppComponentController.updateUserName(userName, "false");
+                                customerAppComponentController.changeBody(userName);
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
                             }
