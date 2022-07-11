@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import _json.Debt_json;
+import _json.Fraction_json;
+import _json.Loan_json;
 import bank.exception.*;
 
 public class Loan implements Serializable {
@@ -62,6 +65,43 @@ public class Loan implements Serializable {
         this.nextPaymentValue = 0;
         this.numOfDebts = 0;
         this.sumOfDebts = 0;
+    }
+
+    public Loan(Loan_json loan_json) {
+        this.startLoanAmount = loan_json.startLoanAmount;
+        this.loanName = loan_json.loanName;
+        this.borrower = new Customer(loan_json.borrower);
+        this.status = Status.valueOf(Loan_json.status);
+        this.loanSum = loan_json.loanSum;
+        this.startTimeUnit = loan_json.startTimeUnit;
+        this.totalTimeUnit = loan_json.totalTimeUnit;
+        this.remainTimeUnit = loan_json.remainTimeUnit;
+        this.finishTimeUnit = loan_json.finishTimeUnit;
+        this.reason = loan_json.reason;
+        this.interestPercent = loan_json.interestPercent;
+        this.paymentFrequency = loan_json.paymentFrequency;
+        ArrayList<Fraction> copyFractions = new ArrayList<>();
+        for(Fraction_json fraction_json: loan_json.fractions){
+            copyFractions.add(new Fraction(fraction_json));
+        }
+        this.fractions = copyFractions;
+        this.currentInterest = loan_json.currentInterest;
+        this.remainInterest = loan_json.remainInterest;
+        this.currentFund = loan_json.currentFund;
+        this.remainFund = loan_json.remainFund;
+        this.isActive = loan_json.isActive;
+        this.transactions = loan_json.transactions;
+        this.amountToComplete = loan_json.amountToComplete;
+        ArrayList<Debt> copyDebts = new ArrayList<>();
+        for(Debt_json debt_json: loan_json.uncompletedTransactions){
+            copyDebts.add(new Debt(debt_json));
+        }
+        this.uncompletedTransactions = copyDebts;
+        this.loanDto = new LoanDto(loan_json.loanDto);
+        this.nextPayment = loan_json.nextPayment;
+        this.nextPaymentValue = loan_json.nextPaymentValue;
+        this.numOfDebts = loan_json.numOfDebts;
+        this.sumOfDebts = loan_json.sumOfDebts;
     }
 
     private void setPaymentFrequency(int paymentFrequency) throws NegativePaymentFrequencyException, OverPaymentFrequencyException,UndividedPaymentFrequencyException {

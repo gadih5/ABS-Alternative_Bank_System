@@ -1,5 +1,8 @@
 package bank;
 
+import _json.Customer_json;
+import _json.Loan_json;
+import _json.PreTransaction_json;
 import bank.exception.*;
 
 import java.io.Serializable;
@@ -10,7 +13,7 @@ public class Customer implements Serializable {
     private final String name;
     private double balance;
     private ArrayList transactions;
-    private ArrayList ingoingLoans;
+    private ArrayList<Loan> ingoingLoans;
     private ArrayList<Loan> outgoingLoans;
     private CustomerDto customerDto;
     private ArrayList<PreTransaction> preTransactions;
@@ -25,6 +28,29 @@ public class Customer implements Serializable {
         this.customerDto = new CustomerDto(this);
         this.preTransactions = new ArrayList<>();
         this.isAdmin = isAdmin;
+    }
+
+    public Customer(Customer_json customer_json) {
+        this.name = customer_json.name;
+        this.balance = customer_json.balance;
+        this.transactions = customer_json.transactions;
+        ArrayList<Loan> copyIngoingLoans = new ArrayList<>();
+        for(Loan_json loan_json: customer_json.ingoingLoans){
+            copyIngoingLoans.add(new Loan(loan_json));
+        }
+        this.ingoingLoans = copyIngoingLoans;
+        ArrayList<Loan> copyOutgoingLoans = new ArrayList<>();
+        for(Loan_json loan_json: customer_json.outgoingLoans){
+            copyOutgoingLoans.add(new Loan(loan_json));
+        }
+        this.outgoingLoans = copyOutgoingLoans;
+        this.customerDto = new CustomerDto(customer_json.customerDto);
+        ArrayList<PreTransaction> copyPreTransactions = new ArrayList<>();
+        for(PreTransaction_json preTransaction_json: customer_json.preTransactions){
+            copyPreTransactions.add(new PreTransaction(preTransaction_json));
+        }
+        this.preTransactions = copyPreTransactions;
+        this.isAdmin = customer_json.isAdmin;
     }
 
     public void addTransaction(Transaction transaction) {

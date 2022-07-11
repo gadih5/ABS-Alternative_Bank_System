@@ -1,5 +1,6 @@
 package bank;
 
+import _json.PreTransaction_json;
 import bank.exception.NegativeBalanceException;
 
 public class PreTransaction {
@@ -20,6 +21,17 @@ public class PreTransaction {
         this.loan = loan;
         this.loanName = loan.getLoanName();
         this.sum = fundPart + interestPart;
+    }
+
+    public PreTransaction(PreTransaction_json preTransaction_json) {
+        this.loan = new Loan(preTransaction_json.loan);
+        this.loanName = preTransaction_json.loanName;
+        this.toCustomer = new Customer(preTransaction_json.toCustomer);
+        this.payTime = preTransaction_json.payTime;
+        this.fundPart = preTransaction_json.fundPart;
+        this.interestPart = preTransaction_json.interestPart;
+        this.sum = preTransaction_json.sum;
+        this.paid = preTransaction_json.paid;
     }
 
     public Loan getLoan() {

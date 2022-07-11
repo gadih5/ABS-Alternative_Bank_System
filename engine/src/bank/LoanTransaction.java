@@ -1,5 +1,6 @@
 package bank;
 
+import _json.LoanTransaction_json;
 import bank.exception.NegativeBalanceException;
 
 import java.io.Serializable;
@@ -30,5 +31,9 @@ public class LoanTransaction implements Serializable {
         this.interestPart = interestPart;
     }
 
-
+    public LoanTransaction(LoanTransaction_json loanTransaction_json) {
+        this.transaction = new Transaction(loanTransaction_json.transaction);
+        this.fundPart = loanTransaction_json.fundPart;
+        this.interestPart = loanTransaction_json.interestPart;
+    }
 }

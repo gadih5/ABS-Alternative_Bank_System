@@ -1,6 +1,9 @@
 package bank;
 
+import _json.*;
+
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class LoanDto implements Serializable {
@@ -48,6 +51,41 @@ public class LoanDto implements Serializable {
         this.transactions = loan.getTransactions();
         this.amountToComplete=loan.getAmountToComplete();
         this.debts = loan.getUncompletedTransactions();
+    }
+
+    public LoanDto(LoanDto_json loanDto_json) {
+        this.loanName = loanDto_json.loanName;
+        this.borrowerName = loanDto_json.borrowerName;
+        this.status = Status.valueOf(loanDto_json.status);
+        this.loanSum = loanDto_json.loanSum;
+        this.startTimeUnit = loanDto_json.startTimeUnit;
+        this.totalTimeUnit = loanDto_json.totalTimeUnit;
+        this.remainTimeUnit = loanDto_json.remainTimeUnit;
+        this.finishTimeUnit = loanDto_json.finishTimeUnit;
+        this.reason = loanDto_json.reason;
+        this.interestPrecent = loanDto_json.interestPrecent;
+        this.paymentFrequency = loanDto_json.paymentFrequency;
+        ArrayList<Fraction> copyFractions = new ArrayList<>();
+        for(Fraction_json fraction_json: loanDto_json.fractions){
+            copyFractions.add(new Fraction(fraction_json));
+        }
+        this.fractions = copyFractions;
+        this.currentInterest = loanDto_json.currentInterest;
+        this.remainInterest = loanDto_json.remainInterest;
+        this.currentFund = loanDto_json.currentFund;
+        this.remainFund = loanDto_json.remainFund;
+        this.isActive = loanDto_json.isActive;
+        ArrayList<LoanTransaction> copyLoanTransactions = new ArrayList<>();
+        for(LoanTransaction_json loanTransaction_json: loanDto_json.transactions){
+            copyLoanTransactions.add(new LoanTransaction(loanTransaction_json));
+        }
+        this.transactions = copyLoanTransactions;
+        this.amountToComplete = loanDto_json.amountToComplete;
+        ArrayList<Debt> copyDebts = new ArrayList<>();
+        for(Debt_json debt_json: loanDto_json.debts){
+            copyDebts.add(new Debt(debt_json));
+        }
+        this.debts = copyDebts;
     }
 
     public int checkNextPayment() {

@@ -1,6 +1,9 @@
 package bank;
 
+import _json.*;
+
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class CustomerDto implements Serializable {
@@ -62,6 +65,39 @@ public class CustomerDto implements Serializable {
                 numOfFinishOutgoingLoans++;
             }
         }
+    }
+
+    public CustomerDto(CustomerDto_json customerDto_json) {
+        this.name = customerDto_json.name;
+        this.balance = customerDto_json.balance;
+        ArrayList<Transaction> copyTransactions = new ArrayList<>();
+        for(Transaction_json transaction_json: customerDto_json.transactions){
+            copyTransactions.add(new Transaction(transaction_json));
+        }
+        this.transactions = copyTransactions;
+        ArrayList<Loan> copyIngoingLoans = new ArrayList<>();
+        for(Loan_json loan_json: customerDto_json.ingoingLoans){
+            copyIngoingLoans.add(new Loan(loan_json));
+        }
+        this.ingoingLoans = copyIngoingLoans;
+        ArrayList<Loan> copyOutgoingLoans = new ArrayList<>();
+        for(Loan_json loan_json: customerDto_json.outgoingLoans){
+            copyOutgoingLoans.add(new Loan(loan_json));
+        }
+        this.outgoingLoans = copyOutgoingLoans;
+        ArrayList<PreTransaction> copyPreTransactions = new ArrayList<>();
+        for(PreTransaction_json preTransaction_json: customerDto_json.preTransactions){
+            copyPreTransactions.add(new PreTransaction(preTransaction_json));
+        }
+        this.preTransactions = copyPreTransactions;
+        this.numOfPendingIngoingLoans = customerDto_json.numOfPendingIngoingLoans;
+        this.numOfActiveIngoingLoans = customerDto_json.numOfActiveIngoingLoans;
+        this.numOfRiskIngoingLoans = customerDto_json.numOfRiskIngoingLoans;
+        this.numOfFinishIngoingLoans = customerDto_json.numOfFinishIngoingLoans;
+        this.numOfPendingOutgoingLoans = customerDto_json.numOfPendingOutgoingLoans;
+        this.numOfActiveOutgoingLoans = customerDto_json.numOfActiveOutgoingLoans;
+        this.numOfRiskOutgoingLoans = customerDto_json.numOfRiskOutgoingLoans;
+        this.numOfFinishOutgoingLoans = customerDto_json.numOfFinishOutgoingLoans;
     }
 
     public int getNumOfPendingIngoingLoans() {

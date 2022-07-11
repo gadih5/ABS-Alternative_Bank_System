@@ -1,9 +1,11 @@
 package bank;
+import _json.Customer_json;
+import _json.Transaction_json;
 import bank.Customer;
 import bank.exception.NegativeBalanceException;
+import com.google.gson.Gson;
 
 import java.io.Serializable;
-
 public class Transaction implements Serializable {
     private Customer toCustomer;
     private double amount; //positive value
@@ -15,6 +17,7 @@ public class Transaction implements Serializable {
     public Transaction(Customer fromCustomer,Customer toCustomer, double amount) throws NegativeBalanceException {
         this(fromCustomer,toCustomer,amount,true);
     }
+
     public Transaction(Customer fromCustomer,Customer toCustomer, double amount, boolean firstTime) throws NegativeBalanceException {
         sign = firstTime ? "-" : "+";
         boolean amountChange = false;
@@ -43,6 +46,16 @@ public class Transaction implements Serializable {
         }
 
     }
+
+    public Transaction(Transaction_json transaction_json) {
+        this.toCustomer = new Customer(transaction_json.toCustomer);
+        this.amount = transaction_json.amount;
+        this.timeUnit = transaction_json.timeUnit;
+        this.previousBalance = transaction_json.previousBalance;
+        this.afterBalance = transaction_json.afterBalance;
+        this.sign = transaction_json.sign;
+    }
+
     public Customer getToCustomer() {
         return toCustomer;
     }
