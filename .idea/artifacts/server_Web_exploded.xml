@@ -11,6 +11,7 @@
         </element>
         <element id="directory" name="lib">
           <element id="library" level="project" name="okHttp" />
+          <element id="file-copy" path="$USER_HOME$/Desktop/13. JSON ( GSON)/13. JSON (&amp; GSON)/json/lib/gson-2.8.8/gson-2.8.8.jar" />
         </element>
       </element>
       <element id="library" level="project" name="apache-tomcat-10.0" />

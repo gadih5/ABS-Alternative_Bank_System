@@ -357,7 +357,7 @@ public class Loan implements Serializable {
 
 
                             uncompletedTransactions.add(new Debt(fraction.getCustomer(), fraction.getAmount() / (totalTimeUnit / paymentFrequency), fraction.getAmount() * ((double)((interestPercent/100))) / (totalTimeUnit / paymentFrequency)));
-                            setStatus(Status.Risk); //TODO make loan in risk status when at least one payment is unpaid
+                            setStatus(Status.Risk);
 
                             //newLoanTransaction = new LoanTransaction(this.borrower, fraction.getCustomer(), fundPart, interestPart);
                             getBorrower().addPreTransaction(preTransaction);
@@ -373,7 +373,7 @@ public class Loan implements Serializable {
 
                         if (debtAmount < getRemainFund() + getRemainInterest()) {
                             uncompletedTransactions.add(new Debt(fraction.getCustomer(), fraction.getAmount() / (totalTimeUnit / paymentFrequency), fraction.getAmount() * ((double)((interestPercent/100))) / (totalTimeUnit / paymentFrequency)));
-                            setStatus(Status.Risk); //TODO make loan in risk status when at least one payment is unpaid
+                            setStatus(Status.Risk);
                         }
                         throw new NegativeBalanceException("Negative Balance: " + this.getBorrowerName() + "'s account not have enough balance pay to " + fraction.getCustomerName() + " for \"" + getLoanName() + "\" loan!");
                     }*/
@@ -404,7 +404,7 @@ public class Loan implements Serializable {
     }
 
     private void calcNextPaymentValue() {
-        //TODO fix this calc..
+
         double nextPayment = 0;
         for (Fraction fraction : fractions) {
             double fundPart = fraction.getAmount() / (getTotalTimeUnit() / getPaymentFrequency());

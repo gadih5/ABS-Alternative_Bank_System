@@ -17,6 +17,7 @@ public class UpdateUserName extends HttpServlet {
         Bank myBank = (Bank)getServletContext().getAttribute("myBank");
         try {
             myBank.addCustumer(req.getParameter("userName"),0, req.getParameter("isAdmin"));
+            System.out.println(req.getParameter("userName"));
         } catch (NegativeBalanceException e) {
             throw new RuntimeException(e);//never thrown
         }

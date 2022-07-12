@@ -47,7 +47,7 @@ public class Bank  implements Serializable {
         return category;
     }
 
-    public Collection<Loan> getLoans() {
+    public ArrayList<Loan> getLoans() {
         return loans;
     }
 
@@ -73,16 +73,16 @@ public class Bank  implements Serializable {
         }
     }
 
-    public Collection<LoanDto> getLoansDto() {
-        Collection<LoanDto> loansDto = new ArrayList<>();
+    public ArrayList<LoanDto> getLoansDto() {
+        ArrayList<LoanDto> loansDto = new ArrayList<>();
         for (Loan loan : loans) {
             loansDto.add(loan.getLoanDto());
         }
         return loansDto;
     }
 
-    public Collection<CustomerDto> getCustomersDto() {
-        Collection<CustomerDto> customersDto = new ArrayList<>();
+    public ArrayList<CustomerDto> getCustomersDto() {
+        ArrayList<CustomerDto> customersDto = new ArrayList<>();
         for (Customer customer : customers) {
             customersDto.add(customer.getCustomerDto());
         }

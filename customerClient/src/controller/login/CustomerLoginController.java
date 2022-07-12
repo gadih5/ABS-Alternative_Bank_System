@@ -28,13 +28,12 @@ public class CustomerLoginController {
     @FXML
     private ScrollPane customerAppComponent;
     @FXML
-    private Button loginBtn;
-    @FXML
     private CustomerAppController customerAppComponentController;
 
     public void setMainController(CustomerAppController customerAppController) {
         this.customerAppComponentController = customerAppController;
     }
+
     @FXML
     void onClick(ActionEvent event) {
         String userName = nameTF.getText();
@@ -53,10 +52,7 @@ public class CustomerLoginController {
                     .build()
                     .toString();
 
-            // updateHttpStatusLine("New request is launched for: " + finalUrl);
-            System.out.println("FROM CLIENT: " + finalUrl);
             HttpClientUtil.runAsync(finalUrl, new Callback() {
-
                 @Override
                 public void onFailure(@NotNull Call call, @NotNull IOException e) {
                     Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -69,7 +65,6 @@ public class CustomerLoginController {
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                     if (response.code() != 200) {
-                        String responseBody = response.body().string();
                         doubleError.setVisible(true);
                     } else {
                         Platform.runLater(() -> {
@@ -84,7 +79,6 @@ public class CustomerLoginController {
                                 AnchorPane.setLeftAnchor(customerAppComponent, 0.0);
                                 AnchorPane.setRightAnchor(customerAppComponent, 0.0);
                                 AnchorPane.setTopAnchor(customerAppComponent, 0.0);
-                                //setCustomerComponentController(customerComponentController);
                                 customerAppComponentController.updateUserName(userName, "false");
                                 customerAppComponentController.changeBody(userName);
                             } catch (IOException e) {
@@ -96,8 +90,4 @@ public class CustomerLoginController {
             });
         }
     }
-/*    private void updateHttpStatusLine(String data) {
-        chatAppMainController.updateHttpLine(data);
-    }*/
-
 }

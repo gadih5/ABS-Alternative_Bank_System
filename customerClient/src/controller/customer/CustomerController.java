@@ -11,8 +11,10 @@ import controller.scramble.ScrambleController;
 import javafx.fxml.FXML;
 import javafx.scene.control.SplitPane;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 public class CustomerController {
     @FXML
@@ -64,9 +66,11 @@ public class CustomerController {
         return selectedCustomer;
     }
 
-    public void loadCustomerDetails(String userName, boolean fromScramble) {
+
+    public void loadCustomerDetails(String userName, boolean fromScramble)  {
         customerAppController.updateBankDtos();
-        Collection<CustomerDto> customersDto = customerAppController.getCustomersDto();
+        ArrayList<CustomerDto> customersDto = customerAppController.getCustomersDto();
+        System.out.println("THE RESULT: " + customersDto);
         for(CustomerDto customerDto : customersDto){
             if(customerDto.getName().equals(userName))
                 selectedCustomer = customerDto;
@@ -74,6 +78,7 @@ public class CustomerController {
         if(selectedCustomer == null)
             return;
         else { //Bank's customer
+            customerAppController.setName(selectedCustomer.getName());
             informationComponentController.showInfoTable(selectedCustomer);
             if(!fromScramble)
                 scrambleComponentController.loadScrambleInfo(selectedCustomer);

@@ -10,6 +10,9 @@ public class HeaderController {
     @FXML
     private Label pathLabel;
     @FXML
+    private Label usernameLabel;
+
+    @FXML
     private Label yazLabel;
     @FXML
     private ComboBox<String> userComboBox;
@@ -58,5 +61,9 @@ public class HeaderController {
 
     public void initYazLabel() {
         yazLabel.setText("YAZ: 1");
+    }
+
+    public void setName(String name) {
+        usernameLabel.setText(name);
     }
 }

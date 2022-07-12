@@ -1,6 +1,9 @@
 package servlets;
 
+import _json.CustomerDtoList_json;
+import _json.CustomerList_json;
 import bank.Bank;
+import com.google.gson.Gson;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -17,15 +20,7 @@ public class GetCustomersDto extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Bank myBank = (Bank)getServletContext().getAttribute("myBank");
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
-        try {
-            oos.writeObject(myBank.getCustomersDto());
-        } finally {
-            oos.close();
-        }
-        byte[] bytes = baos.toByteArray();
-        resp.getOutputStream().write(bytes);
+        Gson gson = new Gson();
+        resp.getWriter().write(gson.toJson(new CustomerDtoList_json(myBank.getCustomersDto())));
     }
 }

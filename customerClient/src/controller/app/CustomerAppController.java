@@ -1,12 +1,18 @@
 package controller.app;
 
+import _json.CustomerDtoList_json;
+import _json.CustomerList_json;
+import _json.LoanDtoList_json;
+import _json.LoanList_json;
 import bank.*;
 import com.google.gson.Gson;
+import com.google.gson.internal.bind.util.ISO8601Utils;
 import controller.constants.Constants;
 import controller.customer.CustomerController;
 import controller.header.HeaderController;
 import controller.payment.PaymentController;
 import controller.scramble.ScrambleController;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
@@ -138,8 +144,7 @@ public class CustomerAppController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        //TODO in the new version the customers actively pays their payments and debts,
-        // so maybe we need to change the way of the bank so that not throw negative balance and updateYaz of bank will not pay automatically payments
+
 
     }*/
     public void changeBody(String userName) {
@@ -149,6 +154,7 @@ public class CustomerAppController {
                 .addQueryParameter("userName", userName)
                 .build()
                 .toString();
+
         HttpClientUtil.runAsync(finalUrl, new Callback() {
                     @Override
                     public void onFailure(@NotNull Call call, @NotNull IOException e) {
@@ -158,37 +164,29 @@ public class CustomerAppController {
                         alert.setContentText("Click OK and try again:");
                         alert.showAndWait();
                     }
-
                     @Override
                     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                         if (response.code() != 200) {
-
                         } else {
-
-                                try {
-                                    URL url = getClass().getResource("/controller/customer/customer.fxml");
-                                    FXMLLoader fxmlLoader = new FXMLLoader();
-                                    fxmlLoader.setLocation(url);
-                                    customerComponent = fxmlLoader.load(url.openStream());
-                                    customerComponentController = fxmlLoader.getController();
-                                    //bodyAnchorPane.getChildren().set(0, customerComponent);
-                                    //AnchorPane.setBottomAnchor(customerComponent, 0.0);
-                                    //AnchorPane.setLeftAnchor(customerComponent, 0.0);
-                                    //AnchorPane.setRightAnchor(customerComponent, 0.0);
-                                   // AnchorPane.setTopAnchor(customerComponent, 0.0);
-                                    setCustomerComponentController(customerComponentController);
-                                    customerComponentController.loadCustomerDetails(userName,false);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
+                            try {
+                                URL url = getClass().getResource("/controller/customer/customer.fxml");
+                                FXMLLoader fxmlLoader = new FXMLLoader();
+                                fxmlLoader.setLocation(url);
+                                customerComponent = fxmlLoader.load(url.openStream());
+                                customerComponentController = fxmlLoader.getController();
+                                setCustomerComponentController(customerComponentController);
+                                customerComponentController.loadCustomerDetails(userName, false);
+                            } catch (IOException e) {
+                                e.printStackTrace();
                             }
                         }
-                    });
+                    }
+        });
     }
 
-    public void addUsers() {
+    /*public void addUsers() {
         String finalUrl = HttpUrl
-                .parse(Constants.GET_CUSTOMERS_NAMES)
+                .parse(Constants.GET_CUSTOMERS)
                 .newBuilder()
                 .build()
                 .toString();
@@ -208,20 +206,22 @@ public class CustomerAppController {
 
                 } else {
                     Gson gson = new Gson();
-                    String[] names = gson.fromJson(response.message(),String[].class);
-                    headerComponentController.removeAllUsers();
+                    //ArrayList<Customer> customers = new ArrayList<>();
+                    //gson.fromJson(response.body().string() );
+
+                    //headerComponentController.removeAllUsers();
                     //headerComponentController.addAdminBtn();
-                    for (int i=0 ; i<names.length ; i++) {
-                        headerComponentController.addUserBtn(names[i]);
+                   // for (int i=0 ; i<names.length ; i++) {
+                      //  headerComponentController.addUserBtn(names[i]);
                     }
                 }
-            }
+          //  }
         });
-    }
+    }*/
 
-    public void setUserComboBoxEnable() {
+    /*public void setUserComboBoxEnable() {
         headerComponentController.setUserComboBoxEnable();
-    }
+    }*/
 
     /*public boolean loadXmlData(AbsDescriptor descriptor) {
         boolean res = false;
@@ -285,25 +285,29 @@ public class CustomerAppController {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String resp = response.body().string();
+                response.body().close();
                 if (response.code() != 200) {
 
                 } else {
-
-                    loansDto[0] = (Collection<LoanDto>) response.body();
+                    Gson gson = new Gson();
+                    LoanDtoList_json loanDtoList_json = gson.fromJson(resp, LoanDtoList_json.class);
+                    loansDto[0] = loanDtoList_json.loansDtos;
                 }
             }
 
         });
         return loansDto[0];
     }
-    public Collection<CustomerDto> getCustomersDto() {
-        final Collection<CustomerDto>[] customersDto = new Collection[]{null};
+    public ArrayList<CustomerDto> getCustomersDto(){
+        final ArrayList<CustomerDto>[] customerDtos = new ArrayList[]{new ArrayList<>()};
             String finalUrl = HttpUrl
                     .parse(Constants.GET_CUSTOMERS_DTO)
                     .newBuilder()
                     .build()
                     .toString();
             HttpClientUtil.runAsync(finalUrl, new Callback() {
+
                 @Override
                 public void onFailure(@NotNull Call call, @NotNull IOException e) {
                     Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -315,14 +319,18 @@ public class CustomerAppController {
 
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    String resp = response.body().string();
+                    response.body().close();
                     if (response.code() != 200) {
-
                     } else {
-                        customersDto[0] = (Collection<CustomerDto>) response.body();
+                        Gson gson = new Gson();
+                        CustomerDtoList_json customerDtoList_json = gson.fromJson(resp, CustomerDtoList_json.class);
+                        customerDtos[0] = customerDtoList_json.customersDtos;
                     }
                 }
             });
-        return customersDto[0];
+
+        return customerDtos[0];
     }
 
     public Collection<Customer> getCustomers() {
@@ -344,10 +352,14 @@ public class CustomerAppController {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String resp = response.body().string();
+                response.body().close();
                 if (response.code() != 200) {
 
                 } else {
-                    customers[0] = (Collection<Customer>) response.body();
+                    Gson gson = new Gson();
+                    CustomerList_json customerList_json = gson.fromJson(resp, CustomerList_json.class);
+                    customers[0] = customerList_json.customers;
                 }
 
             }
@@ -357,7 +369,7 @@ public class CustomerAppController {
     }
 
     public Collection<Loan> getLoans() {
-        ArrayList<Loan> loans = new ArrayList<>();
+        Collection<Loan>[] loans = new Collection[]{null};
         String finalUrl = HttpUrl
                 .parse(Constants.GET_LOANS)
                 .newBuilder()
@@ -375,16 +387,21 @@ public class CustomerAppController {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String resp = response.body().string();
+                response.body().close();
                 if (response.code() != 200) {
 
                 } else {
                     Gson gson = new Gson();
+                    LoanList_json loanList_json = gson.fromJson(resp, LoanList_json.class);
+                    loans[0] = loanList_json.loans;
                 }
+
 
             }
 
         });
-        return loans;
+        return loans[0];
     }
 
     public void initYazLabel() {
@@ -576,7 +593,7 @@ public class CustomerAppController {
             loanToCheck.checkRiskStatus(this.getCustomers());
     }
 
-    //TODO: add user
+
     public void updateUserName(String userName, String isAdmin) {
         String finalUrl = HttpUrl
                 .parse(Constants.UPDATE_USER_NAME)
@@ -599,9 +616,16 @@ public class CustomerAppController {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
                 } else {
-                    addUsers();
+                    //addUsers();
                 }
             }
         });
+    }
+
+    public void onClick(ActionEvent actionEvent) {
+    }
+
+    public void setName(String name) {
+        headerComponentController.setName(name);
     }
 }

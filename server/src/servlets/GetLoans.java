@@ -1,5 +1,7 @@
 package servlets;
 
+import _json.CustomerList_json;
+import _json.LoanList_json;
 import bank.Bank;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -21,7 +23,6 @@ public class GetLoans extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Bank myBank = (Bank)getServletContext().getAttribute("myBank");
         Gson gson = new Gson();
-        String loans = gson.toJson(myBank.getLoans());
-        resp.getWriter().println(loans);
+        resp.getWriter().write(gson.toJson(new LoanList_json(myBank.getLoans())));
     }
 }

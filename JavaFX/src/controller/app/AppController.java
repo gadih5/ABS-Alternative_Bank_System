@@ -126,8 +126,7 @@ public class AppController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        //TODO in the new version the customers actively pays their payments and debts,
-        // so maybe we need to change the way of the bank so that not throw negative balance and updateYaz of bank will not pay automatically payments
+
 
     }
     public void changeBody(String userName) {
@@ -555,7 +554,7 @@ public class AppController {
             loanToCheck.checkRiskStatus(this.getCustomers());
     }
 
-    //TODO: add user
+
     public void updateUserName(String userName, String isAdmin) {
         String finalUrl = HttpUrl
                 .parse(Constants.UPDATE_USER_NAME)

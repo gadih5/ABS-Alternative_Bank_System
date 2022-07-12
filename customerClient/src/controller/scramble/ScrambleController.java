@@ -347,7 +347,7 @@ public class ScrambleController {
 
     };
 
-    synchronized private void taskHelper(){
+    synchronized private void taskHelper() throws InterruptedException {
         ObservableList<LoanDto> list = loansTable.getSelectionModel().getSelectedItems();
         ArrayList<LoanDto> listOfLoans = new ArrayList<>();
         listOfLoans.addAll(list);
@@ -395,7 +395,7 @@ public class ScrambleController {
                 }
             }
         }
-        //TODO: give some indication that the investment done.. (cause this dont work :| )
+
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Information Dialog");
         alert.setHeaderText("Info: Scramble Succeed!");

@@ -20,11 +20,6 @@ public class GetCategories extends HttpServlet {
         Gson gson = new Gson();
         String categories = gson.toJson(myBank.getCategory());
 
-        /*String categories = "";
-        for (String category : myBank.getCategory()) {
-            categories += " ";
-            categories += category;
-        }*/
         resp.getWriter().println(categories);
     }
 }
