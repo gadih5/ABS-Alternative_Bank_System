@@ -1,6 +1,6 @@
 package bank.xml;
 import bank.exception.NotXmlException;
-import bank.xml.generated.AbsDescriptor;
+import bank.xml.generated_old.AbsDescriptor;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;

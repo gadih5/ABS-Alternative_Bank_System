@@ -1,8 +1,6 @@
 package bank;
 
 import bank.exception.*;
-import bank.xml.generated.AbsDescriptor;
-import bank.xml.generated.*;
 
 import java.io.Serializable;
 import java.util.*;
