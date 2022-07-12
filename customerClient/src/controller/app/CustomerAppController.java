@@ -2,6 +2,9 @@ package controller.app;
 
 import _json.*;
 import bank.*;
+import bank.exception.*;
+import bank.xml.XmlReader;
+import bank.xml.generated.AbsDescriptor;
 import com.google.gson.Gson;
 import controller.constants.Constants;
 import controller.customer.CustomerController;
@@ -16,13 +19,19 @@ import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import utils.HttpClientUtil;
 
+import javax.xml.bind.JAXBException;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -46,6 +55,7 @@ public class CustomerAppController {
     @FXML
     private AnchorPane bodyAnchorPane;
 
+    private String username;
 
     @FXML
     public void initialize() {
@@ -160,6 +170,7 @@ public class CustomerAppController {
                     }
                     @Override
                     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        response.body().close();
                         if (response.code() != 200) {
                         } else {
                             try {
@@ -217,39 +228,42 @@ public class CustomerAppController {
         headerComponentController.setUserComboBoxEnable();
     }*/
 
-    /*public boolean loadXmlData(AbsDescriptor descriptor) {
+    public boolean loadXmlData(AbsDescriptor descriptor) {
         boolean res = false;
-        Bank newBank = new Bank();
+        //Bank newBank = new Bank();
         try {
-            newBank.loadXmlData(descriptor);
-            myBank = newBank;
+            //TODO: 1) LOAD XML FROM BANK IN HTTP REQUEST
+            //      2) ADD LOAN IN HTTP REQUEST
+
+
+            HttpUrl.Builder urlBuilder = HttpUrl.parse(Constants.LOAD_XML).newBuilder();
+            urlBuilder.addQueryParameter("username", username);
+            String finalUrl = urlBuilder.build().toString();
+
+            Request request = new Request.Builder()
+                    .url(finalUrl)
+                    .build();
+
+            Call call = Constants.HTTP_CLIENT.newCall(request);
+
+            try {
+                Response response = call.execute();
+                String resp = response.body().string();
+                response.body().close();
+            } catch (IOException e) {
+                System.out.println("Error when trying to get data. Exception: " + e.getMessage());
+            }
+            /*newBank.loadXmlData(descriptor);
+            myBank = newBank;*/
             res = true;
-        } catch (NegativeBalanceException e) {
-            showErrorAlert("Negative Balance!");
-        } catch (UndefinedReasonException e) {
-            showErrorAlert("Undefined Reason!");
-        } catch (UndefinedCustomerException e) {
-            showErrorAlert("Undefined Customer!");
-        } catch (NegativeLoanSumException e) {
-            showErrorAlert("Negative Loan Sum!");
-        } catch (NegativeTotalTimeUnitException e) {
-            showErrorAlert("Negative Total YAZ!");
-        } catch (NegativeInterestPercentException e) {
-            showErrorAlert("Negative Interest Percent!");
-        } catch (NegativePaymentFrequencyException e) {
-            showErrorAlert("Negative Payment Frequency!");
-        } catch (OverPaymentFrequencyException e) {
-            showErrorAlert("Over Payment Frequency!");
-        } catch (UndividedPaymentFrequencyException e) {
-            showErrorAlert("Undivided Payment Frequency!");
-        } catch (NotInCategoryException e) {
-            showErrorAlert("Category is Missing!");
-        } catch (AlreadyExistCustomerException e) {
-            showErrorAlert("Already Exist Customer!");
-        } finally {
+
+
+        }catch (Exception e){
+
+        }finally {
             return res;
         }
-    }*/
+    }
 
     private void showErrorAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -713,6 +727,7 @@ public class CustomerAppController {
 
 
     public void updateUserName(String userName, String isAdmin) {
+        userName = userName;
         String finalUrl = HttpUrl
                 .parse(Constants.UPDATE_USER_NAME)
                 .newBuilder()
@@ -741,6 +756,33 @@ public class CustomerAppController {
     }
 
     public void onClick(ActionEvent actionEvent) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML files", "*.xml"));
+        File file = fileChooser.showOpenDialog(new Stage());
+        String filePath = file.getPath();
+        if (filePath != null) {
+            try {
+                XmlReader myXml = new XmlReader(Paths.get(filePath));
+                if(loadXmlData(myXml.getDescriptor())) {
+                    //showAdminScreen();
+                    //appController.initYazLabel();
+                    //increaseYazBtn.setDisable(false);
+                    //appController.updatePathLabel(filePath);
+                    //appController.addUsers();
+                    //appController.setUserComboBoxEnable();
+                    updateBankDtos();
+                }
+            } catch (JAXBException e) {
+                e.printStackTrace();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (NotXmlException e) {
+                e.printStackTrace();
+            }
+        }
+         else
+            return;
+
     }
 
     public void setName(String name) {

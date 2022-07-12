@@ -36,6 +36,7 @@ public class Constants {
     public final static String UPDATE_USER_NAME = FULL_SERVER_PATH + "/updateUserName";
     public final static String IS_ADMIN = FULL_SERVER_PATH + "/isAdmin";
     public final static String ADMIN_LOGIN_PAGE = FULL_SERVER_PATH + "/adminLoginPage";
+    public final static String LOAD_XML = FULL_SERVER_PATH + "/loadXml";
 
 
 
