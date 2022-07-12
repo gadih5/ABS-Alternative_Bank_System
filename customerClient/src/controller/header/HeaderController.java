@@ -64,6 +64,7 @@ public class HeaderController {
     }
 
     public void setName(String name) {
+        System.out.println("NAME: " + name);
         usernameLabel.setText(name);
     }
 }

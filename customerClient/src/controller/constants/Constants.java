@@ -1,6 +1,7 @@
 package controller.constants;
 
 import com.google.gson.Gson;
+import okhttp3.OkHttpClient;
 
 public class Constants {
 
@@ -52,4 +53,6 @@ public class Constants {
 
     // GSON instance
     public final static Gson GSON_INSTANCE = new Gson();
+    public final static OkHttpClient HTTP_CLIENT = new OkHttpClient();
+
 }

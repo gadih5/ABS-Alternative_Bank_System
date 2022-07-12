@@ -10,11 +10,12 @@ import controller.payment.PaymentController;
 import controller.scramble.ScrambleController;
 import javafx.fxml.FXML;
 import javafx.scene.control.SplitPane;
-
+import org.jetbrains.annotations.Nullable;
+import utils.Listener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class CustomerController {
     @FXML
@@ -66,28 +67,50 @@ public class CustomerController {
         return selectedCustomer;
     }
 
+    public synchronized void getCustomersDto(Listener listner){
+        new Thread(() -> {
+            ArrayList<CustomerDto> customersDto;
+            customersDto = customerAppController.getCustomersDto();
 
-    public void loadCustomerDetails(String userName, boolean fromScramble)  {
-        customerAppController.updateBankDtos();
-        ArrayList<CustomerDto> customersDto = customerAppController.getCustomersDto();
-        System.out.println("THE RESULT: " + customersDto);
-        for(CustomerDto customerDto : customersDto){
-            if(customerDto.getName().equals(userName))
-                selectedCustomer = customerDto;
-        }
-        if(selectedCustomer == null)
-            return;
-        else { //Bank's customer
-            customerAppController.setName(selectedCustomer.getName());
-            informationComponentController.showInfoTable(selectedCustomer);
-            if(!fromScramble)
-                scrambleComponentController.loadScrambleInfo(selectedCustomer);
-            paymentComponentController.showPaymentInfo(selectedCustomer);
-        }
+            System.out.println("TEST: " + customersDto);
+
+            listner.OnCall(customersDto);
+        }).start();
     }
 
-    public Collection<Customer> getCustomers() {
-        return customerAppController.getCustomers();
+    public synchronized void loadCustomerDetails(String userName, boolean fromScramble)  {
+        customerAppController.updateBankDtos();
+
+        getCustomersDto(new Listener() {
+            @Override
+            public void OnCall(Object data) {
+                ArrayList<CustomerDto> customersDto = (ArrayList<CustomerDto>) data;
+                System.out.println("THE RESULT: " + customersDto);
+                for(CustomerDto customerDto : customersDto){
+                    if(customerDto.getName().equals(userName))
+                        selectedCustomer = customerDto;
+                }
+                if(selectedCustomer == null)
+                    return;
+                else { //Bank's customer
+                    customerAppController.setName(selectedCustomer.getName());
+                    informationComponentController.showInfoTable(selectedCustomer);
+                    if(!fromScramble)
+                        scrambleComponentController.loadScrambleInfo(selectedCustomer);
+                    paymentComponentController.showPaymentInfo(selectedCustomer);
+            }
+            }
+        });
+    }
+
+    public ArrayList<Customer> getCustomers() {
+        try{
+            return customerAppController.getCustomers();
+        }
+        catch (Exception e){
+            return null;
+        }
+
     }
 
     public Collection<CustomerDto> getCustomersDto() {

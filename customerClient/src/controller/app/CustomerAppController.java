@@ -1,12 +1,8 @@
 package controller.app;
 
-import _json.CustomerDtoList_json;
-import _json.CustomerList_json;
-import _json.LoanDtoList_json;
-import _json.LoanList_json;
+import _json.*;
 import bank.*;
 import com.google.gson.Gson;
-import com.google.gson.internal.bind.util.ISO8601Utils;
 import controller.constants.Constants;
 import controller.customer.CustomerController;
 import controller.header.HeaderController;
@@ -20,11 +16,9 @@ import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.HttpUrl;
-import okhttp3.Response;
+import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import utils.HttpClientUtil;
 
 import java.io.IOException;
@@ -265,7 +259,29 @@ public class CustomerAppController {
         alert.showAndWait();
     }
 
-    public Collection<LoanDto> getLoansDto() {
+
+    public ArrayList<LoanDto> getLoansDto(){
+        ArrayList<LoanDto> loanDtos = new ArrayList<>();
+
+        Request request = new Request.Builder()
+                .url(Constants.GET_LOANS_DTO)
+                .build();
+
+        Call call = Constants.HTTP_CLIENT.newCall(request);
+
+        try {
+            Response response = call.execute();
+            String resp = response.body().string();
+            response.body().close();
+            LoanDtoList_json loanDtoList_json = Constants.GSON_INSTANCE.fromJson(resp, LoanDtoList_json.class);
+            loanDtos = loanDtoList_json.loansDtos;
+        } catch (IOException e) {
+            System.out.println("Error when trying to get data. Exception: " + e.getMessage());
+        }
+        return loanDtos;
+    }
+
+    /*public Collection<LoanDto> getLoansDto() {
         final Collection<LoanDto>[] loansDto = new Collection[]{null};
 
         String finalUrl = HttpUrl
@@ -298,9 +314,32 @@ public class CustomerAppController {
 
         });
         return loansDto[0];
+    }*/
+
+    public ArrayList<CustomerDto> getCustomersDto() {
+        ArrayList<CustomerDto> customerDtos = new ArrayList<>();
+
+        Request request = new Request.Builder()
+                .url(Constants.GET_CUSTOMERS_DTO)
+                .build();
+
+        Call call = Constants.HTTP_CLIENT.newCall(request);
+
+        try {
+            Response response = call.execute();
+            String resp = response.body().string();
+            response.body().close();
+            CustomerDtoList_json customerDtoList_json = Constants.GSON_INSTANCE.fromJson(resp, CustomerDtoList_json.class);
+            customerDtos = customerDtoList_json.customersDtos;
+        } catch (IOException e) {
+            System.out.println("Error when trying to get data. Exception: " + e.getMessage());
+        }
+        return customerDtos;
     }
-    public ArrayList<CustomerDto> getCustomersDto(){
-        final ArrayList<CustomerDto>[] customerDtos = new ArrayList[]{new ArrayList<>()};
+
+
+/*    public ArrayList<CustomerDto> getCustomersDto(){
+            ArrayList<CustomerDto>[] customerDtos = new ArrayList[]{new ArrayList<>()};
             String finalUrl = HttpUrl
                     .parse(Constants.GET_CUSTOMERS_DTO)
                     .newBuilder()
@@ -326,14 +365,44 @@ public class CustomerAppController {
                         Gson gson = new Gson();
                         CustomerDtoList_json customerDtoList_json = gson.fromJson(resp, CustomerDtoList_json.class);
                         customerDtos[0] = customerDtoList_json.customersDtos;
+                        System.out.println("respones : 200 " + customerDtos[0]);
                     }
                 }
-            });
 
+
+            });
+        System.out.println("PRE_EXIT: " + customerDtos[0]);
         return customerDtos[0];
+    }*/
+
+
+    public ArrayList<Customer> getCustomers() throws NullPointerException{
+        @Nullable ArrayList<Customer> customers = new ArrayList<>();
+
+        Request request = new Request.Builder()
+                .url(Constants.GET_CUSTOMERS)
+                .build();
+
+        Call call = Constants.HTTP_CLIENT.newCall(request);
+
+        try {
+            Response response = call.execute();
+            CustomerList_json customerList_json = new CustomerList_json();
+            String resp = response.body().string();
+            response.body().close();
+            if(resp != null) {
+                customerList_json = Constants.GSON_INSTANCE.fromJson(resp, CustomerList_json.class);
+                if(customerList_json.customers != null)
+                    customers = customerList_json.customers;
+            }
+        } catch (IOException e) {
+            System.out.println("Error when trying to get data. Exception: " + e.getMessage());
+        }
+        return customers;
     }
 
-    public Collection<Customer> getCustomers() {
+
+    /*public Collection<Customer> getCustomers() {
         Collection<Customer>[] customers = new Collection[]{null};
         String finalUrl = HttpUrl
                 .parse(Constants.GET_CUSTOMERS)
@@ -366,7 +435,7 @@ public class CustomerAppController {
 
         });
         return customers[0];
-    }
+    }*/
 
     public Collection<Loan> getLoans() {
         Collection<Loan>[] loans = new Collection[]{null};
@@ -412,7 +481,35 @@ public class CustomerAppController {
         myBank = new Bank();
     }*/
 
-    public Set<String> getCategories() {
+    public Set<String> getCategories(){
+        Set<String> categoriesSet = new HashSet<>();
+
+        Request request = new Request.Builder()
+                .url(Constants.GET_CATEGORIES)
+                .build();
+
+        Call call = Constants.HTTP_CLIENT.newCall(request);
+
+        try {
+            Response response = call.execute();
+            CategoryList_json categoryList_json;
+            String resp = response.body().string();
+            response.body().close();
+            if(resp != null){
+                categoryList_json = Constants.GSON_INSTANCE.fromJson(resp, CategoryList_json.class);
+                if(categoryList_json != null)
+                    categoriesSet = categoryList_json.categories;
+            }
+
+        } catch (IOException e) {
+            System.out.println("Error when trying to get data. Exception: " + e.getMessage());
+        }
+
+        return categoriesSet;
+    }
+
+
+/*    public Set<String> getCategories() {
         Set<String> categoriesSet = new HashSet<>();
         String finalUrl = HttpUrl
                 .parse(Constants.GET_CATEGORIES)
@@ -437,11 +534,12 @@ public class CustomerAppController {
                 for(String category: categories){
                     categoriesSet.add(category);
                 }
+                System.out.println("CATEGORIES: " + categories);
             }
         });
 
         return categoriesSet;
-    }
+    }*/
 
     public int calcMaxInterestPercent(CustomerDto selectedCustomer) {
         int res = 0;
@@ -462,6 +560,26 @@ public class CustomerAppController {
     }
 
     public int getNumOfLoans() {
+        int numOfLoans=0;
+
+        Request request = new Request.Builder()
+                .url(Constants.GET_NUM_OF_LOANS)
+                .build();
+
+        Call call = Constants.HTTP_CLIENT.newCall(request);
+
+        try {
+            Response response = call.execute();
+            String resp = response.body().string();
+            response.body().close();
+            numOfLoans = Constants.GSON_INSTANCE.fromJson(resp, Integer.class);
+        } catch (IOException e) {
+            System.out.println("Error when trying to get data. Exception: " + e.getMessage());
+        }
+        return numOfLoans;
+    }
+
+    /*public int getNumOfLoans() {
         final int[] numOfLoans = {0};
         String finalUrl = HttpUrl
                 .parse(Constants.GET_NUM_OF_LOANS)
@@ -487,11 +605,11 @@ public class CustomerAppController {
                 }
             }
 
-        });
+        });*/
 
-
+/*
         return numOfLoans[0];
-    }
+    }*/
 
     public Collection<LoanDto> getLoansDtoForScramble(int categoriesChosed, Set<String> chosenCategories, int minInterestPercent, int minTotalYaz, int maxOpenLoans, int maxOwnershipPercent, CustomerDto selectedCustomer) {
         Set<LoanDto> validLoans = new HashSet<>();

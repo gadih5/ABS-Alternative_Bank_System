@@ -1,5 +1,7 @@
 package servlets;
 
+import _json.CategoryList_json;
+import _json.CustomerList_json;
 import bank.Bank;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -18,8 +20,6 @@ public class GetCategories extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Bank myBank = (Bank)getServletContext().getAttribute("myBank");
         Gson gson = new Gson();
-        String categories = gson.toJson(myBank.getCategory());
-
-        resp.getWriter().println(categories);
+        resp.getWriter().write(gson.toJson(new CategoryList_json(myBank.getCategory())));
     }
 }
