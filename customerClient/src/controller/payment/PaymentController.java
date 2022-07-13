@@ -4,6 +4,7 @@ import bank.*;
 import bank.exception.NegativeBalanceException;
 import controller.customer.CustomerController;
 import controller.payDialog.PayDialogController;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -15,6 +16,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.net.URL;
@@ -37,6 +39,7 @@ public class PaymentController {
     private Button payEntireButton;
     @FXML
     private PayDialogController payDialogComponentController;
+    @NotNull
     private CustomerDto selectedCustomer;
 
     public void setMainController(CustomerController customerController) {
@@ -52,13 +55,18 @@ public class PaymentController {
 
     public void showNotifications() {
         notificationsVBox.getChildren().clear();
-        for(PreTransaction preTransaction: selectedCustomer.getPreTransactions()){
-            notificationsVBox.getChildren().add(new Label(preTransaction.toString()));
+        try {
+            for (PreTransaction preTransaction : selectedCustomer.getPreTransactions()) {
+                Platform.runLater(() -> {
+                    notificationsVBox.getChildren().add(new Label(preTransaction.toString()));
+                });
+            }
+            if (!notificationsVBox.getChildren().isEmpty())
+                payButton.setDisable(false);
         }
-        if(!notificationsVBox.getChildren().isEmpty())
-            payButton.setDisable(false);
+        catch(Exception e){}
+        }
 
-    }
 
     @FXML
     private void makeBorrowerLoansTable(Collection<Loan> outgoingLoans) {

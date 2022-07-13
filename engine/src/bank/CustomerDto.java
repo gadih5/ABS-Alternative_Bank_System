@@ -1,6 +1,7 @@
 package bank;
 
 import _json.*;
+import javafx.application.Platform;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -67,7 +68,9 @@ public class CustomerDto implements Serializable {
         }
     }
 
-    public CustomerDto(CustomerDto_json customerDto_json) {
+
+
+    public  CustomerDto(CustomerDto_json customerDto_json) {
         this.name = customerDto_json.name;
         this.balance = customerDto_json.balance;
         ArrayList<Transaction> copyTransactions = new ArrayList<>();

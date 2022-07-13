@@ -1,10 +1,13 @@
 package controller.header;
 
 import controller.app.CustomerAppController;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+
+import java.io.IOException;
 
 public class HeaderController {
     @FXML
@@ -18,6 +21,7 @@ public class HeaderController {
     private ComboBox<String> userComboBox;
     @FXML
     private CustomerAppController customerAppController;
+
     @FXML
 
     public void setMainController(CustomerAppController customerAppController) {
@@ -25,7 +29,7 @@ public class HeaderController {
     }
 
     @FXML
-    public void updatePathLabel(String s){
+    public void updatePathLabel(String s) {
         pathLabel.setText(s);
     }
 
@@ -39,7 +43,7 @@ public class HeaderController {
 
     public void chooseUser(ActionEvent actionEvent) {
         String userName = userComboBox.getSelectionModel().getSelectedItem();
-        if(userName == null)
+        if (userName == null)
             return;
         else
             customerAppController.changeBody(userName);
@@ -64,7 +68,10 @@ public class HeaderController {
     }
 
     public void setName(String name) {
-        System.out.println("NAME: " + name);
-        usernameLabel.setText(name);
+        Platform.runLater(() -> {
+            usernameLabel.setText(name);
+        });
     }
+
+
 }

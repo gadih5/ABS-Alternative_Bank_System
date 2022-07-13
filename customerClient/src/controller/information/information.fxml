@@ -30,8 +30,8 @@
                <bottom>
                   <HBox alignment="BOTTOM_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="40.0" minWidth="210.0" prefHeight="40.0" prefWidth="210.0" spacing="30.0" BorderPane.alignment="CENTER">
                      <children>
-                        <Button fx:id="chargeBtn" maxHeight="28.0" maxWidth="80.0" minHeight="28.0" minWidth="80.0" mnemonicParsing="false" onAction="#chargeMoney" prefHeight="28.0" prefWidth="80.0" text="Charge" />
-                        <Button fx:id="withdrawBtn" maxHeight="28.0" maxWidth="80.0" minHeight="28.0" minWidth="80.0" mnemonicParsing="false" onAction="#withdrawMoney" prefHeight="28.0" prefWidth="80.0" text="Withdraw" />
+                        <Button fx:id="chargeBtn" maxHeight="33.0" maxWidth="110.0" minHeight="28.0" minWidth="100.0" mnemonicParsing="false" onAction="#chargeMoney" prefHeight="28.0" prefWidth="80.0" text="Charge" />
+                        <Button fx:id="withdrawBtn" maxHeight="33.0" maxWidth="110.0" minHeight="28.0" minWidth="100.0" mnemonicParsing="false" onAction="#withdrawMoney" prefHeight="28.0" prefWidth="80.0" text="Withdraw" />
                      </children>
                      <BorderPane.margin>
                         <Insets />

@@ -8,6 +8,7 @@ import bank.exception.NegativeBalanceException;
 import controller.chargeDialog.ChargeDialogController;
 import controller.customer.CustomerController;
 import controller.withdrawDialog.WithdrawDialogController;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -50,18 +51,26 @@ public class InformationController {
 
     @FXML
     public void showInfoTable(CustomerDto selectedCustomer) {
-        accountTransTable.getItems().clear();
-        accountTransTable.getColumns().clear();
-        makeTransactionsTable(selectedCustomer.getTransactions());
-        balanceLabel.setText("Balance: " + selectedCustomer.getBalance());
 
-        borrowerLoansTable.getItems().clear();
-        borrowerLoansTable.getColumns().clear();
-        makeBorrowerLoansTable(selectedCustomer.getOutgoingLoans());
 
-        loanerLoansTable.getItems().clear();
-        loanerLoansTable.getColumns().clear();
-        makeLoanerLoansTable(selectedCustomer.getIngoingLoans());
+            accountTransTable.getItems().clear();
+            accountTransTable.getColumns().clear();
+            makeTransactionsTable(selectedCustomer.getTransactions());
+
+            double b =selectedCustomer.getBalance();
+
+            balanceLabel.setText("Balance: "+b );
+
+            System.out.println("do i get here? " + selectedCustomer.getBalance() + " this is labale values" + balanceLabel.getText());
+
+            borrowerLoansTable.getItems().clear();
+            borrowerLoansTable.getColumns().clear();
+            makeBorrowerLoansTable(selectedCustomer.getOutgoingLoans());
+
+            loanerLoansTable.getItems().clear();
+            loanerLoansTable.getColumns().clear();
+            makeLoanerLoansTable(selectedCustomer.getIngoingLoans());
+
     }
 
     @FXML
