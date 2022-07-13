@@ -13,9 +13,4 @@ public class CategoryList_json {
         this.categories = categories;
     }
 
-    public CategoryList_json() {
-        Set<String> init = new HashSet<>();
-        init.add("default");
-        categories = init;
-    }
 }

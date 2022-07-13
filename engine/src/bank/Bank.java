@@ -63,8 +63,10 @@ public class Bank  implements Serializable {
 
     public void addCustumer(String name, double balance, String isAdmin) throws NegativeBalanceException {
         Boolean isAdminInt = Boolean.parseBoolean(isAdmin);
-        Customer newCustomer = new Customer(name, balance, isAdminInt);
-        customers.add(newCustomer);
+        if(!isAdminInt) {
+            Customer newCustomer = new Customer(name, balance, isAdminInt);
+            customers.add(newCustomer);
+        }
     }
 
     public void checkRiskStatus(){

@@ -1,6 +1,9 @@
 package controller.constants;
 
 import com.google.gson.Gson;
+import okhttp3.OkHttpClient;
+
+import java.net.URL;
 
 public class Constants {
 
@@ -35,6 +38,8 @@ public class Constants {
     public final static String UPDATE_USER_NAME = FULL_SERVER_PATH + "/updateUserName";
     public final static String IS_ADMIN = FULL_SERVER_PATH + "/isAdmin";
     public final static String ADMIN_LOGIN_PAGE = FULL_SERVER_PATH + "/adminLoginPage";
+    public final static String LOAD_XML = FULL_SERVER_PATH + "/loadXml";
+    public final static String GET_YAZ = FULL_SERVER_PATH + "/getYaz";
 
 
 
@@ -52,4 +57,5 @@ public class Constants {
 
     // GSON instance
     public final static Gson GSON_INSTANCE = new Gson();
+    public final static OkHttpClient HTTP_CLIENT = new OkHttpClient();
 }

@@ -1,5 +1,6 @@
 package controller.app;
 
+import _json.*;
 import bank.*;
 import bank.exception.*;
 import com.google.gson.Gson;
@@ -8,6 +9,7 @@ import com.google.gson.JsonParser;
 import controller.admin.AdminController;
 import controller.constants.Constants;
 import controller.header.HeaderController;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
@@ -16,11 +18,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.HttpUrl;
-import okhttp3.Response;
+import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import utils.HttpClientUtil;
 
 import java.io.IOException;
@@ -62,9 +62,7 @@ public class AppController {
 
 
 
-    public void updatePathLabel(String filePath) {
-        headerComponentController.updatePathLabel(filePath);
-    }
+
 
 
     public void updateYaz() {
@@ -88,11 +86,16 @@ public class AppController {
 
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    String resp = response.body().string();
+                    response.body().close();
                     if (response.code() != 200) {
 
                     } else {
-                        headerComponentController.updateYazLabel(response.message());
-                        adminComponentController.showAdminScreen();
+                        Platform.runLater(()-> {
+                                    headerComponentController.updateYazLabel(resp);
+                            adminComponentController.showAdminScreen();
+
+                        });
 
                         String finalUrl = HttpUrl
                                 .parse(Constants.CHECK_RISK_STATUS)
@@ -111,6 +114,7 @@ public class AppController {
 
                             @Override
                             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                                response.body().close();
                                 if (response.code() != 200) {
 
                                 } else {
@@ -148,23 +152,49 @@ public class AppController {
 
                     @Override
                     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        response.body().close();
                         if (response.code() != 200) {
 
                         } else {
-                            adminComponentController.showAdminScreen();
-                            bodyAnchorPane.getChildren().set(0, adminComponent);
-                            AnchorPane.setBottomAnchor(adminComponent, 0.0);
-                            AnchorPane.setLeftAnchor(adminComponent, 0.0);
-                            AnchorPane.setRightAnchor(adminComponent, 0.0);
-                            AnchorPane.setTopAnchor(adminComponent, 0.0);
-                            adminComponentController.enableAndShowYazBtn();
-                            adminComponentController.showAdminScreen();
+                            //adminComponentController.showAdminScreen();
+                            Platform.runLater(()-> {
+                                bodyAnchorPane.getChildren().set(0, adminComponent);
+                                AnchorPane.setBottomAnchor(adminComponent, 0.0);
+                                AnchorPane.setLeftAnchor(adminComponent, 0.0);
+                                AnchorPane.setRightAnchor(adminComponent, 0.0);
+                                AnchorPane.setTopAnchor(adminComponent, 0.0);
+                                headerComponentController.setName(userName);
+                                getYazValueFromBank();
+                                adminComponentController.enableAndShowYazBtn();
+                                //adminComponentController.showAdminScreen();
+                            });
                         }
                     }
                 });
     }
 
-    public void addUsers() {
+    private int getYazValueFromBank() {
+        int yaz=0;
+
+        Request request = new Request.Builder()
+                .url(Constants.GET_YAZ)
+                .build();
+
+        Call call = Constants.HTTP_CLIENT.newCall(request);
+
+        try {
+            Response response = call.execute();
+            String resp = response.body().string();
+            response.body().close();
+            yaz = Constants.GSON_INSTANCE.fromJson(resp, Integer.class);
+            headerComponentController.setYazLabel(yaz);
+        } catch (IOException e) {
+            System.out.println("Error when trying to get data. Exception: " + e.getMessage());
+        }
+        return yaz;
+    }
+
+  /*  public void addUsers() {
         String finalUrl = HttpUrl
                 .parse(Constants.GET_CUSTOMERS_NAMES)
                 .newBuilder()
@@ -195,11 +225,11 @@ public class AppController {
                 }
             }
         });
-    }
+    }*/
 
-    public void setUserComboBoxEnable() {
+  /*  public void setUserComboBoxEnable() {
         headerComponentController.setUserComboBoxEnable();
-    }
+    }*/
 
     /*public boolean loadXmlData(AbsDescriptor descriptor) {
         boolean res = false;
@@ -243,163 +273,123 @@ public class AppController {
         alert.showAndWait();
     }
 
-    public Collection<LoanDto> getLoansDto() {
-        final Collection<LoanDto>[] loansDto = new Collection[]{null};
+    public ArrayList<LoanDto> getLoansDto() {
+        ArrayList<LoanDto> loanDtos = new ArrayList<>();
 
-        String finalUrl = HttpUrl
-                .parse(Constants.GET_LOANS_DTO)
-                .newBuilder()
-                .build()
-                .toString();
-        HttpClientUtil.runAsync(finalUrl, new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Warning Dialog");
-                alert.setHeaderText("Warning: Something went wrong");
-                alert.setContentText("Click OK and try again:");
-                alert.showAndWait();
-            }
+        Request request = new Request.Builder()
+                .url(Constants.GET_LOANS_DTO)
+                .build();
 
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (response.code() != 200) {
+        Call call = Constants.HTTP_CLIENT.newCall(request);
 
-                } else {
-
-                    loansDto[0] = (Collection<LoanDto>) response.body();
-                }
-            }
-
-        });
-        return loansDto[0];
-    }
-    public Collection<CustomerDto> getCustomersDto() {
-        final Collection<CustomerDto>[] customersDto = new Collection[]{null};
-            String finalUrl = HttpUrl
-                    .parse(Constants.GET_CUSTOMERS_DTO)
-                    .newBuilder()
-                    .build()
-                    .toString();
-            HttpClientUtil.runAsync(finalUrl, new Callback() {
-                @Override
-                public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    Alert alert = new Alert(Alert.AlertType.WARNING);
-                    alert.setTitle("Warning Dialog");
-                    alert.setHeaderText("Warning: Something went wrong");
-                    alert.setContentText("Click OK and try again:");
-                    alert.showAndWait();
-                }
-
-                @Override
-                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                    if (response.code() != 200) {
-
-                    } else {
-                        customersDto[0] = (Collection<CustomerDto>) response.body();
-                    }
-                }
-            });
-        return customersDto[0];
+        try {
+            Response response = call.execute();
+            String resp = response.body().string();
+            response.body().close();
+            LoanDtoList_json loanDtoList_json = Constants.GSON_INSTANCE.fromJson(resp, LoanDtoList_json.class);
+            loanDtos = loanDtoList_json.loansDtos;
+        } catch (IOException e) {
+            System.out.println("Error when trying to get data. Exception: " + e.getMessage());
+        }
+        return loanDtos;
     }
 
-    public Collection<Customer> getCustomers() {
-        Collection<Customer>[] customers = new Collection[]{null};
-        String finalUrl = HttpUrl
-                .parse(Constants.GET_CUSTOMERS)
-                .newBuilder()
-                .build()
-                .toString();
-        HttpClientUtil.runAsync(finalUrl, new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Warning Dialog");
-                alert.setHeaderText("Warning: Something went wrong");
-                alert.setContentText("Click OK and try again:");
-                alert.showAndWait();
+    public ArrayList<CustomerDto> getCustomersDto() {
+        ArrayList<CustomerDto> customerDtos = new ArrayList<>();
+
+        Request request = new Request.Builder()
+                .url(Constants.GET_CUSTOMERS_DTO)
+                .build();
+
+        Call call = Constants.HTTP_CLIENT.newCall(request);
+
+        try {
+            Response response = call.execute();
+            String resp = response.body().string();
+            response.body().close();
+            CustomerDtoList_json customerDtoList_json = Constants.GSON_INSTANCE.fromJson(resp, CustomerDtoList_json.class);
+            customerDtos = customerDtoList_json.customersDtos;
+        } catch (IOException e) {
+            System.out.println("Error when trying to get data. Exception: " + e.getMessage());
+        }
+        return customerDtos;
+    }
+
+    public ArrayList<Customer> getCustomers() {
+        @Nullable ArrayList<Customer> customers = new ArrayList<>();
+
+        Request request = new Request.Builder()
+                .url(Constants.GET_CUSTOMERS)
+                .build();
+
+        Call call = Constants.HTTP_CLIENT.newCall(request);
+
+        try {
+            Response response = call.execute();
+            CustomerList_json customerList_json;
+            String resp = response.body().string();
+            response.body().close();
+            if(resp != null) {
+                customerList_json = Constants.GSON_INSTANCE.fromJson(resp, CustomerList_json.class);
+                if(customerList_json.customers != null)
+                    customers = customerList_json.customers;
             }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (response.code() != 200) {
-
-                } else {
-                    customers[0] = (Collection<Customer>) response.body();
-                }
-
-            }
-
-        });
-        return customers[0];
+        } catch (IOException e) {
+            System.out.println("Error when trying to get data. Exception: " + e.getMessage());
+        }
+        return customers;
     }
 
     public Collection<Loan> getLoans() {
-        ArrayList<Loan> loans = new ArrayList<>();
-        String finalUrl = HttpUrl
-                .parse(Constants.GET_LOANS)
-                .newBuilder()
-                .build()
-                .toString();
-        HttpClientUtil.runAsync(finalUrl, new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Warning Dialog");
-                alert.setHeaderText("Warning: Something went wrong");
-                alert.setContentText("Click OK and try again:");
-                alert.showAndWait();
+        @Nullable ArrayList<Loan> loans = new ArrayList<>();
+
+        Request request = new Request.Builder()
+                .url(Constants.GET_LOANS)
+                .build();
+
+        Call call = Constants.HTTP_CLIENT.newCall(request);
+
+        try {
+            Response response = call.execute();
+            LoanList_json loanList_json;
+            String resp = response.body().string();
+            response.body().close();
+            if(resp != null) {
+                loanList_json = Constants.GSON_INSTANCE.fromJson(resp, LoanList_json.class);
+                if(loanList_json.loans != null)
+                    loans = loanList_json.loans;
             }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (response.code() != 200) {
-
-                } else {
-                    Gson gson = new Gson();
-                }
-
-            }
-
-        });
+        } catch (IOException e) {
+            System.out.println("Error when trying to get data. Exception: " + e.getMessage());
+        }
         return loans;
     }
 
-    public void initYazLabel() {
-        headerComponentController.initYazLabel();
-    }
 
-  /*  public void eraseBank() {
-        myBank = new Bank();
-    }*/
 
     public Set<String> getCategories() {
         Set<String> categoriesSet = new HashSet<>();
-        String finalUrl = HttpUrl
-                .parse(Constants.GET_CATEGORIES)
-                .newBuilder()
-                .build()
-                .toString();
-        HttpClientUtil.runAsync(finalUrl, new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Warning Dialog");
-                alert.setHeaderText("Warning: Something went wrong");
-                alert.setContentText("Click OK and try again:");
-                alert.showAndWait();
+
+        Request request = new Request.Builder()
+                .url(Constants.GET_CATEGORIES)
+                .build();
+
+        Call call = Constants.HTTP_CLIENT.newCall(request);
+
+        try {
+            Response response = call.execute();
+            CategoryList_json categoryList_json;
+            String resp = response.body().string();
+            response.body().close();
+            if(resp != null){
+                categoryList_json = Constants.GSON_INSTANCE.fromJson(resp, CategoryList_json.class);
+                if(categoryList_json != null)
+                    categoriesSet = categoryList_json.categories;
             }
 
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                Gson gson = new Gson();
-                String[] categories = gson.fromJson(response.message(),String[].class);
-
-                for(String category: categories){
-                    categoriesSet.add(category);
-                }
-            }
-        });
+        } catch (IOException e) {
+            System.out.println("Error when trying to get data. Exception: " + e.getMessage());
+        }
 
         return categoriesSet;
     }
@@ -423,35 +413,23 @@ public class AppController {
     }
 
     public int getNumOfLoans() {
-        final int[] numOfLoans = {0};
-        String finalUrl = HttpUrl
-                .parse(Constants.GET_NUM_OF_LOANS)
-                .newBuilder()
-                .build()
-                .toString();
-        HttpClientUtil.runAsync(finalUrl, new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Warning Dialog");
-                alert.setHeaderText("Warning: Something went wrong");
-                alert.setContentText("Click OK and try again:");
-                alert.showAndWait();
-            }
+        int numOfLoans=0;
 
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (response.code() != 200) {
+        Request request = new Request.Builder()
+                .url(Constants.GET_NUM_OF_LOANS)
+                .build();
 
-                } else {
-                    numOfLoans[0] = Integer.parseInt(response.message());
-                }
-            }
+        Call call = Constants.HTTP_CLIENT.newCall(request);
 
-        });
-
-
-        return numOfLoans[0];
+        try {
+            Response response = call.execute();
+            String resp = response.body().string();
+            response.body().close();
+            numOfLoans = Constants.GSON_INSTANCE.fromJson(resp, Integer.class);
+        } catch (IOException e) {
+            System.out.println("Error when trying to get data. Exception: " + e.getMessage());
+        }
+        return numOfLoans;
     }
 
     public Collection<LoanDto> getLoansDtoForScramble(int categoriesChosed, Set<String> chosenCategories, int minInterestPercent, int minTotalYaz, int maxOpenLoans, int maxOwnershipPercent, CustomerDto selectedCustomer) {
@@ -577,7 +555,7 @@ public class AppController {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
                 } else {
-                    addUsers();
+                    //addUsers();
                 }
             }
         });

@@ -72,6 +72,10 @@ public class HeaderController {
             usernameLabel.setText(name);
         });
     }
-
+    public void setYazLabel(int yaz) {
+        Platform.runLater(() -> {
+            yazLabel.setText("YAZ: " + String.valueOf(yaz));
+        });
+    }
 
 }
