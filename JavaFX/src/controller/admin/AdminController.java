@@ -4,6 +4,7 @@ import bank.CustomerDto;
 import bank.LoanDto;
 import bank.exception.*;
 import bank.xml.XmlReader;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -108,8 +109,10 @@ public class AdminController{
         loansTable.getColumns().clear();
         customersTable.getColumns().clear();
         loansTable.getItems().clear();
-        makeAdminLoansTable();
-        makeAdminCustomersTable();
+        Platform.runLater(()-> {
+                    makeAdminLoansTable();
+                    makeAdminCustomersTable();
+                });
         increaseYazBtn.setDisable(false);
     }
 

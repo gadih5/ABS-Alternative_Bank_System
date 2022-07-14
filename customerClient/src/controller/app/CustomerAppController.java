@@ -210,7 +210,7 @@ public class CustomerAppController {
     }
 
     private int getYazValueFromBank() {
-        int yaz=0;
+        int yaz = 0;
 
         Request request = new Request.Builder()
                 .url(Constants.GET_YAZ)
@@ -267,50 +267,49 @@ public class CustomerAppController {
     /*public void setUserComboBoxEnable() {
         headerComponentController.setUserComboBoxEnable();
     }*/
-public boolean loadXmlData2(AbsDescriptor descriptor ){
-    RequestBody body =
-            new MultipartBody.Builder()
-                    .addFormDataPart("descriptor",Constants.GSON_INSTANCE.toJson(descriptor))
-                    .build();
+   /* public boolean loadXmlData2(AbsDescriptor descriptor) {
+        RequestBody body =
+                new MultipartBody.Builder()
+                        .addFormDataPart("descriptor", Constants.GSON_INSTANCE.toJson(descriptor))
+                        .build();
 
-    String finalUrl = HttpUrl
-            .parse(Constants.LOAD_XML)
-            .newBuilder()
-            .addQueryParameter("username", username)
+        String finalUrl = HttpUrl
+                .parse(Constants.LOAD_XML)
+                .newBuilder()
+                .addQueryParameter("username", username)
 
-            .build()
-            .toString();
-    HttpClientUtil.runAsync(finalUrl, new Callback() {
-        @Override
-        public void onFailure(@NotNull Call call, @NotNull IOException e) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Warning Dialog");
-            alert.setHeaderText("Warning: Something went wrong");
-            alert.setContentText("Click OK and try again:");
-            alert.showAndWait();
-        }
-
-        @Override
-        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-            if (response.code() != 200) {
-
-            } else {
-                Gson gson = new Gson();
-                //ArrayList<Customer> customers = new ArrayList<>();
-                //gson.fromJson(response.body().string() );
-
-                //headerComponentController.removeAllUsers();
-                //headerComponentController.addAdminBtn();
-                // for (int i=0 ; i<names.length ; i++) {
-                //  headerComponentController.addUserBtn(names[i]);
+                .build()
+                .toString();
+        HttpClientUtil.runAsync(finalUrl, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Warning Dialog");
+                alert.setHeaderText("Warning: Something went wrong");
+                alert.setContentText("Click OK and try again:");
+                alert.showAndWait();
             }
-        }
-        //  }
-    });
-}
-    public boolean loadXmlData(AbsDescriptor descriptor) {
-        boolean res = false;
-        //Bank newBank = new Bank();
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.code() != 200) {
+
+                } else {
+                    Gson gson = new Gson();
+                    //ArrayList<Customer> customers = new ArrayList<>();
+                    //gson.fromJson(response.body().string() );
+
+                    //headerComponentController.removeAllUsers();
+                    //headerComponentController.addAdminBtn();
+                    // for (int i=0 ; i<names.length ; i++) {
+                    //  headerComponentController.addUserBtn(names[i]);
+                }
+            }
+            //  }
+        });
+    }*/
+
+    public void loadXmlData(AbsDescriptor descriptor) {
         try {
             //TODO: 1) LOAD XML FROM BANK IN HTTP REQUEST
             //      2) ADD LOAN IN HTTP REQUEST
@@ -318,15 +317,11 @@ public boolean loadXmlData2(AbsDescriptor descriptor ){
 
             HttpUrl.Builder urlBuilder = HttpUrl.parse(Constants.LOAD_XML).newBuilder();
             urlBuilder.addQueryParameter("username", username);
+            urlBuilder.addQueryParameter("descriptor", Constants.GSON_INSTANCE.toJson(descriptor));
             String finalUrl = urlBuilder.build().toString();
-            RequestBody body =
-                    new MultipartBody.Builder()
-                            .addFormDataPart("descriptor",Constants.GSON_INSTANCE.toJson(descriptor))
-                            .build();
 
             Request request = new Request.Builder()
                     .url(finalUrl)
-                    .post(body)
                     .build();
 
             Call call = Constants.HTTP_CLIENT.newCall(request);
@@ -338,19 +333,13 @@ public boolean loadXmlData2(AbsDescriptor descriptor ){
             } catch (IOException e) {
                 System.out.println("Error when trying to get data. Exception: " + e.getMessage());
             }
-            /*newBank.loadXmlData(descriptor);
-            myBank = newBank;*/
-            res = true;
 
-
-        }catch (Exception e){
-
-        }finally {
-            return res;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
-    private void showErrorAlert(String message) {
+        private void showErrorAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error Dialog");
         alert.setHeaderText("Error: " + message);
@@ -688,15 +677,9 @@ public boolean loadXmlData2(AbsDescriptor descriptor ){
             if (filePath != null) {
                 try {
                     XmlReader myXml = new XmlReader(Paths.get(filePath));
-                    if(loadXmlData(myXml.getDescriptor())) {
-                        //showAdminScreen();
-                        //appController.initYazLabel();
-                        //increaseYazBtn.setDisable(false);
-                        //appController.updatePathLabel(filePath);
-                        //appController.addUsers();
-                        //appController.setUserComboBoxEnable();
-                        updateBankDtos();
-                    }
+                    loadXmlData(myXml.getDescriptor());
+                        //updateBankDtos();                               ///////////////
+
                 } catch (JAXBException e) {
                     e.printStackTrace();
                 } catch (FileNotFoundException e) {

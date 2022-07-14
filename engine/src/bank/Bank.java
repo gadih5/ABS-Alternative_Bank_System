@@ -110,7 +110,15 @@ public class Bank  implements Serializable {
            else
                throw new AlreadyExistCustomerException("There is already a customer named \"" + absCustomer.getName() +"\", can't be two customers with the same name!");
        }*/
-                Set<String> listOfCategory=new HashSet<>();
+        Customer loanCustomer = null;
+
+        for(Customer customer: customers){
+            if(customer.getName().equals(username)){
+                loanCustomer = customer;
+                break;
+            }
+        }
+        Set<String> listOfCategory=new HashSet<>();
         for(String s:descriptor.getAbsCategories().getAbsCategory()){
             listOfCategory.add(s);
         }
@@ -118,13 +126,8 @@ public class Bank  implements Serializable {
 
        AbsLoans absLoans = descriptor.getAbsLoans();
         for(AbsLoan absLoan: absLoans.getAbsLoan()) {
-            Customer loanCustomer = null;
-            for(Customer customer: customers){
-                if(customer.getName().equals(username)){
-                    loanCustomer = customer;
-                    break;
-                }
-            }
+            System.out.println("NUM OF LOANS ADDED TO USER: " + absLoans.getAbsLoan().size());
+
             /*if(loanCustomer == null){
                 throw new UndefinedCustomerException("\"" + absLoan.getAbsOwner() + "\" is not bank's customer!");
             }*/
@@ -133,7 +136,6 @@ public class Bank  implements Serializable {
                         (int) absLoan.getAbsIntristPerPayment(), absLoan.getAbsPaysEveryYaz());
                     this.loans.add(newLoan);
                     loanCustomer.addOutgoingLoan(newLoan);
-                System.out.println("NEW LOAN: " + newLoan);
             }else{
                 throw new NotInCategoryException("\"" + absLoan.getAbsCategory() + "\" is missing in the categories list in Xml!");
             }

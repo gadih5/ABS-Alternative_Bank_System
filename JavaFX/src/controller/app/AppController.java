@@ -166,7 +166,9 @@ public class AppController {
                                 headerComponentController.setName(userName);
                                 getYazValueFromBank();
                                 adminComponentController.enableAndShowYazBtn();
-                                adminComponentController.showAdminScreen();
+                                Platform.runLater(()-> {
+                                    adminComponentController.showAdminScreen();
+                                });
                             });
                         }
                     }
