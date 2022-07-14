@@ -76,7 +76,7 @@ public class CustomerController {
             System.out.println("TEST: " + customersDto);
 
             listner.OnCall(customersDto);
-        }).start();
+        }).start();x
     }*/
 
     public synchronized void loadCustomerDetails(String userName, boolean fromScramble)  {

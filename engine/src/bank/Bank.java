@@ -101,7 +101,7 @@ public class Bank  implements Serializable {
         return customersDto;
     }
 
-    public void loadXmlData(String username) throws  UndefinedReasonException, NegativeLoanSumException, NegativeTotalTimeUnitException, NegativeInterestPercentException, NegativePaymentFrequencyException, OverPaymentFrequencyException, UndividedPaymentFrequencyException, NotInCategoryException  {
+    public void loadXmlData(String username,AbsDescriptor descriptor) throws  UndefinedReasonException, NegativeLoanSumException, NegativeTotalTimeUnitException, NegativeInterestPercentException, NegativePaymentFrequencyException, OverPaymentFrequencyException, UndividedPaymentFrequencyException, NotInCategoryException  {
        /*AbsCustomers absCustomers = descriptor.getAbsCustomers();
        Set<String> customerNames = new HashSet<>();
        for (AbsCustomer absCustomer: absCustomers.getAbsCustomer()){
@@ -110,8 +110,7 @@ public class Bank  implements Serializable {
            else
                throw new AlreadyExistCustomerException("There is already a customer named \"" + absCustomer.getName() +"\", can't be two customers with the same name!");
        }*/
-        AbsDescriptor descriptor = new AbsDescriptor();
-        Set<String> listOfCategory=new HashSet<>();
+                Set<String> listOfCategory=new HashSet<>();
         for(String s:descriptor.getAbsCategories().getAbsCategory()){
             listOfCategory.add(s);
         }

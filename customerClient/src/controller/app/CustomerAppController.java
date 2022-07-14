@@ -267,7 +267,47 @@ public class CustomerAppController {
     /*public void setUserComboBoxEnable() {
         headerComponentController.setUserComboBoxEnable();
     }*/
+public boolean loadXmlData2(AbsDescriptor descriptor ){
+    RequestBody body =
+            new MultipartBody.Builder()
+                    .addFormDataPart("descriptor",Constants.GSON_INSTANCE.toJson(descriptor))
+                    .build();
 
+    String finalUrl = HttpUrl
+            .parse(Constants.LOAD_XML)
+            .newBuilder()
+            .addQueryParameter("username", username)
+
+            .build()
+            .toString();
+    HttpClientUtil.runAsync(finalUrl, new Callback() {
+        @Override
+        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning Dialog");
+            alert.setHeaderText("Warning: Something went wrong");
+            alert.setContentText("Click OK and try again:");
+            alert.showAndWait();
+        }
+
+        @Override
+        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+            if (response.code() != 200) {
+
+            } else {
+                Gson gson = new Gson();
+                //ArrayList<Customer> customers = new ArrayList<>();
+                //gson.fromJson(response.body().string() );
+
+                //headerComponentController.removeAllUsers();
+                //headerComponentController.addAdminBtn();
+                // for (int i=0 ; i<names.length ; i++) {
+                //  headerComponentController.addUserBtn(names[i]);
+            }
+        }
+        //  }
+    });
+}
     public boolean loadXmlData(AbsDescriptor descriptor) {
         boolean res = false;
         //Bank newBank = new Bank();
@@ -279,9 +319,14 @@ public class CustomerAppController {
             HttpUrl.Builder urlBuilder = HttpUrl.parse(Constants.LOAD_XML).newBuilder();
             urlBuilder.addQueryParameter("username", username);
             String finalUrl = urlBuilder.build().toString();
+            RequestBody body =
+                    new MultipartBody.Builder()
+                            .addFormDataPart("descriptor",Constants.GSON_INSTANCE.toJson(descriptor))
+                            .build();
 
             Request request = new Request.Builder()
                     .url(finalUrl)
+                    .post(body)
                     .build();
 
             Call call = Constants.HTTP_CLIENT.newCall(request);
