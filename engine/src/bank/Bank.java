@@ -134,8 +134,15 @@ public class Bank  implements Serializable {
             if(listOfCategory.contains(absLoan.getAbsCategory())) {
                 Loan newLoan = new Loan(absLoan.getId(), loanCustomer, absLoan.getAbsCapital(), absLoan.getAbsTotalYazTime(), absLoan.getAbsCategory(),
                         (int) absLoan.getAbsIntristPerPayment(), absLoan.getAbsPaysEveryYaz());
+                Boolean exist = false;
+                for(Loan loan: loanCustomer.getOutgoingLoans()){
+                    if(loan.getLoanName().equals(newLoan.getLoanName()))
+                        exist = true;
+                }
+                if(!exist){
                     this.loans.add(newLoan);
                     loanCustomer.addOutgoingLoan(newLoan);
+                }
             }else{
                 throw new NotInCategoryException("\"" + absLoan.getAbsCategory() + "\" is missing in the categories list in Xml!");
             }

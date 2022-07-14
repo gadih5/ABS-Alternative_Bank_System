@@ -6,6 +6,7 @@ import bank.exception.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import controller.admin.AdminController;
 import controller.constants.Constants;
 import controller.header.HeaderController;
@@ -313,6 +314,8 @@ public class AppController {
             customerDtos = customerDtoList_json.customersDtos;
         } catch (IOException e) {
             System.out.println("Error when trying to get data. Exception: " + e.getMessage());
+        }catch (JsonSyntaxException e){
+
         }
         return customerDtos;
     }
@@ -491,6 +494,7 @@ public class AppController {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                response.body().close();
                 if (response.code() != 200) {
                 } else {
                 }
@@ -555,6 +559,7 @@ public class AppController {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                response.body().close();
                 if (response.code() != 200) {
                 } else {
                     //addUsers();
