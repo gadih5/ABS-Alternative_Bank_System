@@ -38,6 +38,8 @@ public class Constants {
     public final static String ADMIN_LOGIN_PAGE = FULL_SERVER_PATH + "/adminLoginPage";
     public final static String LOAD_XML = FULL_SERVER_PATH + "/loadXml";
     public final static String GET_YAZ = FULL_SERVER_PATH + "/getYaz";
+    public final static String SELF_TRANSACTION = FULL_SERVER_PATH + "/selfTransaction";
+
 
 
 

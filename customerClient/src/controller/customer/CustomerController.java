@@ -8,6 +8,7 @@ import controller.app.CustomerAppController;
 import controller.information.InformationController;
 import controller.payment.PaymentController;
 import controller.scramble.ScrambleController;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.SplitPane;
 import org.jetbrains.annotations.Nullable;
@@ -67,7 +68,7 @@ public class CustomerController {
         return selectedCustomer;
     }
 
-    public synchronized void getCustomersDto(Listener listner){
+   /* public synchronized void getCustomersDto(Listener listner){
         new Thread(() -> {
             ArrayList<CustomerDto> customersDto;
             customersDto = customerAppController.getCustomersDto();
@@ -76,16 +77,11 @@ public class CustomerController {
 
             listner.OnCall(customersDto);
         }).start();
-    }
+    }*/
 
     public synchronized void loadCustomerDetails(String userName, boolean fromScramble)  {
-        customerAppController.updateBankDtos();
-
-        getCustomersDto(new Listener() {
-            @Override
-            public void OnCall(Object data) {
-                ArrayList<CustomerDto> customersDto = (ArrayList<CustomerDto>) data;
-                System.out.println("THE RESULT: " + customersDto);
+                customerAppController.updateBankDtos();
+                ArrayList<CustomerDto> customersDto = customerAppController.getCustomersDto() ;
                 for(CustomerDto customerDto : customersDto){
                     if(customerDto.getName().equals(userName))
                         selectedCustomer = customerDto;
@@ -98,19 +94,11 @@ public class CustomerController {
                     if(!fromScramble)
                         scrambleComponentController.loadScrambleInfo(selectedCustomer);
                     paymentComponentController.showPaymentInfo(selectedCustomer);
-            }
-            }
-        });
+                }
     }
 
     public ArrayList<Customer> getCustomers() {
-        try{
-            return customerAppController.getCustomers();
-        }
-        catch (Exception e){
-            return null;
-        }
-
+        return customerAppController.getCustomers();
     }
 
     public Collection<CustomerDto> getCustomersDto() {
@@ -162,6 +150,12 @@ public class CustomerController {
     }
 
     public void refershInfo(CustomerDto customerDto) {
-        informationComponentController.showInfoTable(customerDto);
+        Platform.runLater(() -> {
+            informationComponentController.showInfoTable(customerDto);
+        });
+    }
+
+    public void selfTransaction(String name, int amount) {
+        customerAppController.selfTransaction(name,amount);
     }
 }

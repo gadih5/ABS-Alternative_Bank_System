@@ -138,8 +138,10 @@ public class ScrambleController {
         this.selectedCustomer = selectedCustomer;
         sumInvestSlider.setMax(selectedCustomer.getBalance());
         Set<String> categories = customerController.getCategories();
-        for (String category : categories) {
-            categoriesVBox.getChildren().add(new CheckBox(category));
+        if(categories != null) {
+            for (String category : categories) {
+                categoriesVBox.getChildren().add(new CheckBox(category));
+            }
         }
         maxInterestPercent = customerController.calcMaxInterestPercent(selectedCustomer);
         minInterestPercentSlider.setMax(maxInterestPercent);

@@ -21,6 +21,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -59,9 +60,8 @@ public class InformationController {
 
             double b =selectedCustomer.getBalance();
 
-            balanceLabel.setText("Balance: "+b );
+            balanceLabel.setText("Balance: " + b);
 
-            System.out.println("do i get here? " + selectedCustomer.getBalance() + " this is labale values" + balanceLabel.getText());
 
             borrowerLoansTable.getItems().clear();
             borrowerLoansTable.getColumns().clear();
@@ -225,25 +225,29 @@ public class InformationController {
                 alert.setContentText("Please enter a positive integer, click OK and try again:");
                 alert.showAndWait();
             } else {
-                for (Customer customer : customerController.getCustomers()) {
-                    if (customer.getName().equals(theCustomerDto.getName())) {
-                        theCustomer = customer;
+                ArrayList<Customer> customers = customerController.getCustomers();
+                //System.out.println("CUSTOMERS: " + customers);
+                if (customers != null) {
+                    for (Customer customer : customerController.getCustomers()) {
+                        if (customer.getName().equals(theCustomerDto.getName())) {
+                            theCustomer = customer;
+                        }
                     }
                 }
-                try {
-                    theCustomer.selfTransaction(amount);
+
+                if (theCustomer != null) {
+                    customerController.selfTransaction(theCustomer.getName(), amount);
+                    //theCustomer.selfTransaction(amount);
                     for (CustomerDto customerDto : customerController.getCustomersDto()) {
                         if (customerDto.getName().equals(theCustomer.getName())) {
                             theCustomerDto = customerDto;
                         }
                     }
                     showInfoTable(theCustomerDto);
-                } catch (NegativeBalanceException e) { //Can't get this exception
-                    e.printStackTrace();
                 }
+
             }
-        }
-        catch(NumberFormatException e){
+        }catch(NumberFormatException e){
                 chargeMoney(new ActionEvent());
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error Dialog");

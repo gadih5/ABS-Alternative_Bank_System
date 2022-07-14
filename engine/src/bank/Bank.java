@@ -14,6 +14,7 @@ public class Bank  implements Serializable {
     private ArrayList<Loan> loans = new ArrayList<>();
     private ArrayList<Customer> customers = new ArrayList<>();
     private Set<String> category=null;
+    private Admin bankAdmin;
 
     public Bank (){
         globalTimeUnit = 1;
@@ -44,6 +45,10 @@ public class Bank  implements Serializable {
         }
     }
 
+    public Admin getBankAdmin() {
+        return bankAdmin;
+    }
+
     public Set<String> getCategory() {
         return category;
     }
@@ -66,6 +71,10 @@ public class Bank  implements Serializable {
         if(!isAdminInt) {
             Customer newCustomer = new Customer(name, balance, isAdminInt);
             customers.add(newCustomer);
+        }
+        else{
+            Admin newAdmin = new Admin(name,isAdminInt);
+            bankAdmin = newAdmin;
         }
     }
 
@@ -174,10 +183,10 @@ public class Bank  implements Serializable {
     }
 
     public Boolean adminLogged() {
-        for(Customer customer:customers){
-            if(customer.getAdmin() == true)
-                return true;
-        }
-        return false;
+        Admin admin = getBankAdmin();
+        if(admin != null)
+            return true;
+        else
+            return false;
     }
 }

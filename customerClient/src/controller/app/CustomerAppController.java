@@ -11,6 +11,7 @@ import controller.customer.CustomerController;
 import controller.header.HeaderController;
 import controller.payment.PaymentController;
 import controller.scramble.ScrambleController;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -152,7 +153,7 @@ public class CustomerAppController {
 
 
     }*/
-    public void changeBody(String userName) {
+    /*public void changeBody(String userName) {
         String finalUrl = HttpUrl
                 .parse(Constants.IS_ADMIN)
                 .newBuilder()
@@ -181,8 +182,10 @@ public class CustomerAppController {
                                 customerComponent = fxmlLoader.load(url.openStream());
                                 customerComponentController = fxmlLoader.getController();
                                 setCustomerComponentController(customerComponentController);
-                                customerComponentController.loadCustomerDetails(userName, false);
-                                getYazValueFromBank();
+                                Platform.runLater(()-> {
+                                    customerComponentController.loadCustomerDetails(userName, false);
+                                    getYazValueFromBank();
+                                });
 
                             } catch (IOException e) {
                                 e.printStackTrace();
@@ -190,6 +193,20 @@ public class CustomerAppController {
                         }
                     }
         });
+    }*/
+    public void changeBody(String userName) {
+        try {
+            URL url = getClass().getResource("/controller/customer/customer.fxml");
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(url);
+            customerComponent = fxmlLoader.load(url.openStream());
+            customerComponentController = fxmlLoader.getController();
+            setCustomerComponentController(customerComponentController);
+            customerComponentController.loadCustomerDetails(userName, false);
+            getYazValueFromBank();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private int getYazValueFromBank() {
@@ -340,7 +357,7 @@ public class CustomerAppController {
     }
 
     public ArrayList<Customer> getCustomers() throws NullPointerException{
-        @Nullable ArrayList<Customer> customers = new ArrayList<>();
+        ArrayList<Customer> customers = new ArrayList<>();
 
         Request request = new Request.Builder()
                 .url(Constants.GET_CUSTOMERS)
@@ -353,11 +370,10 @@ public class CustomerAppController {
             CustomerList_json customerList_json;
             String resp = response.body().string();
             response.body().close();
-            if(resp != null) {
-                customerList_json = Constants.GSON_INSTANCE.fromJson(resp, CustomerList_json.class);
-                if(customerList_json.customers != null)
-                    customers = customerList_json.customers;
-            }
+
+            customerList_json = Constants.GSON_INSTANCE.fromJson(resp, CustomerList_json.class);
+            customers = customerList_json.customers;
+
         } catch (IOException e) {
             System.out.println("Error when trying to get data. Exception: " + e.getMessage());
         }
@@ -543,6 +559,7 @@ public class CustomerAppController {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                response.body().close();
                 if (response.code() != 200) {
                 } else {
                 }
@@ -587,12 +604,12 @@ public class CustomerAppController {
     }
 
 
-    public void updateUserName(String userName, String isAdmin) {
-        userName = userName;
+    public void updateUserName(String _userName, String isAdmin) {
+        this.username = _userName;
         String finalUrl = HttpUrl
                 .parse(Constants.UPDATE_USER_NAME)
                 .newBuilder()
-                .addQueryParameter("userName", userName)
+                .addQueryParameter("userName", username)
                 .addQueryParameter("isAdmin", isAdmin)
                 .build()
                 .toString();
@@ -608,6 +625,7 @@ public class CustomerAppController {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                response.body().close();
                 if (response.code() != 200) {
                 } else {
                     //addUsers();
@@ -656,5 +674,34 @@ public class CustomerAppController {
 
     public void setName(String name) {
         headerComponentController.setName(name);
+    }
+
+    public void selfTransaction(String name, int amount) {
+        System.out.println("CustomerAppController selfTRANS: GOT HERE!");
+        String finalUrl = HttpUrl
+                .parse(Constants.SELF_TRANSACTION)
+                .newBuilder()
+                .addQueryParameter("username", name)
+                .addQueryParameter("amount", String.valueOf(amount))
+                .build()
+                .toString();
+        HttpClientUtil.runAsync(finalUrl, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Warning Dialog");
+                alert.setHeaderText("Warning: Something went wrong");
+                alert.setContentText("Click OK and try again:");
+                alert.showAndWait();
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                response.body().close();
+                if (response.code() != 200) {
+                } else {
+                }
+            }
+        });
     }
 }

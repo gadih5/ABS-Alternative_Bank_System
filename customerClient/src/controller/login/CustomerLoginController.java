@@ -64,6 +64,7 @@ public class CustomerLoginController {
 
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    response.body().close();
                     if (response.code() != 200) {
                         doubleError.setVisible(true);
                     } else {
