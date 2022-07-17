@@ -12,6 +12,11 @@ import controller.header.HeaderController;
 import controller.payment.PaymentController;
 import controller.scramble.ScrambleController;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -26,7 +31,9 @@ import okhttp3.*;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import utils.BankRefresher;
 import utils.HttpClientUtil;
+import utils.HttpStatusUpdate;
 
 import javax.xml.bind.JAXBException;
 import java.io.File;
@@ -34,10 +41,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class CustomerAppController {
     @FXML
@@ -58,6 +62,15 @@ public class CustomerAppController {
     private AnchorPane bodyAnchorPane;
 
     private String username;
+    private Timer timer;
+    private TimerTask bankRefresher;
+    private final BooleanProperty autoUpdate =new SimpleBooleanProperty() ;
+    private final IntegerProperty totalUsers = new SimpleIntegerProperty();
+    private HttpStatusUpdate httpStatusUpdate;
+
+    public CustomerAppController() {
+    }
+
 
     @FXML
     public void initialize() {
@@ -339,7 +352,7 @@ public class CustomerAppController {
         }
     }
 
-        private void showErrorAlert(String message) {
+    private void showErrorAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error Dialog");
         alert.setHeaderText("Error: " + message);
@@ -348,7 +361,7 @@ public class CustomerAppController {
     }
 
 
-    public ArrayList<LoanDto> getLoansDto(){
+    public ArrayList<LoanDto> getLoansDto() {
         ArrayList<LoanDto> loanDtos = new ArrayList<>();
 
         Request request = new Request.Builder()
@@ -390,7 +403,7 @@ public class CustomerAppController {
         return customerDtos;
     }
 
-    public ArrayList<Customer> getCustomers() throws NullPointerException{
+    public ArrayList<Customer> getCustomers() throws NullPointerException {
         ArrayList<Customer> customers = new ArrayList<>();
 
         Request request = new Request.Builder()
@@ -428,9 +441,9 @@ public class CustomerAppController {
             LoanList_json loanList_json;
             String resp = response.body().string();
             response.body().close();
-            if(resp != null) {
+            if (resp != null) {
                 loanList_json = Constants.GSON_INSTANCE.fromJson(resp, LoanList_json.class);
-                if(loanList_json.loans != null)
+                if (loanList_json.loans != null)
                     loans = loanList_json.loans;
             }
         } catch (IOException e) {
@@ -439,7 +452,7 @@ public class CustomerAppController {
         return loans;
     }
 
-    public Set<String> getCategories(){
+    public Set<String> getCategories() {
         Set<String> categoriesSet = new HashSet<>();
 
         Request request = new Request.Builder()
@@ -453,9 +466,9 @@ public class CustomerAppController {
             CategoryList_json categoryList_json;
             String resp = response.body().string();
             response.body().close();
-            if(resp != null){
+            if (resp != null) {
                 categoryList_json = Constants.GSON_INSTANCE.fromJson(resp, CategoryList_json.class);
-                if(categoryList_json != null)
+                if (categoryList_json != null)
                     categoriesSet = categoryList_json.categories;
             }
 
@@ -485,7 +498,7 @@ public class CustomerAppController {
     }
 
     public int getNumOfLoans() {
-        int numOfLoans=0;
+        int numOfLoans = 0;
 
         Request request = new Request.Builder()
                 .url(Constants.GET_NUM_OF_LOANS)
@@ -544,26 +557,25 @@ public class CustomerAppController {
                     if (chosenCategories.contains(loanDto.getReason()) || categoriesChosed == -1) {
                         if (loanDto.getInterestPercent() <= minInterestPercent || minInterestPercent == -1) {
                             if (loanDto.getTotalTimeUnit() <= minTotalYaz || minTotalYaz == -1) {
-                                 if (maxOpenLoans == -1)
-                                        validLoans.add(loanDto);
-                                    else {
-                                        Customer borrower = null;
-                                        for (Customer customer : this.getCustomers()) {
-                                            if (customer.getName().equals(loanDto.getBorrowerName())) {
-                                                borrower = customer;
-                                                break;
+                                if (maxOpenLoans == -1)
+                                    validLoans.add(loanDto);
+                                else {
+                                    Customer borrower = null;
+                                    for (Customer customer : this.getCustomers()) {
+                                        if (customer.getName().equals(loanDto.getBorrowerName())) {
+                                            borrower = customer;
+                                            break;
+                                        }
+                                    }
+                                    if (borrower != null) {
+                                        Set<LoanDto> loans = new HashSet<>();
+                                        for (Loan loan : this.getLoans()) {
+                                            if (loan.getStatus() != Status.Finished && loan.getBorrower().getName().equals(borrower.getName())) {
+                                                loans.add(loan.getLoanDto());
                                             }
                                         }
-                                        if (borrower != null) {
-                                            Set<LoanDto> loans = new HashSet<>();
-                                            for (Loan loan : this.getLoans()) {
-                                                if (loan.getStatus() != Status.Finished && loan.getBorrower().getName().equals(borrower.getName())) {
-                                                    loans.add(loan.getLoanDto());
-                                                }
-                                            }
-                                            if (loans.size() <= maxOpenLoans) {
-                                                validLoans.add(loanDto);
-                                            }
+                                        if (loans.size() <= maxOpenLoans) {
+                                            validLoans.add(loanDto);
                                         }
                                     }
                                 }
@@ -572,7 +584,8 @@ public class CustomerAppController {
                     }
                 }
             }
-            return validLoans;
+        }
+        return validLoans;
     }
 
     public void updateBankDtos() {
@@ -604,8 +617,8 @@ public class CustomerAppController {
 
     public Loan getSpecificLoan(String loanName) {
         Loan resLoan = null;
-        for(Loan loan : this.getLoans()){
-            if(loan.getLoanName().equals(loanName)){
+        for (Loan loan : this.getLoans()) {
+            if (loan.getLoanName().equals(loanName)) {
                 resLoan = loan;
             }
         }
@@ -614,8 +627,8 @@ public class CustomerAppController {
 
     public Customer getSpecificCustomer(String name) {
         Customer resCustomer = null;
-        for(Customer customer : this.getCustomers()){
-            if(customer.getName().equals(name)){
+        for (Customer customer : this.getCustomers()) {
+            if (customer.getName().equals(name)) {
                 resCustomer = customer;
             }
         }
@@ -624,8 +637,8 @@ public class CustomerAppController {
 
     public CustomerDto getSpecificCustomerDto(String name) {
         CustomerDto resCustomerDto = null;
-        for(CustomerDto customerDto : this.getCustomersDto()){
-            if(customerDto.getName().equals(name)){
+        for (CustomerDto customerDto : this.getCustomersDto()) {
+            if (customerDto.getName().equals(name)) {
                 resCustomerDto = customerDto;
             }
         }
@@ -633,7 +646,7 @@ public class CustomerAppController {
     }
 
     public void checkLoanStatus(Loan loanToCheck) {
-        if(loanToCheck.getStatus() != Status.Finished)
+        if (loanToCheck.getStatus() != Status.Finished)
             loanToCheck.checkRiskStatus(this.getCustomers());
     }
 
@@ -678,7 +691,7 @@ public class CustomerAppController {
                 try {
                     XmlReader myXml = new XmlReader(Paths.get(filePath));
                     loadXmlData(myXml.getDescriptor());
-                        //updateBankDtos();                               ///////////////
+                    //updateBankDtos();                               ///////////////
 
                 } catch (JAXBException e) {
                     e.printStackTrace();
@@ -686,14 +699,13 @@ public class CustomerAppController {
                     e.printStackTrace();
                 } catch (NotXmlException e) {
                     e.printStackTrace();
-                }catch (NullPointerException e){
+                } catch (NullPointerException e) {
                     return;
                 }
 
-            }
-            else
+            } else
                 return;
-        }catch (Exception e){
+        } catch (Exception e) {
             return;
         }
 
@@ -732,4 +744,22 @@ public class CustomerAppController {
             }
         });
     }
+
+    private void updateBank(Bank _bank) {
+        Platform.runLater(() -> {
+            ;
+        });
+    }
+
+    public void startListRefresher() {
+
+        bankRefresher = new BankRefresher(
+                autoUpdate,
+                httpStatusUpdate::updateHttpLine,this::updateBank
+                );
+        timer = new Timer();
+        timer.schedule(bankRefresher, 2, 2);
+    }
 }
+
+

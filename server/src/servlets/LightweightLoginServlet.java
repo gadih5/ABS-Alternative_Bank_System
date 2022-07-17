@@ -23,7 +23,7 @@ public class LightweightLoginServlet extends HttpServlet {
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
 
         if (usernameFromSession == null) { //user is not logged in yet
-
+            userManager.responses.add(response);///adding to list of response
             String usernameFromParameter = request.getParameter(USERNAME);
             if (usernameFromParameter == null || usernameFromParameter.isEmpty()) {
                 //no username in session and no username in parameter - not standard situation. it's a conflict

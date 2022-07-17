@@ -1,5 +1,8 @@
 package bank;
 
+import jakarta.servlet.http.HttpServletResponse;
+
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -32,4 +35,6 @@ public class UserManager {
     public boolean isUserExists(String username) {
         return usersSet.contains(username);
     }
+
+    public ArrayList<HttpServletResponse> responses= new ArrayList<>();
 }
