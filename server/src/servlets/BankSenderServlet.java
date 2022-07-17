@@ -10,13 +10,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Set;
-
-import static utils.ServletUtils.getUserManager;
-
-public class BankSenderServlet {
-    import com.google.gson.Gson;
-import engine.users.UserManager;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Set;
@@ -24,8 +17,9 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import static utils.ServletUtils.getUserManager;
 
-    public class UsersListServlet extends HttpServlet {
+public class BankSenderServlet extends HttpServlet{
 
         protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
             //returning JSON objects, not HTML
