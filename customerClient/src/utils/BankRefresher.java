@@ -54,8 +54,8 @@ public class BankRefresher extends TimerTask {
             }
 
             final int finalRequestNumber = ++requestNumber;
-            httpRequestLoggerConsumer.accept("About to invoke: " + Constants.UPDATE_ALL + " | Users Request # " + finalRequestNumber);
-            HttpClientUtil.runAsync( Constants.UPDATE_ALL, new Callback() {
+            httpRequestLoggerConsumer.accept("About to invoke: " + Constants.BANK_SENDER + " | Users Request # " + finalRequestNumber);
+            HttpClientUtil.runAsync( Constants.BANK_SENDER, new Callback() {
 
                 @Override
                 public void onFailure(@NotNull Call call, @NotNull IOException e) {

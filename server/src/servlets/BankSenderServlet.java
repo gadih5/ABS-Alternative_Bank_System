@@ -3,6 +3,7 @@ package servlets;
 import bank.Bank;
 import bank.UserManager;
 import com.google.gson.Gson;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,6 +20,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import static utils.ServletUtils.getUserManager;
 
+@WebServlet(name="BankSenderServlet" ,urlPatterns="/bankSenderServlet")
 public class BankSenderServlet extends HttpServlet{
 
         protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
