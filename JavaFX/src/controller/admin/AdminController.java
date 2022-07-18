@@ -109,10 +109,10 @@ public class AdminController{
         loansTable.getColumns().clear();
         customersTable.getColumns().clear();
         loansTable.getItems().clear();
-        Platform.runLater(()-> {
+     //   Platform.runLater(()-> {
                     makeAdminLoansTable();
                     makeAdminCustomersTable();
-                });
+             //   });
         increaseYazBtn.setDisable(false);
     }
 

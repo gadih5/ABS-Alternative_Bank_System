@@ -29,8 +29,8 @@ public class BankSenderServlet extends HttpServlet{
             try (PrintWriter out = response.getWriter()) {
                 Gson gson = new Gson();
                 Bank bank= (Bank)getServletContext().getAttribute("myBank");
-
-                String json = gson.toJson(bank);
+                System.out.println("ITS SEND YAZ");
+                String json = gson.toJson(bank.getSyncGlobalTimeUnit());
                 out.println(json);
                 out.flush();
             }

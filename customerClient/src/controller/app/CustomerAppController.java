@@ -5,7 +5,7 @@ import bank.*;
 import bank.exception.*;
 import bank.xml.XmlReader;
 import bank.xml.generated.AbsDescriptor;
-import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import controller.constants.Constants;
 import controller.customer.CustomerController;
 import controller.header.HeaderController;
@@ -16,7 +16,6 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -31,7 +30,7 @@ import okhttp3.*;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import utils.BankRefresher;
+import utils.YazRefresher;
 import utils.HttpClientUtil;
 import utils.HttpStatusUpdate;
 
@@ -63,10 +62,10 @@ public class CustomerAppController {
 
     private String username;
     private Timer timer;
-    private TimerTask bankRefresher;
+    private TimerTask yazRefresher;
     private final BooleanProperty autoUpdate =new SimpleBooleanProperty() ;
     private final IntegerProperty totalUsers = new SimpleIntegerProperty();
-    private HttpStatusUpdate httpStatusUpdate;
+   // private HttpStatusUpdate httpStatusUpdate;
 
     public CustomerAppController() {
     }
@@ -399,6 +398,8 @@ public class CustomerAppController {
             customerDtos = customerDtoList_json.customersDtos;
         } catch (IOException e) {
             System.out.println("Error when trying to get data. Exception: " + e.getMessage());
+        }catch(JsonSyntaxException e){
+
         }
         return customerDtos;
     }
@@ -675,11 +676,21 @@ public class CustomerAppController {
                 response.body().close();
                 if (response.code() != 200) {
                 } else {
-                    //addUsers();
+                    new Thread(()-> {
+                        while(true) {
+                            getYazValueFromBank();
+                            try {
+                                Thread.sleep(2000);
+                            } catch (InterruptedException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    }).start();
+                    }
                 }
-            }
-        });
-    }
+            });
+        }
+
 
     public void onClick(ActionEvent actionEvent) {
         FileChooser fileChooser = new FileChooser();
@@ -745,20 +756,29 @@ public class CustomerAppController {
         });
     }
 
-    private void updateBank(Bank _bank) {
+    private void updateYaz(String yaz) {
         Platform.runLater(() -> {
-            ;
+            headerComponentController.setYazLabel(Integer.parseInt(yaz));
         });
+    }
+
+    private void refreshYaz() throws InterruptedException {
+        while(true) {
+            getYazValueFromBank();
+            Thread.sleep(2000);
+        }
     }
 
     public void startListRefresher() {
 
-        bankRefresher = new BankRefresher(
-                autoUpdate,
-                httpStatusUpdate::updateHttpLine,this::updateBank
+        yazRefresher = new YazRefresher(
+                autoUpdate
+                //httpStatusUpdate::updateHttpLine
+                ,this::updateYaz
                 );
         timer = new Timer();
-        timer.schedule(bankRefresher, 2, 2);
+        timer.schedule(yazRefresher, 2, 2);
+
     }
 }
 

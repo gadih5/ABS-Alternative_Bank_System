@@ -42,6 +42,8 @@ public class AppController {
     @FXML
     private AnchorPane bodyAnchorPane;
 
+    private String username;
+
 
     @FXML
     public void initialize() {
@@ -562,9 +564,24 @@ public class AppController {
                 response.body().close();
                 if (response.code() != 200) {
                 } else {
-                    //addUsers();
-                }
+                    username = userName;
+                    new Thread(()->{
+                        while(true){
+                          //  getCustomersDto();
+                           // getLoansDto();
+                            Platform.runLater(()-> {
+                                adminComponentController.showAdminScreen();
+                            });
+                            try {
+                                Thread.sleep(2000);
+                            } catch (InterruptedException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    }).start();
+
             }
+        }
         });
     }
 }

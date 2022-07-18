@@ -18,6 +18,7 @@ public class UpdateYaz extends HttpServlet {
             Bank myBank = (Bank)getServletContext().getAttribute("myBank");
             myBank.updateGlobalTimeUnit();
             resp.getWriter().println(myBank.getSyncGlobalTimeUnit());
+
         } catch (NegativeBalanceException e) {
             throw new RuntimeException(e);
         }
