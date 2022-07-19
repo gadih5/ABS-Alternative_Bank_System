@@ -1,9 +1,6 @@
 package controller.information;
 
-import bank.Customer;
-import bank.CustomerDto;
-import bank.Loan;
-import bank.Transaction;
+import bank.*;
 import bank.exception.NegativeBalanceException;
 import controller.chargeDialog.ChargeDialogController;
 import controller.customer.CustomerController;
@@ -32,9 +29,9 @@ public class InformationController {
         @FXML
         private TableView<Transaction> accountTransTable;
         @FXML
-        private TableView<Loan> borrowerLoansTable;
+        private TableView<LoanDto> borrowerLoansTable;
         @FXML
-        private TableView<Loan> loanerLoansTable;
+        private TableView<LoanDto> loanerLoansTable;
         @FXML
         private CustomerController customerController;
         @FXML
@@ -74,7 +71,7 @@ public class InformationController {
     }
 
     @FXML
-    private void makeLoanerLoansTable(Collection<Loan> ingoingLoans) {
+    private void makeLoanerLoansTable(Collection<LoanDto> ingoingLoans) {
         TableColumn loanNameColumn = new TableColumn("Loan Name");
         loanNameColumn.setCellValueFactory(new PropertyValueFactory<>("loanName"));
 
@@ -88,7 +85,7 @@ public class InformationController {
         paymentFrequencyColumn.setCellValueFactory(new PropertyValueFactory<>("paymentFrequency"));
 
         TableColumn interestPercentColumn = new TableColumn("Interest");
-        interestPercentColumn.setCellValueFactory(new PropertyValueFactory<>("interestPercent"));
+        interestPercentColumn.setCellValueFactory(new PropertyValueFactory<>("interestPrecent"));
 
         TableColumn statusColumn = new TableColumn("Status");
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
@@ -116,14 +113,14 @@ public class InformationController {
 
         loanerLoansTable.getColumns().addAll(loanNameColumn, reasonColumn, loanSumColumn, paymentFrequencyColumn, interestPercentColumn, statusColumn, amountToCompleteColumn, nextPaymentColumn, nextPaymentValueColumn, numOfDebtsColumn, sumOfDebtsColumn, startTimeUnitColumn, finishTimeUnitColumn);
         loanerLoansTable.setItems(null);
-        Set<Loan> setOfLoans = new HashSet<>();
+        Set<LoanDto> setOfLoans = new HashSet<>();
         setOfLoans.addAll(ingoingLoans);
-        ObservableList<Loan> listOfLoans = FXCollections.observableArrayList(setOfLoans);
+        ObservableList<LoanDto> listOfLoans = FXCollections.observableArrayList(setOfLoans);
         loanerLoansTable.setItems(listOfLoans);
     }
 
     @FXML
-    private void makeBorrowerLoansTable(Collection<Loan> outgoingLoans) {
+    private void makeBorrowerLoansTable(Collection<LoanDto> outgoingLoans) {
         TableColumn loanNameColumn = new TableColumn("Loan Name");
         loanNameColumn.setCellValueFactory(new PropertyValueFactory<>("loanName"));
 
@@ -165,9 +162,9 @@ public class InformationController {
 
         borrowerLoansTable.getColumns().addAll(loanNameColumn, reasonColumn, loanSumColumn, paymentFrequencyColumn, interestPercentColumn, statusColumn, amountToCompleteColumn, nextPaymentColumn, nextPaymentValueColumn, numOfDebtsColumn, sumOfDebtsColumn, startTimeUnitColumn, finishTimeUnitColumn);
         borrowerLoansTable.setItems(null);
-        Set<Loan> setOfLoans = new HashSet<>();
+        Set<LoanDto> setOfLoans = new HashSet<>();
         setOfLoans.addAll(outgoingLoans);
-        ObservableList<Loan> listOfLoans = FXCollections.observableArrayList(setOfLoans);
+        ObservableList<LoanDto> listOfLoans = FXCollections.observableArrayList(setOfLoans);
         borrowerLoansTable.setItems(listOfLoans);
     }
 

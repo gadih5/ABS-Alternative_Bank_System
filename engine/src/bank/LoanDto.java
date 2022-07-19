@@ -27,6 +27,10 @@ public class LoanDto implements Serializable {
     private Collection<LoanTransaction> transactions;
     private double amountToComplete;
     private Collection<Debt> debts;
+    private int nextPaymentYaz;
+    private double nextPaymentValue;
+    private int numOfDebts;
+    private double sumOfDebts;
 
 
 
@@ -51,9 +55,15 @@ public class LoanDto implements Serializable {
         this.transactions = loan.getTransactions();
         this.amountToComplete=loan.getAmountToComplete();
         this.debts = loan.getUncompletedTransactions();
+        this.nextPaymentYaz = loan.getNextPayment();
+        this.nextPaymentValue = loan.getNextPaymentValue();
+        this.numOfDebts = this.debts.size();
+        for(Debt debt: debts){
+            this.sumOfDebts += debt.getAmount();
+        }
     }
 
-    public LoanDto(LoanDto_json loanDto_json) {
+  /*  public LoanDto(LoanDto_json loanDto_json) {
         this.loanName = loanDto_json.loanName;
         this.borrowerName = loanDto_json.borrowerName;
         this.status = Status.valueOf(loanDto_json.status);
@@ -86,7 +96,7 @@ public class LoanDto implements Serializable {
             copyDebts.add(new Debt(debt_json));
         }
         this.debts = copyDebts;
-    }
+    }*/
 
     public int checkNextPayment() {
         int nextPayment=0;

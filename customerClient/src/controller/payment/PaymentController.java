@@ -26,7 +26,7 @@ import java.util.Set;
 
 public class PaymentController {
     @FXML
-    private TableView<Loan> borrowerLoansTable;
+    private TableView<LoanDto> borrowerLoansTable;
     @FXML
     private Button payButton;
     @FXML
@@ -69,7 +69,7 @@ public class PaymentController {
 
 
     @FXML
-    private void makeBorrowerLoansTable(Collection<Loan> outgoingLoans) {
+    private void makeBorrowerLoansTable(Collection<LoanDto> outgoingLoans) {
         TableColumn loanNameColumn = new TableColumn("Loan Name");
         loanNameColumn.setCellValueFactory(new PropertyValueFactory<>("loanName"));
 
@@ -111,18 +111,18 @@ public class PaymentController {
 
         borrowerLoansTable.getColumns().addAll(loanNameColumn, reasonColumn, loanSumColumn, paymentFrequencyColumn, interestPercentColumn, statusColumn, amountToCompleteColumn, nextPaymentColumn, nextPaymentValueColumn, numOfDebtsColumn, sumOfDebtsColumn, startTimeUnitColumn, finishTimeUnitColumn);
         borrowerLoansTable.setItems(null);
-        Set<Loan> setOfLoans = new HashSet<>();
-        for(Loan loan: outgoingLoans){
+        Set<LoanDto> setOfLoans = new HashSet<>();
+        for(LoanDto loan: outgoingLoans){
             if(loan.isActive() && loan.getStatus() != Status.Finished){
                 setOfLoans.add(loan);
             }
         }
-        ObservableList<Loan> listOfLoans = FXCollections.observableArrayList(setOfLoans);
+        ObservableList<LoanDto> listOfLoans = FXCollections.observableArrayList(setOfLoans);
         borrowerLoansTable.setItems(listOfLoans);
     }
     @FXML
     void openPayDialog(ActionEvent event) {
-        Loan chosenLoan = borrowerLoansTable.getSelectionModel().getSelectedItem();
+        LoanDto chosenLoan = borrowerLoansTable.getSelectionModel().getSelectedItem();
         if(chosenLoan != null) {
             FXMLLoader fxmlLoader = new FXMLLoader();
             URL url = getClass().getResource("/controller/payDialog/payDialog.fxml");
@@ -131,7 +131,7 @@ public class PaymentController {
                 payDialogComponent = fxmlLoader.load(url.openStream());
                 payDialogComponentController = fxmlLoader.getController();
                 payDialogComponentController.setMainController(this);
-                Loan payLoan = borrowerLoansTable.getSelectionModel().getSelectedItem();
+                LoanDto payLoan = borrowerLoansTable.getSelectionModel().getSelectedItem();
                 Set<PreTransaction> preTransactionSet = new HashSet<>();
                 for (PreTransaction preTransaction : selectedCustomer.getPreTransactions()) {
                     if (preTransaction.getLoan().equals(payLoan) && !preTransaction.isPaid())
@@ -179,14 +179,14 @@ public class PaymentController {
 
     public void payEntireLoan(ActionEvent actionEvent) {
 
-        Loan selectedLoan = borrowerLoansTable.getSelectionModel().getSelectedItem();
+        LoanDto selectedLoan = borrowerLoansTable.getSelectionModel().getSelectedItem();
         int leftPayments = selectedLoan.getRemainTimeUnit()/selectedLoan.getPaymentFrequency();
-        for(Fraction fraction: selectedLoan.getLoanDto().getFractions()){
+        for(Fraction fraction: selectedLoan.getFractions()){
             double singlePayment = (fraction.getAmount() + (fraction.getAmount() * (selectedLoan.getInterestPercent())/100.0)) / (selectedLoan.getTotalTimeUnit() / selectedLoan.getPaymentFrequency());
             double totalPaymentAmount = singlePayment * leftPayments;
             Customer customer = customerController.getSpecificCustomer(selectedCustomer.getName());
             for(PreTransaction preTransaction: customer.getPreTransactions()){
-                if(!preTransaction.isPaid() && preTransaction.getLoan() == selectedLoan){
+                if(!preTransaction.isPaid() && preTransaction.getLoan().getLoanDto() == selectedLoan){
                     totalPaymentAmount += preTransaction.getSum();
                 }
             }
@@ -194,8 +194,8 @@ public class PaymentController {
                 customer.addTransaction(new Transaction(customer, fraction.getCustomer(),totalPaymentAmount));
                 //customer.clearAllPreTransactions(selectedLoan);
                 customer.makeAllPreTransactionsPaid(selectedLoan);
-                selectedLoan.clearAllDebts();
-                selectedLoan.setStatus(Status.Finished);
+                customerController.clearAllDebts(selectedLoan);
+                customerController.setStatusFinished(selectedLoan);
                 customerController.showInfoTable(customer.getCustomerDto());
                 showPaymentInfo(customer.getCustomerDto());
 
@@ -213,7 +213,7 @@ public class PaymentController {
 
     public void tableClicked(MouseEvent mouseEvent) {
         if(!borrowerLoansTable.getItems().isEmpty()){
-            Loan selectedLoan = borrowerLoansTable.getSelectionModel().getSelectedItem();
+            LoanDto selectedLoan = borrowerLoansTable.getSelectionModel().getSelectedItem();
             if(selectedLoan != null){
                 payEntireButton.setDisable(false);
             }

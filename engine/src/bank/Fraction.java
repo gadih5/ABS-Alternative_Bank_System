@@ -14,11 +14,11 @@ public class Fraction implements Serializable {
         this.amount = amount;
     }
 
-    public Fraction(Fraction_json fraction_json) {
+  /*  public Fraction(Fraction_json fraction_json) {
         this.convertTime = fraction_json.convertTime;
         this.customer = new Customer(fraction_json.customer);
         this.amount = fraction_json.amount;
-    }
+    }*/
 
     public Customer getCustomer() {
         return customer;

@@ -93,7 +93,7 @@ public class Bank  implements Serializable {
         return loansDto;
     }
 
-    public ArrayList<CustomerDto> getCustomersDto() {
+    public synchronized ArrayList<CustomerDto> getCustomersDto() {
         ArrayList<CustomerDto> customersDto = new ArrayList<>();
         for (Customer customer : customers) {
             customersDto.add(customer.getCustomerDto());
@@ -135,7 +135,7 @@ public class Bank  implements Serializable {
                 Loan newLoan = new Loan(absLoan.getId(), loanCustomer, absLoan.getAbsCapital(), absLoan.getAbsTotalYazTime(), absLoan.getAbsCategory(),
                         (int) absLoan.getAbsIntristPerPayment(), absLoan.getAbsPaysEveryYaz());
                 Boolean exist = false;
-                for(Loan loan: loanCustomer.getOutgoingLoans()){
+                for(LoanDto loan: loanCustomer.getOutgoingLoans()){
                     if(loan.getLoanName().equals(newLoan.getLoanName()))
                         exist = true;
                 }

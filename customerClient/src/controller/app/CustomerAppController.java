@@ -780,6 +780,60 @@ public class CustomerAppController {
         timer.schedule(yazRefresher, 2, 2);
 
     }
+
+    public void clearAllDebts(LoanDto selectedLoan) {
+        String finalUrl = HttpUrl
+                .parse(Constants.CLEAR_DEBTS)
+                .newBuilder()
+                .addQueryParameter("selectedLoan", selectedLoan.getLoanName())
+                .build()
+                .toString();
+        HttpClientUtil.runAsync(finalUrl, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Warning Dialog");
+                alert.setHeaderText("Warning: Something went wrong");
+                alert.setContentText("Click OK and try again:");
+                alert.showAndWait();
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                response.body().close();
+                if (response.code() != 200) {
+                } else {
+                }
+            }
+        });
 }
+
+    public void setStatusFinished(LoanDto selectedLoan) {
+        String finalUrl = HttpUrl
+                .parse(Constants.SET_FINISHED)
+                .newBuilder()
+                .addQueryParameter("selectedLoan", selectedLoan.getLoanName())
+                .build()
+                .toString();
+        HttpClientUtil.runAsync(finalUrl, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Warning Dialog");
+                alert.setHeaderText("Warning: Something went wrong");
+                alert.setContentText("Click OK and try again:");
+                alert.showAndWait();
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                response.body().close();
+                if (response.code() != 200) {
+                } else {
+                }
+            }
+        });
+    }
+    }
 
 

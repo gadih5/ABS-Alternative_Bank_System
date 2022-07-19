@@ -67,7 +67,7 @@ public class Loan implements Serializable {
         this.sumOfDebts = 0;
     }
 
-    public Loan(Loan_json loan_json) {
+    /*public Loan(Loan_json loan_json) {
         this.startLoanAmount = loan_json.startLoanAmount;
         this.loanName = loan_json.loanName;
         this.borrower = new Customer(loan_json.borrower);
@@ -102,7 +102,7 @@ public class Loan implements Serializable {
         this.nextPaymentValue = loan_json.nextPaymentValue;
         this.numOfDebts = loan_json.numOfDebts;
         this.sumOfDebts = loan_json.sumOfDebts;
-    }
+    }*/
 
     private void setPaymentFrequency(int paymentFrequency) throws NegativePaymentFrequencyException, OverPaymentFrequencyException,UndividedPaymentFrequencyException {
         if(paymentFrequency <= 0)

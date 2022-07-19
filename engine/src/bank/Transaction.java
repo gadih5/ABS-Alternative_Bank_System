@@ -3,7 +3,7 @@ import _json.Customer_json;
 import _json.Transaction_json;
 import bank.Customer;
 import bank.exception.NegativeBalanceException;
-import com.google.gson.Gson;
+//import com.google.gson.Gson;
 
 import java.io.Serializable;
 public class Transaction implements Serializable {
@@ -47,14 +47,14 @@ public class Transaction implements Serializable {
 
     }
 
-    public Transaction(Transaction_json transaction_json) {
+   /* public Transaction(Transaction_json transaction_json) {
         this.toCustomer = new Customer(transaction_json.toCustomer);
         this.amount = transaction_json.amount;
         this.timeUnit = transaction_json.timeUnit;
         this.previousBalance = transaction_json.previousBalance;
         this.afterBalance = transaction_json.afterBalance;
         this.sign = transaction_json.sign;
-    }
+    }*/
 
     public Customer getToCustomer() {
         return toCustomer;

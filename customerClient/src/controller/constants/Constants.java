@@ -40,6 +40,10 @@ public class Constants {
     public final static String GET_YAZ = FULL_SERVER_PATH + "/getYaz";
     public final static String SELF_TRANSACTION = FULL_SERVER_PATH + "/selfTransaction";
     public final static String BANK_SENDER = FULL_SERVER_PATH + "/bankSenderServlet";
+    public final static String CLEAR_DEBTS = FULL_SERVER_PATH + "/clearDebts";
+    public final static String SET_FINISHED = FULL_SERVER_PATH + "/setFinished";
+
+
 
 
 

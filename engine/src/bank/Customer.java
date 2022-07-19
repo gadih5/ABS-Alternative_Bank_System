@@ -30,7 +30,7 @@ public class Customer implements Serializable {
         this.isAdmin = isAdmin;
     }
 
-    public Customer(Customer_json customer_json) {
+    /*public Customer(Customer_json customer_json) {
         this.name = customer_json.name;
         this.balance = customer_json.balance;
         this.transactions = customer_json.transactions;
@@ -51,7 +51,7 @@ public class Customer implements Serializable {
         }
         this.preTransactions = copyPreTransactions;
         this.isAdmin = customer_json.isAdmin;
-    }
+    }*/
 
     public void addTransaction(Transaction transaction) {
         this.transactions.add(transaction);
@@ -90,12 +90,20 @@ public class Customer implements Serializable {
         return transactions;
     }
 
-    public Collection getIngoingLoans() {
-        return ingoingLoans;
+    public ArrayList<LoanDto> getIngoingLoans() {
+        ArrayList<LoanDto> list = new ArrayList<>();
+        for (Loan loan: ingoingLoans){
+            list.add(loan.getLoanDto());
+        }
+        return list;
     }
 
-    public Collection<Loan>getOutgoingLoans() {
-        return outgoingLoans;
+    public ArrayList<LoanDto>getOutgoingLoans() {
+        ArrayList<LoanDto> list = new ArrayList<>();
+        for (Loan loan: outgoingLoans){
+            list.add(loan.getLoanDto());
+        }
+        return list;
     }
 
     public Collection<PreTransaction> getPreTransactions() {
@@ -140,9 +148,9 @@ public class Customer implements Serializable {
         preTransactions.removeAll(preTransactionsToRemove);
     }
 
-    public void makeAllPreTransactionsPaid(Loan selectedLoan) {
+    public void makeAllPreTransactionsPaid(LoanDto selectedLoan) {
         for(PreTransaction preTransaction: preTransactions){
-            if(preTransaction.getLoan() == selectedLoan){
+            if(preTransaction.getLoan().getLoanDto() == selectedLoan){
                 preTransaction.setPaid(true);
             }
         }

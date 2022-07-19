@@ -23,7 +23,7 @@ public class PreTransaction {
         this.sum = fundPart + interestPart;
     }
 
-    public PreTransaction(PreTransaction_json preTransaction_json) {
+   /* public PreTransaction(PreTransaction_json preTransaction_json) {
         this.loan = new Loan(preTransaction_json.loan);
         this.loanName = preTransaction_json.loanName;
         this.toCustomer = new Customer(preTransaction_json.toCustomer);
@@ -32,7 +32,7 @@ public class PreTransaction {
         this.interestPart = preTransaction_json.interestPart;
         this.sum = preTransaction_json.sum;
         this.paid = preTransaction_json.paid;
-    }
+    }*/
 
     public Loan getLoan() {
         return loan;

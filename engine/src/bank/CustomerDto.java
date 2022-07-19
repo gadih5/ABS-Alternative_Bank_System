@@ -11,8 +11,8 @@ public class CustomerDto implements Serializable {
     private String name;
     private double balance;
     private Collection<Transaction> transactions;
-    private Collection<Loan> ingoingLoans;
-    private Collection<Loan> outgoingLoans;
+    private Collection<LoanDto> ingoingLoans;
+    private Collection<LoanDto> outgoingLoans;
     private Collection<PreTransaction> preTransactions;
     private int numOfPendingIngoingLoans=0;
     private int numOfActiveIngoingLoans=0;
@@ -38,7 +38,7 @@ public class CustomerDto implements Serializable {
         numOfActiveOutgoingLoans=0;
         numOfRiskOutgoingLoans=0;
         numOfFinishOutgoingLoans=0;
-        for(Loan loan:this.ingoingLoans){
+        for(LoanDto loan:this.ingoingLoans){
             if(Status.Pending == loan.getStatus()){
                 numOfPendingIngoingLoans++;
             }
@@ -52,7 +52,7 @@ public class CustomerDto implements Serializable {
                 numOfFinishIngoingLoans++;
             }
         }
-        for(Loan loan:this.outgoingLoans){
+        for(LoanDto loan:this.outgoingLoans){
             if(Status.Pending == loan.getStatus()){
                 numOfPendingOutgoingLoans++;
             }
@@ -70,7 +70,7 @@ public class CustomerDto implements Serializable {
 
 
 
-    public  CustomerDto(CustomerDto_json customerDto_json) {
+    /*public  CustomerDto(CustomerDto_json customerDto_json) {
         this.name = customerDto_json.name;
         this.balance = customerDto_json.balance;
         ArrayList<Transaction> copyTransactions = new ArrayList<>();
@@ -101,7 +101,7 @@ public class CustomerDto implements Serializable {
         this.numOfActiveOutgoingLoans = customerDto_json.numOfActiveOutgoingLoans;
         this.numOfRiskOutgoingLoans = customerDto_json.numOfRiskOutgoingLoans;
         this.numOfFinishOutgoingLoans = customerDto_json.numOfFinishOutgoingLoans;
-    }
+    }*/
 
     public int getNumOfPendingIngoingLoans() {
         return numOfPendingIngoingLoans;
@@ -180,11 +180,11 @@ public class CustomerDto implements Serializable {
         return transactions;
     }
 
-    public Collection<Loan> getIngoingLoans() {
+    public Collection<LoanDto> getIngoingLoans() {
         return ingoingLoans;
     }
 
-    public Collection<Loan> getOutgoingLoans() {
+    public Collection<LoanDto> getOutgoingLoans() {
         return outgoingLoans;
     }
 

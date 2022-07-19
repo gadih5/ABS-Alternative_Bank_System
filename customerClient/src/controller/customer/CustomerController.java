@@ -160,4 +160,11 @@ public class CustomerController {
     }
 
 
+    public void clearAllDebts(LoanDto selectedLoan) {
+        customerAppController.clearAllDebts(selectedLoan);
+    }
+
+    public void setStatusFinished(LoanDto selectedLoan) {
+        customerAppController.setStatusFinished(selectedLoan);
+    }
 }
