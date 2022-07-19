@@ -214,6 +214,11 @@ public class CustomerAppController {
             customerComponent = fxmlLoader.load(url.openStream());
             customerComponentController = fxmlLoader.getController();
             setCustomerComponentController(customerComponentController);
+            bodyAnchorPane.getChildren().set(0,customerComponent);
+            AnchorPane.setBottomAnchor(customerComponent, 0.0);
+            AnchorPane.setLeftAnchor(customerComponent, 0.0);
+            AnchorPane.setRightAnchor(customerComponent, 0.0);
+            AnchorPane.setTopAnchor(customerComponent, 0.0);
             customerComponentController.loadCustomerDetails(userName, false);
             getYazValueFromBank();
         } catch (IOException e) {
@@ -728,7 +733,6 @@ public class CustomerAppController {
     }
 
     public void selfTransaction(String name, int amount) {
-        System.out.println("CustomerAppController selfTRANS: GOT HERE!");
         String finalUrl = HttpUrl
                 .parse(Constants.SELF_TRANSACTION)
                 .newBuilder()

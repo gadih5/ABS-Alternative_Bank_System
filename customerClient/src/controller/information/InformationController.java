@@ -43,6 +43,8 @@ public class InformationController {
         @FXML
         private WithdrawDialogController withdrawDialogComponentController;
 
+        private CustomerDto selectedCustomer;
+
     public void setMainController(CustomerController customerController) {
         this.customerController = customerController;
     }
@@ -210,8 +212,8 @@ public class InformationController {
     }
 
     public void chargeAmount(String text) {
-        CustomerDto theCustomerDto = customerController.getSelectedCustomer();
-        Customer theCustomer = null;
+      //  CustomerDto theCustomerDto = customerController.getSelectedCustomer();
+       // Customer theCustomer = null;
         try {
             int amount = Integer.parseInt(text);
             if (amount <= 0) {
@@ -221,7 +223,7 @@ public class InformationController {
                 alert.setHeaderText("Error: Invalid Number");
                 alert.setContentText("Please enter a positive integer, click OK and try again:");
                 alert.showAndWait();
-            } else {
+            } /*else {
                 ArrayList<Customer> customers = customerController.getCustomers();
                 //System.out.println("CUSTOMERS: " + customers);
                 if (customers != null) {
@@ -230,20 +232,20 @@ public class InformationController {
                             theCustomer = customer;
                         }
                     }
-                }
+                }*/
 
-                if (theCustomer != null) {
-                    customerController.selfTransaction(theCustomer.getName(), amount);
+                if (selectedCustomer != null) {
+                    customerController.selfTransaction(selectedCustomer.getName(), amount);
                     //theCustomer.selfTransaction(amount);
                     for (CustomerDto customerDto : customerController.getCustomersDto()) {
-                        if (customerDto.getName().equals(theCustomer.getName())) {
-                            theCustomerDto = customerDto;
+                        if (customerDto.getName().equals(selectedCustomer.getName())) {
+                            selectedCustomer = customerDto;
                         }
                     }
-                    showInfoTable(theCustomerDto);
+                    showInfoTable(selectedCustomer);
                 }
 
-            }
+
         }catch(NumberFormatException e){
                 chargeMoney(new ActionEvent());
                 Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -319,6 +321,10 @@ public class InformationController {
             alert.setContentText("Please enter a positive/negative integer, click OK and try again:");
             alert.showAndWait();
         }
+    }
+
+    public void setCustomer(CustomerDto selectedCustomer) {
+        this.selectedCustomer = selectedCustomer;
     }
 }
 

@@ -83,8 +83,10 @@ public class CustomerController {
                 customerAppController.updateBankDtos();
                 ArrayList<CustomerDto> customersDto = customerAppController.getCustomersDto() ;
                 for(CustomerDto customerDto : customersDto){
-                    if(customerDto.getName().equals(userName))
+                    if(customerDto.getName().equals(userName)) {
                         selectedCustomer = customerDto;
+                        informationComponentController.setCustomer(selectedCustomer);
+                    }
                 }
                 if(selectedCustomer == null)
                     return;
