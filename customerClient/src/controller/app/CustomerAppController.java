@@ -355,6 +355,7 @@ public class CustomerAppController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        changeBody(username);
     }
 
     private void showErrorAlert(String message) {
