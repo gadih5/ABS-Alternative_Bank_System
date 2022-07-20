@@ -10,7 +10,7 @@ import java.util.Collection;
 public class CustomerDto implements Serializable {
     private String name;
     private double balance;
-    private Collection<Transaction> transactions;
+    //private Collection<TransactionDto> transactions;
     private Collection<LoanDto> ingoingLoans;
     private Collection<LoanDto> outgoingLoans;
     private Collection<PreTransaction> preTransactions;
@@ -26,7 +26,7 @@ public class CustomerDto implements Serializable {
     public CustomerDto(Customer customer) {
         this.name = customer.getName();
         this.balance = customer.getBalance();
-        this.transactions = customer.getTransactions();
+      //  this.transactions = customer.getTransactions();
         this.ingoingLoans = customer.getIngoingLoans();
         this.outgoingLoans = customer.getOutgoingLoans();
         this.preTransactions = customer.getPreTransactions();
@@ -176,9 +176,9 @@ public class CustomerDto implements Serializable {
         return name;
     }
 
-    public Collection<Transaction> getTransactions() {
-        return transactions;
-    }
+   // public Collection<Transaction> getTransactions() {
+  //      return transactions;
+  //  }
 
     public Collection<LoanDto> getIngoingLoans() {
         return ingoingLoans;

@@ -219,6 +219,7 @@ public class CustomerAppController {
             AnchorPane.setLeftAnchor(customerComponent, 0.0);
             AnchorPane.setRightAnchor(customerComponent, 0.0);
             AnchorPane.setTopAnchor(customerComponent, 0.0);
+            customerComponentController.loadTabs();
             customerComponentController.loadCustomerDetails(userName, false);
             getYazValueFromBank();
         } catch (IOException e) {
@@ -838,6 +839,82 @@ public class CustomerAppController {
             }
         });
     }
+
+
+    public ArrayList<Transaction> getTransactions(String name) {
+        ArrayList<Transaction> transactions = new ArrayList<>();
+        Request request = new Request.Builder()
+                .url(Constants.GET_TRANS)
+                .addHeader("username", name)
+                .build();
+
+        Call call = Constants.HTTP_CLIENT.newCall(request);
+
+        try {
+            Response response = call.execute();
+            String resp = response.body().string();
+            response.body().close();
+            System.out.println("GET TRANS CODE: " + response.code());
+            TransactionList_json transactionList_json;
+            transactionList_json = Constants.GSON_INSTANCE.fromJson(resp, TransactionList_json.class);
+            if(transactionList_json.transactions != null)
+                transactions = transactionList_json.transactions;
+        } catch (IOException e) {
+            System.out.println("Error when trying to get data. Exception: " + e.getMessage());
+        }catch (JsonSyntaxException e){
+
+        }
+
+        return transactions;
     }
+
+    public int getNumOfTrans(String name) {
+        int numOfTrans = 0;
+
+        Request request = new Request.Builder()
+                .url(Constants.GET_NUM_OF_TRANS)
+                .addHeader("username", name)
+                .build();
+
+        Call call = Constants.HTTP_CLIENT.newCall(request);
+
+        try {
+            Response response = call.execute();
+            String resp = response.body().string();
+            response.body().close();
+            if(response.code() == 200) {
+                numOfTrans = Constants.GSON_INSTANCE.fromJson(resp, Integer.class);
+            }
+        } catch (IOException e) {
+            System.out.println("Error when trying to get data. Exception: " + e.getMessage());
+        }
+
+        return numOfTrans;
+    }
+
+    public double getNewBalance(String name) {
+        double newBalance = 0;
+
+        Request request = new Request.Builder()
+                .url(Constants.GET_NEW_BALANCE)
+                .addHeader("username", name)
+                .build();
+
+        Call call = Constants.HTTP_CLIENT.newCall(request);
+
+        try {
+            Response response = call.execute();
+            String resp = response.body().string();
+            response.body().close();
+            if(response.code() == 200) {
+                newBalance = Constants.GSON_INSTANCE.fromJson(resp, Double.class);
+            }
+        } catch (IOException e) {
+            System.out.println("Error when trying to get data. Exception: " + e.getMessage());
+        }
+
+        return newBalance;
+    }
+}
 
 

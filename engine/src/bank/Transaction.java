@@ -7,7 +7,7 @@ import bank.exception.NegativeBalanceException;
 
 import java.io.Serializable;
 public class Transaction implements Serializable {
-    private Customer toCustomer;
+   // private Customer toCustomer;
     private double amount; //positive value
     private int timeUnit;
     private double previousBalance;
@@ -23,7 +23,7 @@ public class Transaction implements Serializable {
         boolean amountChange = false;
         this.previousBalance = fromCustomer.getBalance();
         this.timeUnit = Bank.getGlobalTimeUnit();
-        this.toCustomer = toCustomer;
+    //    this.toCustomer = toCustomer;
         this.amount = amount; //check in ui that positive
         if (fromCustomer == toCustomer) {//its a self deposit
             sign=amount>0?"+":"-";
@@ -56,9 +56,9 @@ public class Transaction implements Serializable {
         this.sign = transaction_json.sign;
     }*/
 
-    public Customer getToCustomer() {
-        return toCustomer;
-    }
+   // public Customer getToCustomer() {
+  //      return toCustomer;
+  //  }
 
     public double getAmount() {
         double res = Math.abs(amount);

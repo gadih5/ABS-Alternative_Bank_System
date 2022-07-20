@@ -1,22 +1,24 @@
 package controller.customer;
 
-import bank.Customer;
-import bank.CustomerDto;
-import bank.Loan;
-import bank.LoanDto;
+import bank.*;
 import controller.app.CustomerAppController;
 import controller.information.InformationController;
 import controller.payment.PaymentController;
 import controller.scramble.ScrambleController;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.SplitPane;
-import org.jetbrains.annotations.Nullable;
-import utils.Listener;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.layout.AnchorPane;
+
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
+
 
 public class CustomerController {
     @FXML
@@ -33,6 +35,20 @@ public class CustomerController {
     private SplitPane scrambleComponent;
     @FXML
     private ScrambleController scrambleComponentController;
+    @FXML
+    private TabPane customerComponent;
+    @FXML
+    private Tab infoTab;
+    @FXML
+    private AnchorPane infoAnchor;
+    @FXML
+    private Tab scrambleTab;
+    @FXML
+    private AnchorPane scrambleAnchor;
+    @FXML
+    private Tab paymentTab;
+    @FXML
+    private AnchorPane paymentAnchor;
 
     private CustomerDto selectedCustomer = null;
 
@@ -168,5 +184,76 @@ public class CustomerController {
 
     public void setStatusFinished(LoanDto selectedLoan) {
         customerAppController.setStatusFinished(selectedLoan);
+    }
+
+
+    public CustomerDto getTheCustomer() {
+        return selectedCustomer;
+    }
+
+    public void loadTabs() {
+        URL url = getClass().getResource("/controller/information/information.fxml");
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(url);
+        try {
+            informationComponent = fxmlLoader.load(url.openStream());
+            informationComponentController = fxmlLoader.getController();
+            setInformationComponentController(informationComponentController);
+            infoAnchor.getChildren().add(informationComponent);
+            AnchorPane.setBottomAnchor(informationComponent, 0.0);
+            AnchorPane.setLeftAnchor(informationComponent, 0.0);
+            AnchorPane.setRightAnchor(informationComponent, 0.0);
+            AnchorPane.setTopAnchor(informationComponent, 0.0);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        url = getClass().getResource("/controller/scramble/scramble.fxml");
+        fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(url);
+        try {
+            scrambleComponent = fxmlLoader.load(url.openStream());
+            scrambleComponentController = fxmlLoader.getController();
+            setScrambleComponentController(scrambleComponentController);
+            scrambleAnchor.getChildren().add(scrambleComponent);
+            AnchorPane.setBottomAnchor(scrambleComponent, 0.0);
+            AnchorPane.setLeftAnchor(scrambleComponent, 0.0);
+            AnchorPane.setRightAnchor(scrambleComponent, 0.0);
+            AnchorPane.setTopAnchor(scrambleComponent, 0.0);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+
+
+        url = getClass().getResource("/controller/payment/payment.fxml");
+        fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(url);
+        try {
+            paymentComponent = fxmlLoader.load(url.openStream());
+            paymentComponentController = fxmlLoader.getController();
+            setPaymentComponentController(paymentComponentController);
+            paymentAnchor.getChildren().add(paymentComponent);
+            AnchorPane.setBottomAnchor(paymentComponent, 0.0);
+            AnchorPane.setLeftAnchor(paymentComponent, 0.0);
+            AnchorPane.setRightAnchor(paymentComponent, 0.0);
+            AnchorPane.setTopAnchor(paymentComponent, 0.0);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+            }
+
+    public ArrayList<Transaction> getTransactions(String name) {
+        return customerAppController.getTransactions(name);
+    }
+
+    public int getNumOfTrans(String name) {
+        return customerAppController.getNumOfTrans(name);
+    }
+
+    public double getNewBalance(String name) {
+        return customerAppController.getNewBalance(name);
     }
 }

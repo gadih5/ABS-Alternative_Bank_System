@@ -12,7 +12,7 @@ import java.util.Collection;
 public class Customer implements Serializable {
     private final String name;
     private double balance;
-    private ArrayList transactions;
+    private ArrayList<Transaction> transactions;
     private ArrayList<Loan> ingoingLoans;
     private ArrayList<Loan> outgoingLoans;
     private CustomerDto customerDto;
@@ -86,7 +86,7 @@ public class Customer implements Serializable {
         return balance;
     }
 
-    public Collection getTransactions() {
+    public ArrayList<Transaction> getTransactions() {
         return transactions;
     }
 

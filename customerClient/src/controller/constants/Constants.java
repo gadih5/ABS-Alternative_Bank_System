@@ -42,6 +42,11 @@ public class Constants {
     public final static String BANK_SENDER = FULL_SERVER_PATH + "/bankSenderServlet";
     public final static String CLEAR_DEBTS = FULL_SERVER_PATH + "/clearDebts";
     public final static String SET_FINISHED = FULL_SERVER_PATH + "/setFinished";
+    public final static String GET_TRANS = FULL_SERVER_PATH + "/getTransactions";
+    public final static String GET_NUM_OF_TRANS = FULL_SERVER_PATH + "/getNumOfTrans";
+    public final static String GET_NEW_BALANCE = FULL_SERVER_PATH + "/getNewBalance";
+
+
 
 
 

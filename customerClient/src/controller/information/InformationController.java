@@ -52,12 +52,19 @@ public class InformationController {
     @FXML
     public void showInfoTable(CustomerDto selectedCustomer) {
 
+           final int numOfTrans = customerController.getNumOfTrans(selectedCustomer.getName());
 
+        System.out.println("NUM OF TRANS GET TO SHOWINFOTABLE: " + numOfTrans);
             accountTransTable.getItems().clear();
             accountTransTable.getColumns().clear();
-            makeTransactionsTable(selectedCustomer.getTransactions());
 
-            double b =selectedCustomer.getBalance();
+         //   if(numOfTrans > 0){
+                ArrayList<Transaction> transactions = getTransactions(selectedCustomer.getName());
+                makeTransactionsTable(transactions);
+          //  }
+
+            double b = getNewBalance(selectedCustomer.getName());
+           // double b =selectedCustomer.getBalance();
 
             balanceLabel.setText("Balance: " + b);
 
@@ -70,6 +77,14 @@ public class InformationController {
             loanerLoansTable.getColumns().clear();
             makeLoanerLoansTable(selectedCustomer.getIngoingLoans());
 
+    }
+
+    private double getNewBalance(String name) {
+        return customerController.getNewBalance(name);
+    }
+
+    private ArrayList<Transaction> getTransactions(String name) {
+        return customerController.getTransactions(name);
     }
 
     @FXML
@@ -233,15 +248,13 @@ public class InformationController {
                         }
                     }
                 }*/
+            this.selectedCustomer = customerController.getTheCustomer();
 
                 if (selectedCustomer != null) {
+
                     customerController.selfTransaction(selectedCustomer.getName(), amount);
                     //theCustomer.selfTransaction(amount);
-                    for (CustomerDto customerDto : customerController.getCustomersDto()) {
-                        if (customerDto.getName().equals(selectedCustomer.getName())) {
-                            selectedCustomer = customerDto;
-                        }
-                    }
+
                     showInfoTable(selectedCustomer);
                 }
 
@@ -275,43 +288,41 @@ public class InformationController {
     }
 
     public void withdrawAmount(String text) {
-        CustomerDto theCustomerDto = customerController.getSelectedCustomer();
-        Customer theCustomer = null;
+      //  CustomerDto theCustomerDto = customerController.getSelectedCustomer();
+      //  Customer theCustomer = null;
         try {
             int amount = Integer.parseInt(text);
 
-            for(Customer customer: customerController.getCustomers()){
+           /* for(Customer customer: customerController.getCustomers()){
                 if (customer.getName().equals(theCustomerDto.getName()))
                     theCustomer = customer;
-            }
-            try {
-                if(amount == 0){
-                    withdrawMoney(new ActionEvent());
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error Dialog");
-                    alert.setHeaderText("Error: Invalid Number");
-                    alert.setContentText("Please enter a positive/negative integer, click OK and try again:");
-                    alert.showAndWait();
-                }
-                if(amount < 0)
-                    theCustomer.selfTransaction(amount);
-                else if(amount>0)
-                    theCustomer.selfTransaction(-amount);
-
-                for (CustomerDto customerDto : customerController.getCustomersDto()) {
-                    if (customerDto.getName().equals(theCustomer.getName()))
-                        theCustomerDto = customerDto;
-                }
-                showInfoTable(theCustomerDto);
-
-            } catch (NegativeBalanceException e) {
+            }*/
+            if(amount == 0){
                 withdrawMoney(new ActionEvent());
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Warning Dialog");
-                alert.setHeaderText("Warning: Negative Balance");
-                alert.setContentText(theCustomer.getName() + " not have enough money in account balance");
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error Dialog");
+                alert.setHeaderText("Error: Invalid Number");
+                alert.setContentText("Please enter a positive/negative integer, click OK and try again:");
                 alert.showAndWait();
             }
+            this.selectedCustomer = customerController.getTheCustomer();
+            if (selectedCustomer != null) {
+                 if(Math.abs(amount) > getNewBalance(selectedCustomer.getName())){
+                    withdrawMoney(new ActionEvent());
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setTitle("Warning Dialog");
+                    alert.setHeaderText("Warning: Negative Balance");
+                    alert.setContentText(selectedCustomer.getName() + " not have enough money in account balance");
+                    alert.showAndWait();
+                }
+                else if(amount < 0)
+                    customerController.selfTransaction(selectedCustomer.getName(), amount);
+                else if(amount > 0)
+                    customerController.selfTransaction(selectedCustomer.getName(), -amount);
+
+                showInfoTable(selectedCustomer);
+            }
+
         }
         catch (NumberFormatException e){
             withdrawMoney(new ActionEvent());
