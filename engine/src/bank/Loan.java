@@ -190,7 +190,7 @@ public class Loan implements Serializable {
         }
     }
 
-    protected Collection<Fraction> getFractions() {
+    public Collection<Fraction> getFractions() {
         return fractions;
     }
 

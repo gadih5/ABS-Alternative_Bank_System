@@ -19,7 +19,7 @@ public class LoanDto implements Serializable, Comparable<LoanDto> {
     private String reason;
     private int interestPrecent;
     private int paymentFrequency;
-    private Collection<Fraction> fractions;
+   // private Collection<Fraction> fractions;
     private double currentInterest;
     private double remainInterest;
     private double currentFund;
@@ -27,7 +27,7 @@ public class LoanDto implements Serializable, Comparable<LoanDto> {
     private boolean isActive;
     private Collection<LoanTransaction> transactions;
     private double amountToComplete;
-    private Collection<Debt> debts;
+    //private Collection<Debt> debts;
     private int nextPaymentYaz;
     private double nextPaymentValue;
     private int numOfDebts;
@@ -47,7 +47,7 @@ public class LoanDto implements Serializable, Comparable<LoanDto> {
         this.reason =loan.getReason() ;
         this.interestPrecent = loan.getInterestPercent();
         this.paymentFrequency = loan.getPaymentFrequency();
-        this.fractions = loan.getFractions();
+      //  this.fractions = loan.getFractions();
         this.currentInterest = loan.getCurrentInterest();
         this.remainInterest = loan.getRemainInterest();
         this.currentFund = loan.getCurrentFund();
@@ -55,49 +55,14 @@ public class LoanDto implements Serializable, Comparable<LoanDto> {
         this.isActive = loan.isActive();
         this.transactions = loan.getTransactions();
         this.amountToComplete=loan.getAmountToComplete();
-        this.debts = loan.getUncompletedTransactions();
+     //   this.debts = loan.getUncompletedTransactions();
         this.nextPaymentYaz = loan.getNextPayment();
         this.nextPaymentValue = loan.getNextPaymentValue();
-        this.numOfDebts = this.debts.size();
-        for(Debt debt: debts){
+     //   this.numOfDebts = this.debts.size();
+        /*for(Debt debt: debts){
             this.sumOfDebts += debt.getAmount();
-        }
+        }*/
     }
-
-  /*  public LoanDto(LoanDto_json loanDto_json) {
-        this.loanName = loanDto_json.loanName;
-        this.borrowerName = loanDto_json.borrowerName;
-        this.status = Status.valueOf(loanDto_json.status);
-        this.loanSum = loanDto_json.loanSum;
-        this.startTimeUnit = loanDto_json.startTimeUnit;
-        this.totalTimeUnit = loanDto_json.totalTimeUnit;
-        this.remainTimeUnit = loanDto_json.remainTimeUnit;
-        this.finishTimeUnit = loanDto_json.finishTimeUnit;
-        this.reason = loanDto_json.reason;
-        this.interestPrecent = loanDto_json.interestPrecent;
-        this.paymentFrequency = loanDto_json.paymentFrequency;
-        ArrayList<Fraction> copyFractions = new ArrayList<>();
-        for(Fraction_json fraction_json: loanDto_json.fractions){
-            copyFractions.add(new Fraction(fraction_json));
-        }
-        this.fractions = copyFractions;
-        this.currentInterest = loanDto_json.currentInterest;
-        this.remainInterest = loanDto_json.remainInterest;
-        this.currentFund = loanDto_json.currentFund;
-        this.remainFund = loanDto_json.remainFund;
-        this.isActive = loanDto_json.isActive;
-        ArrayList<LoanTransaction> copyLoanTransactions = new ArrayList<>();
-        for(LoanTransaction_json loanTransaction_json: loanDto_json.transactions){
-            copyLoanTransactions.add(new LoanTransaction(loanTransaction_json));
-        }
-        this.transactions = copyLoanTransactions;
-        this.amountToComplete = loanDto_json.amountToComplete;
-        ArrayList<Debt> copyDebts = new ArrayList<>();
-        for(Debt_json debt_json: loanDto_json.debts){
-            copyDebts.add(new Debt(debt_json));
-        }
-        this.debts = copyDebts;
-    }*/
 
     public int checkNextPayment() {
         int nextPayment=0;
@@ -161,9 +126,9 @@ public class LoanDto implements Serializable, Comparable<LoanDto> {
         return paymentFrequency;
     }
 
-    public Collection<Fraction> getFractions() {
+   /* public Collection<Fraction> getFractions() {
         return fractions;
-    }
+    }*/
 
     public double getCurrentInterest() {
         return currentInterest;
@@ -193,9 +158,9 @@ public class LoanDto implements Serializable, Comparable<LoanDto> {
         return amountToComplete;
     }
 
-    public Collection<Debt> getDebts() {
+  /*  public Collection<Debt> getDebts() {
         return debts;
-    }
+    }*/
 
     @Override
     public int compareTo(LoanDto o) {

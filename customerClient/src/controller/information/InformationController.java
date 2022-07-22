@@ -57,20 +57,20 @@ public class InformationController {
 
             accountTransTable.getItems().clear();
             accountTransTable.getColumns().clear();
-            ArrayList<Transaction> transactions = getTransactions(selectedCustomer.getName());
+            ArrayList<Transaction> transactions = getTransactions(this.selectedCustomer.getName());
             makeTransactionsTable(transactions);
 
-            double b = getNewBalance(selectedCustomer.getName());
+            double b = getNewBalance(this.selectedCustomer.getName());
             balanceLabel.setText("Balance: " + b);
 
             borrowerLoansTable.getItems().clear();
             borrowerLoansTable.getColumns().clear();
-            ArrayList<LoanDto> outLoans = selectedCustomer.getOutgoingLoans();
+            ArrayList<LoanDto> outLoans = this.selectedCustomer.getOutgoingLoans();
             makeBorrowerLoansTable(outLoans);
             borrowerLoansTable.getSortOrder().add(borrowerLoansTable.getColumns().get(0));
 
 
-            ArrayList<LoanDto> inLoans = selectedCustomer.getIngoingLoans();
+            ArrayList<LoanDto> inLoans = this.selectedCustomer.getIngoingLoans();
             loanerLoansTable.getItems().clear();
             loanerLoansTable.getColumns().clear();
             makeLoanerLoansTable(inLoans);

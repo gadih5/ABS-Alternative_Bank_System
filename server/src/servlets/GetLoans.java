@@ -24,5 +24,6 @@ public class GetLoans extends HttpServlet {
         Bank myBank = (Bank)getServletContext().getAttribute("myBank");
         Gson gson = new Gson();
         resp.getWriter().write(gson.toJson(new LoanList_json(myBank.getLoans())));
+
     }
 }

@@ -260,4 +260,8 @@ public class CustomerController {
     public double getNewBalance(String name) {
         return customerAppController.getNewBalance(name);
     }
+
+    public void addLoaner(String loanName, String name, double sumToinvest) {
+        customerAppController.addLoaner(loanName,name,sumToinvest);
+    }
 }

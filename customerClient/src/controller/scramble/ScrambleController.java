@@ -136,7 +136,7 @@ public class ScrambleController {
 
     public void loadScrambleInfo(CustomerDto selectedCustomer) {
         this.selectedCustomer = selectedCustomer;
-        sumInvestSlider.setMax(selectedCustomer.getBalance());
+        sumInvestSlider.setMax(this.selectedCustomer.getBalance());
 
         Set<String> chosenCategories = new HashSet<>();
         for (int i = 0; i < categoriesVBox.getChildren().size(); i++) {
@@ -242,7 +242,6 @@ public class ScrambleController {
             while (node != null && node != loansTable && !(node instanceof TableRow)) {
                 node = node.getParent();
             }
-
             // if is part of a row or the row,
             // handle event instead of using standard handling
             if (node instanceof TableRow) {
@@ -302,45 +301,19 @@ public class ScrambleController {
     }
 
     public void investLoan(ActionEvent actionEvent) throws InterruptedException {
-        investButton.setText("3");
-        TimeUnit.SECONDS.sleep(1);
-        investButton.setText("2");
-        TimeUnit.SECONDS.sleep(1);
-        investButton.setText("1");
-        TimeUnit.SECONDS.sleep(1);
-        investButton.setText("Invested!!!");
-        TimeUnit.SECONDS.sleep(1);
-        investButton.setText("Invest!");
 
-        new Thread(task).start();
-        customerController.loadCustomerDetails(selectedCustomer.getName(), true);
+     //   customerController.loadCustomerDetails(selectedCustomer.getName(), true);
         customerController.updateBankDtos();
-        showValidLoansInTable();
+     //   showValidLoansInTable();
 
-        customerController.refershInfo(selectedCustomer);
+      //  customerController.refershInfo(selectedCustomer);
 
-    }
-
-
-    Task<Integer>task= new Task<Integer>() {
-        @Override
-        protected Integer call() throws InterruptedException {
-
-            taskHelper();
-
-            return 1;
-        }
-
-    };
-
-    synchronized private void taskHelper() throws InterruptedException {
         ObservableList<LoanDto> list = loansTable.getSelectionModel().getSelectedItems();
         ArrayList<LoanDto> listOfLoans = new ArrayList<>();
         listOfLoans.addAll(list);
         loansTable.getSelectionModel().clearSelection();
 
         if (listOfLoans.isEmpty()) {
-
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error Dialog");
             alert.setHeaderText("Error: No Loan Selected");
@@ -362,23 +335,16 @@ public class ScrambleController {
                 }else{
                     sumToinvest=perLoanInvest;
                 }
-                try {
                     Loan loan = customerController.getSpecificLoan(loanDto.getLoanName());
                     Customer customer = customerController.getSpecificCustomer(selectedCustomer.getName());
                     if (sumToinvest > loanDto.getAmountToComplete()) {
                         sumToinvest = loanDto.getAmountToComplete();
-                        loan.addLoaner(customer, sumToinvest);
+                        customerController.addLoaner(loan.getLoanName(),customer.getName(),sumToinvest);
+                  //      loan.addLoaner(customer, sumToinvest);
                     } else {
-                        loan.addLoaner(customer, sumToinvest);
+                        customerController.addLoaner(loan.getLoanName(),customer.getName(),sumToinvest);
+                        //      loan.addLoaner(customer, sumToinvest);
                     }
-
-
-                } catch (NegativeBalanceException e) {
-                    Alert alert = new Alert(Alert.AlertType.WARNING);
-                    alert.setTitle("Warning Dialog");
-                    alert.setHeaderText("Warning: Negative Balance");
-                    alert.setContentText(selectedCustomer.getName() + " not have enough money in account balance");
-                }
             }
         }
 
@@ -386,8 +352,6 @@ public class ScrambleController {
         alert.setTitle("Information Dialog");
         alert.setHeaderText("Info: Scramble Succeed!");
         alert.setContentText(selectedCustomer.getName() + " successfully invested all chosen loans.");
-        //customerController.updateBankDtos();
-        //customerController.showInfoTable(selectedCustomer);
         customerController.loadCustomerDetails(selectedCustomer.getName(), false);
         showValidLoansInTable();
         customerController.refershInfo(selectedCustomer);

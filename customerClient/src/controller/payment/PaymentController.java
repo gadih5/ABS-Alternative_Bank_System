@@ -180,8 +180,9 @@ public class PaymentController {
     public void payEntireLoan(ActionEvent actionEvent) {
 
         LoanDto selectedLoan = borrowerLoansTable.getSelectionModel().getSelectedItem();
+        Loan theLoan = getSpecificLoan(selectedLoan.getLoanName());
         int leftPayments = selectedLoan.getRemainTimeUnit()/selectedLoan.getPaymentFrequency();
-        for(Fraction fraction: selectedLoan.getFractions()){
+        for(Fraction fraction: theLoan.getFractions()){
             double singlePayment = (fraction.getAmount() + (fraction.getAmount() * (selectedLoan.getInterestPercent())/100.0)) / (selectedLoan.getTotalTimeUnit() / selectedLoan.getPaymentFrequency());
             double totalPaymentAmount = singlePayment * leftPayments;
             Customer customer = customerController.getSpecificCustomer(selectedCustomer.getName());
@@ -209,6 +210,10 @@ public class PaymentController {
 
         }
 
+    }
+
+    private Loan getSpecificLoan(String loanName) {
+        return customerController.getSpecificLoan(loanName);
     }
 
     public void tableClicked(MouseEvent mouseEvent) {

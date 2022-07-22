@@ -26,13 +26,14 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 import okhttp3.*;
 
+import okhttp3.internal.http2.Header;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import utils.YazRefresher;
 import utils.HttpClientUtil;
-import utils.HttpStatusUpdate;
 
 import javax.xml.bind.JAXBException;
 import java.io.File;
@@ -707,6 +708,30 @@ public class CustomerAppController {
         }
 
         return newBalance;
+    }
+
+    public void addLoaner(String loanName, String name, double sumToinvest) {
+        System.out.println("START of addLoaner response in cusAppcontrl");
+        String s = loanName+ "," + name + "," + sumToinvest;
+
+        Request request = new Request.Builder()
+                .url(Constants.ADD_LOANER)
+                .addHeader("data", s)
+                .build();
+
+        Call call = Constants.HTTP_CLIENT.newCall(request);
+
+        System.out.println("just before execute..");
+        try {
+            Response response = call.execute();
+            System.out.println("AFTER EXECUTE, RESP CODE: " + response.code());
+            String resp = response.body().string();
+            response.body().close();
+            if(response.code() == 200) {
+            }
+        } catch (IOException e) {
+            System.out.println("Error when trying to get data. Exception: " + e.getMessage());
+        }
     }
 }
 

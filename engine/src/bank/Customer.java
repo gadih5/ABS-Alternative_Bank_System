@@ -13,8 +13,8 @@ public class Customer implements Serializable {
     private final String name;
     private double balance;
     private ArrayList<Transaction> transactions;
-    private ArrayList<Loan> ingoingLoans;
-    private ArrayList<Loan> outgoingLoans;
+    private ArrayList<LoanDto> ingoingLoans;
+    private ArrayList<LoanDto> outgoingLoans;
     private CustomerDto customerDto;
     private ArrayList<PreTransaction> preTransactions;
     private Boolean isAdmin;
@@ -65,7 +65,7 @@ public class Customer implements Serializable {
     }
 
     public void addIngoingLoan(Loan loan,double amount) throws NegativeBalanceException {
-        ingoingLoans.add(loan);
+        ingoingLoans.add(loan.getLoanDto());
         Transaction newTransaction = new Transaction(this,loan.getBorrower(),amount);
         addTransaction(newTransaction);
         updateCustomerDto();
@@ -73,7 +73,7 @@ public class Customer implements Serializable {
 
     public Loan createLoan(String loanName, double loanSum, int totalTimeUnit, String reason, int interestPrecent, int paymentFrequency) throws UndefinedReasonException, NegativeLoanSumException, NegativeTotalTimeUnitException, NegativeInterestPercentException, NegativePaymentFrequencyException, OverPaymentFrequencyException, UndividedPaymentFrequencyException {
         Loan newLoan = new Loan( loanName, this,  loanSum,  totalTimeUnit,  reason,  interestPrecent,  paymentFrequency);
-        outgoingLoans.add(newLoan);
+        outgoingLoans.add(newLoan.getLoanDto());
         updateCustomerDto();
         return newLoan;
     }
@@ -91,19 +91,11 @@ public class Customer implements Serializable {
     }
 
     public ArrayList<LoanDto> getIngoingLoans() {
-        ArrayList<LoanDto> list = new ArrayList<>();
-        for (Loan loan: ingoingLoans){
-            list.add(loan.getLoanDto());
-        }
-        return list;
+        return ingoingLoans;
     }
 
     public ArrayList<LoanDto>getOutgoingLoans() {
-        ArrayList<LoanDto> list = new ArrayList<>();
-        for (Loan loan: outgoingLoans){
-            list.add(loan.getLoanDto());
-        }
-        return list;
+        return outgoingLoans;
     }
 
     public Collection<PreTransaction> getPreTransactions() {
@@ -129,7 +121,7 @@ public class Customer implements Serializable {
     }
 
     public void addOutgoingLoan(Loan loan) {
-        outgoingLoans.add(loan);
+        outgoingLoans.add(loan.getLoanDto());
         updateCustomerDto();
     }
 
