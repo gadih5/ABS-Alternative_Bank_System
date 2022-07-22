@@ -15,9 +15,7 @@ import javafx.scene.layout.AnchorPane;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Set;
+import java.util.*;
 
 
 public class CustomerController {
@@ -83,17 +81,6 @@ public class CustomerController {
     public CustomerDto getSelectedCustomer() {
         return selectedCustomer;
     }
-
-   /* public synchronized void getCustomersDto(Listener listner){
-        new Thread(() -> {
-            ArrayList<CustomerDto> customersDto;
-            customersDto = customerAppController.getCustomersDto();
-
-            System.out.println("TEST: " + customersDto);
-
-            listner.OnCall(customersDto);
-        }).start();x
-    }*/
 
     public synchronized void loadCustomerDetails(String userName, boolean fromScramble)  {
                 customerAppController.updateBankDtos();
@@ -263,5 +250,42 @@ public class CustomerController {
 
     public void addLoaner(String loanName, String name, double sumToinvest) {
         customerAppController.addLoaner(loanName,name,sumToinvest);
+    }
+
+    public ArrayList<LoanDto> getOutgoingLoans(String name) {
+        ArrayList<LoanDto> allLoans = customerAppController.getLoansDto();
+        ArrayList<LoanDto> outgoingLoans = new ArrayList<>();
+        for(LoanDto loanDto: allLoans){
+            if(loanDto.getBorrowerName().equals(name))
+                outgoingLoans.add(loanDto);
+        }
+        System.out.println(outgoingLoans.size());
+        return outgoingLoans;
+    }
+
+    public Set<LoanDto> getIngoingLoans(String name) {
+        Set<LoanDto> ingoingLoans = new HashSet<>();
+
+        try {
+            ArrayList<LoanDto> allLoans = customerAppController.getLoansDto();
+            // Set<Loan> ingoingLoans = new HashSet<>();
+            if (!allLoans.isEmpty()) {
+                for (LoanDto loanDto : allLoans) {
+                    if (loanDto != null) {
+                        for (String string : loanDto.getLoaners()) {
+                            if (string.equals(name))
+                                ingoingLoans.add(loanDto);
+                        }
+                    }
+                }
+            }
+        }catch (Exception e) {
+
+        }
+        return ingoingLoans;
+    }
+
+    public void setSelectedCustomer(CustomerDto selectedCustomer) {
+        this.selectedCustomer = selectedCustomer;
     }
 }

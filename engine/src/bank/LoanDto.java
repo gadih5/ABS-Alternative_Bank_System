@@ -27,6 +27,7 @@ public class LoanDto implements Serializable, Comparable<LoanDto> {
     private boolean isActive;
     private Collection<LoanTransaction> transactions;
     private double amountToComplete;
+    private ArrayList<String> loaners;
     //private Collection<Debt> debts;
     private int nextPaymentYaz;
     private double nextPaymentValue;
@@ -47,6 +48,7 @@ public class LoanDto implements Serializable, Comparable<LoanDto> {
         this.reason =loan.getReason() ;
         this.interestPrecent = loan.getInterestPercent();
         this.paymentFrequency = loan.getPaymentFrequency();
+        this.loaners = loan.getLoanersNames();
       //  this.fractions = loan.getFractions();
         this.currentInterest = loan.getCurrentInterest();
         this.remainInterest = loan.getRemainInterest();
@@ -62,6 +64,10 @@ public class LoanDto implements Serializable, Comparable<LoanDto> {
         /*for(Debt debt: debts){
             this.sumOfDebts += debt.getAmount();
         }*/
+    }
+
+    public ArrayList<String> getLoaners() {
+        return loaners;
     }
 
     public int checkNextPayment() {

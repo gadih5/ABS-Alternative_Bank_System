@@ -36,6 +36,7 @@ public class Loan implements Serializable {
     private double nextPaymentValue;
     private int numOfDebts;
     private double sumOfDebts;
+    private ArrayList<String> loanersNames;
 
 
     public Loan(String loanName, Customer borrower, double loanSum, int totalTimeUnit, String reason, int interestPercent, int paymentFrequency) throws UndefinedReasonException, NegativeLoanSumException, NegativeTotalTimeUnitException, NegativeInterestPercentException, NegativePaymentFrequencyException, OverPaymentFrequencyException, UndividedPaymentFrequencyException {
@@ -65,44 +66,8 @@ public class Loan implements Serializable {
         this.nextPaymentValue = 0;
         this.numOfDebts = 0;
         this.sumOfDebts = 0;
+        this.loanersNames = new ArrayList<String>();
     }
-
-    /*public Loan(Loan_json loan_json) {
-        this.startLoanAmount = loan_json.startLoanAmount;
-        this.loanName = loan_json.loanName;
-        this.borrower = new Customer(loan_json.borrower);
-        this.status = Status.valueOf(Loan_json.status);
-        this.loanSum = loan_json.loanSum;
-        this.startTimeUnit = loan_json.startTimeUnit;
-        this.totalTimeUnit = loan_json.totalTimeUnit;
-        this.remainTimeUnit = loan_json.remainTimeUnit;
-        this.finishTimeUnit = loan_json.finishTimeUnit;
-        this.reason = loan_json.reason;
-        this.interestPercent = loan_json.interestPercent;
-        this.paymentFrequency = loan_json.paymentFrequency;
-        ArrayList<Fraction> copyFractions = new ArrayList<>();
-        for(Fraction_json fraction_json: loan_json.fractions){
-            copyFractions.add(new Fraction(fraction_json));
-        }
-        this.fractions = copyFractions;
-        this.currentInterest = loan_json.currentInterest;
-        this.remainInterest = loan_json.remainInterest;
-        this.currentFund = loan_json.currentFund;
-        this.remainFund = loan_json.remainFund;
-        this.isActive = loan_json.isActive;
-        this.transactions = loan_json.transactions;
-        this.amountToComplete = loan_json.amountToComplete;
-        ArrayList<Debt> copyDebts = new ArrayList<>();
-        for(Debt_json debt_json: loan_json.uncompletedTransactions){
-            copyDebts.add(new Debt(debt_json));
-        }
-        this.uncompletedTransactions = copyDebts;
-        this.loanDto = new LoanDto(loan_json.loanDto);
-        this.nextPayment = loan_json.nextPayment;
-        this.nextPaymentValue = loan_json.nextPaymentValue;
-        this.numOfDebts = loan_json.numOfDebts;
-        this.sumOfDebts = loan_json.sumOfDebts;
-    }*/
 
     private void setPaymentFrequency(int paymentFrequency) throws NegativePaymentFrequencyException, OverPaymentFrequencyException,UndividedPaymentFrequencyException {
         if(paymentFrequency <= 0)
@@ -145,7 +110,6 @@ public class Loan implements Serializable {
     public void setStatus(Status status) {
         if(this.status == Status.Pending && status == Status.Active) {
             setStartTimeUnit();
-            //getBorrower().addOutgoingLoan(this);
             isActive = true;
             remainTimeUnit = totalTimeUnit;
             calcNextPayment();
@@ -155,6 +119,7 @@ public class Loan implements Serializable {
             setFinishTimeUnit();
         }
         this.status = status;
+        this.updateLoanDto();
     }
 
     public LoanDto getLoanDto() {
@@ -176,14 +141,15 @@ public class Loan implements Serializable {
     }
 
     public void addLoaner(Customer customer, double amount) throws NegativeBalanceException {
-
         try {
             customer.addIngoingLoan(this,amount);
             Fraction newFraction = new Fraction(customer,amount);
             fractions.add(newFraction);
             amountToComplete -= newFraction.getAmount();
             checkStatus();
+            this.addLoanerName(newFraction.getCustomerName());
             updateLoanDto();
+            customer.updateCustomerDto();
 
         } catch (NegativeBalanceException e) {
             throw new NegativeBalanceException("");
@@ -314,11 +280,7 @@ public class Loan implements Serializable {
                 LoanTransaction newLoanTransaction = new LoanTransaction(this.borrower, debt.getToCustomer(), debt.getFundPart(), debt.getInterestPart());
                 debts.remove(debt);
                 transactions.add(newLoanTransaction);
-/*                this.uncompletedTransactions = debts;
-                this.remainFund -= debt.getFundPart();
-                this.remainInterest -= debt.getInterestPart();
-                this.currentFund += debt.getFundPart();
-                this.currentInterest += debt.getInterestPart();*/
+
                 payDebts(uncompletedTransactions);
                 break;
             }
@@ -336,10 +298,6 @@ public class Loan implements Serializable {
         }
         if(this.getStatus() != Status.Finished && Bank.getGlobalTimeUnit() != startTimeUnit && isActive() && (remainTimeUnit >= 0 )&& (((Bank.getGlobalTimeUnit() - startTimeUnit)%paymentFrequency==0) || paymentFrequency == 1))
         {
-            if (this.status == status.Risk) {
-                //Collections.sort(uncompletedTransactions);
-                //payDebts(uncompletedTransactions);
-            }
             double debtAmount = 0;
 
             for(Debt debt: uncompletedTransactions){
@@ -347,8 +305,7 @@ public class Loan implements Serializable {
             }
             if(debtAmount != getLoanSum() + getLoanSum()*(((double)getInterestPercent()/100.0))){
                 for (Fraction fraction : fractions) {
-                    //LoanTransaction newLoanTransaction = null;
-                    //try {
+
                         if(fraction.getConvertTime() != Bank.getGlobalTimeUnit()) {
                             PreTransaction preTransaction = null;
                             double fundPart = fraction.getAmount() / (totalTimeUnit / paymentFrequency);
@@ -359,24 +316,11 @@ public class Loan implements Serializable {
                             uncompletedTransactions.add(new Debt(fraction.getCustomer(), fraction.getAmount() / (totalTimeUnit / paymentFrequency), fraction.getAmount() * ((double)((interestPercent/100))) / (totalTimeUnit / paymentFrequency)));
                             setStatus(Status.Risk);
 
-                            //newLoanTransaction = new LoanTransaction(this.borrower, fraction.getCustomer(), fundPart, interestPart);
                             getBorrower().addPreTransaction(preTransaction);
                             fraction.setConvertTime(Bank.getGlobalTimeUnit());
                             calcNextPayment();
                             calcNextPaymentValue();
                         }
-                       // fraction.getCustomer().addPreTransaction(preTransaction);
-                        //transactions.add(newLoanTransaction);
-
-
-                    /* catch (NegativeBalanceException e) {
-
-                        if (debtAmount < getRemainFund() + getRemainInterest()) {
-                            uncompletedTransactions.add(new Debt(fraction.getCustomer(), fraction.getAmount() / (totalTimeUnit / paymentFrequency), fraction.getAmount() * ((double)((interestPercent/100))) / (totalTimeUnit / paymentFrequency)));
-                            setStatus(Status.Risk);
-                        }
-                        throw new NegativeBalanceException("Negative Balance: " + this.getBorrowerName() + "'s account not have enough balance pay to " + fraction.getCustomerName() + " for \"" + getLoanName() + "\" loan!");
-                    }*/
 
                 }
             }
@@ -401,6 +345,14 @@ public class Loan implements Serializable {
         else{
             nextPayment = (Bank.getGlobalTimeUnit() - startTimeUnit)%paymentFrequency + Bank.getGlobalTimeUnit();
         }
+    }
+
+    public ArrayList<String> getLoanersNames() {
+        return loanersNames;
+    }
+
+    public void addLoanerName(String name){
+        this.loanersNames.add(name);
     }
 
     private void calcNextPaymentValue() {

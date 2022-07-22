@@ -37,8 +37,6 @@ public class Bank  implements Serializable {
         syncGlobalTimeUnit++;
         for (Loan loan : loans) {
             loan.update();
-
-
         }
         for (Customer customer : customers) {
             customer.updateCustomerDto();
@@ -133,7 +131,8 @@ public class Bank  implements Serializable {
                 }
                 if(!exist){
                     this.loans.add(newLoan);
-                    loanCustomer.addOutgoingLoan(newLoan);
+                    //newLoan.addLoanerName(loanCustomer.getName());
+                   // loanCustomer.addOutgoingLoan(newLoan);
                 }
             }else{
                 throw new NotInCategoryException("\"" + absLoan.getAbsCategory() + "\" is missing in the categories list in Xml!");

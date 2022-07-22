@@ -108,46 +108,16 @@ public class AdminController{
         loansTable.getItems().clear();
         loansTable.getColumns().clear();
         customersTable.getColumns().clear();
- //       loansTable.getItems().clear();
-     //   Platform.runLater(()-> {
+       // Platform.runLater(()-> {
                     makeAdminLoansTable();
                     makeAdminCustomersTable();
-             //   });
-  //      increaseYazBtn.setDisable(false);
+       //         });
     }
 
 
-    /*@FXML
-    void fileLoaderListener(ActionEvent event) {
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML files", "*.xml"));
-        File file = fileChooser.showOpenDialog(new Stage());
-        String filePath = file.getPath();
-        if (filePath != null) {
-            try {
-                XmlReader myXml = new XmlReader(Paths.get(filePath));
-                if(appController.loadXmlData(myXml.getDescriptor())) {
-                    showAdminScreen();
-                    appController.initYazLabel();
-                    increaseYazBtn.setDisable(false);
-                    appController.updatePathLabel(filePath);
-                    appController.addUsers();
-                    appController.setUserComboBoxEnable();
-                    appController.updateBankDtos();
-                }
-            } catch (JAXBException e) {
-                e.printStackTrace();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (NotXmlException e) {
-                e.printStackTrace();
-            }
-        }
-         else
-            return;
-    }*/
+
     public void moveTimeline(ActionEvent actionEvent) {
         appController.updateYaz();
-
     }
 
     public void setMainController(AppController appController) {

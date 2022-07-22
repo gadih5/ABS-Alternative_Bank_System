@@ -1,22 +1,17 @@
 package controller.information;
 
 import bank.*;
-import bank.exception.NegativeBalanceException;
 import controller.chargeDialog.ChargeDialogController;
 import controller.customer.CustomerController;
 import controller.withdrawDialog.WithdrawDialogController;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -54,6 +49,7 @@ public class InformationController {
 
     @FXML
     public void showInfoTable(CustomerDto selectedCustomer) {
+        try {
 
             accountTransTable.getItems().clear();
             accountTransTable.getColumns().clear();
@@ -65,17 +61,27 @@ public class InformationController {
 
             borrowerLoansTable.getItems().clear();
             borrowerLoansTable.getColumns().clear();
-            ArrayList<LoanDto> outLoans = this.selectedCustomer.getOutgoingLoans();
+            ArrayList<LoanDto> outLoans = getOutgoingLoans(selectedCustomer.getName());
             makeBorrowerLoansTable(outLoans);
             borrowerLoansTable.getSortOrder().add(borrowerLoansTable.getColumns().get(0));
 
-
-            ArrayList<LoanDto> inLoans = this.selectedCustomer.getIngoingLoans();
+            Set<LoanDto> inLoans = getIngoingLoans(selectedCustomer.getName());
             loanerLoansTable.getItems().clear();
             loanerLoansTable.getColumns().clear();
             makeLoanerLoansTable(inLoans);
             loanerLoansTable.getSortOrder().add(loanerLoansTable.getColumns().get(0));
+        }catch (Exception e){
 
+        }
+
+    }
+
+    private Set<LoanDto> getIngoingLoans(String name) {
+       return customerController.getIngoingLoans(name);
+    }
+
+    private ArrayList<LoanDto> getOutgoingLoans(String name) {
+        return customerController.getOutgoingLoans(name);
     }
 
     private double getNewBalance(String name) {
@@ -239,14 +245,16 @@ public class InformationController {
                 alert.setContentText("Please enter a positive integer, click OK and try again:");
                 alert.showAndWait();
             }
-            this.selectedCustomer = customerController.getTheCustomer();
+            else {
+                this.selectedCustomer = customerController.getTheCustomer();
+                customerController.setSelectedCustomer(this.selectedCustomer);
 
                 if (selectedCustomer != null) {
                     customerController.selfTransaction(selectedCustomer.getName(), amount);
                     showInfoTable(selectedCustomer);
                 }
 
-
+            }
         }catch(NumberFormatException e){
                 chargeMoney(new ActionEvent());
                 Alert alert = new Alert(Alert.AlertType.ERROR);

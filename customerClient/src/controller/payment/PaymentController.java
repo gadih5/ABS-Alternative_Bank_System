@@ -47,9 +47,15 @@ public class PaymentController {
     }
 
     public void showPaymentInfo(CustomerDto selectedCustomer) {
-        this.selectedCustomer = selectedCustomer;
-        makeBorrowerLoansTable(selectedCustomer.getOutgoingLoans());
-        showNotifications();
+        try {
+            this.selectedCustomer = selectedCustomer;
+            //borrowerLoansTable.getItems().clear();
+            //borrowerLoansTable.getColumns().clear();
+            makeBorrowerLoansTable(customerController.getOutgoingLoans(selectedCustomer.getName()));
+            showNotifications();
+        }catch(Exception e){
+
+        }
 
     }
 

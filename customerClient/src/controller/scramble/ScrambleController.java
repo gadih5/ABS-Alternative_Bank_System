@@ -135,32 +135,32 @@ public class ScrambleController {
     }
 
     public void loadScrambleInfo(CustomerDto selectedCustomer) {
-        this.selectedCustomer = selectedCustomer;
-        sumInvestSlider.setMax(this.selectedCustomer.getBalance());
+        try {
+            this.selectedCustomer = selectedCustomer;
+            sumInvestSlider.setMax(this.selectedCustomer.getBalance());
 
-        Set<String> chosenCategories = new HashSet<>();
-        for (int i = 0; i < categoriesVBox.getChildren().size(); i++) {
-            CheckBox currCategory = (CheckBox) categoriesVBox.getChildren().get(i);
-            if (currCategory.isSelected()) {
-                chosenCategories.add(currCategory.getText());
+            Set<String> chosenCategories = new HashSet<>();
+            for (int i = 0; i < categoriesVBox.getChildren().size(); i++) {
+                CheckBox currCategory = (CheckBox) categoriesVBox.getChildren().get(i);
+                if (currCategory.isSelected()) {
+                    chosenCategories.add(currCategory.getText());
+                }
             }
-        }
 
-        categoriesVBox.getChildren().clear();
+            categoriesVBox.getChildren().clear();
 
 
-        Set<String> categories = customerController.getCategories();
-        if (categories != null) {
-            for (String category : categories) {
-                // if(!categoriesVBox.getChildren().contains(category))
-                CheckBox cb = new CheckBox(category);
-                categoriesVBox.getChildren().add(cb);
-                if(chosenCategories.contains(category))
-                    cb.setSelected(true);
-                // }
+            Set<String> categories = customerController.getCategories();
+            if (categories != null) {
+                for (String category : categories) {
+                    // if(!categoriesVBox.getChildren().contains(category))
+                    CheckBox cb = new CheckBox(category);
+                    categoriesVBox.getChildren().add(cb);
+                    if (chosenCategories.contains(category))
+                        cb.setSelected(true);
+                    // }
+                }
             }
-        }
-
 
 
             maxInterestPercent = customerController.calcMaxInterestPercent(selectedCustomer);
@@ -170,6 +170,9 @@ public class ScrambleController {
             minTotalYazSlider.setMax(maxTotalYaz);
 
             maxOpenLoansSlider.setMax(customerController.getNumOfLoans());
+        }catch(Exception e){
+
+        }
 
     }
 
@@ -302,11 +305,11 @@ public class ScrambleController {
 
     public void investLoan(ActionEvent actionEvent) throws InterruptedException {
 
-     //   customerController.loadCustomerDetails(selectedCustomer.getName(), true);
+        //   customerController.loadCustomerDetails(selectedCustomer.getName(), true);
         customerController.updateBankDtos();
-     //   showValidLoansInTable();
+        //   showValidLoansInTable();
 
-      //  customerController.refershInfo(selectedCustomer);
+        //  customerController.refershInfo(selectedCustomer);
 
         ObservableList<LoanDto> list = loansTable.getSelectionModel().getSelectedItems();
         ArrayList<LoanDto> listOfLoans = new ArrayList<>();
@@ -321,41 +324,38 @@ public class ScrambleController {
             alert.showAndWait();
         } else {
             double sumToinvest;
-            double  perLoanInvest = (sumInvestSlider.getValue() / listOfLoans.size());
+            double perLoanInvest = (sumInvestSlider.getValue() / listOfLoans.size());
             for (LoanDto loanDto : listOfLoans) {
-                if(maxOwnerShipPercentCheckBox.isSelected()) {
-                    double temp = ((loanDto.getLoanSum()) *(((int)maxOwnershipPercentSlider.getValue())/100.0));
-                    if(temp<=perLoanInvest){
-                        sumToinvest=temp;
-                    }
-                    else{
-                        sumToinvest=perLoanInvest;
-                    }
-
-                }else{
-                    sumToinvest=perLoanInvest;
-                }
-                    Loan loan = customerController.getSpecificLoan(loanDto.getLoanName());
-                    Customer customer = customerController.getSpecificCustomer(selectedCustomer.getName());
-                    if (sumToinvest > loanDto.getAmountToComplete()) {
-                        sumToinvest = loanDto.getAmountToComplete();
-                        customerController.addLoaner(loan.getLoanName(),customer.getName(),sumToinvest);
-                  //      loan.addLoaner(customer, sumToinvest);
+                if (maxOwnerShipPercentCheckBox.isSelected()) {
+                    double temp = ((loanDto.getLoanSum()) * (((int) maxOwnershipPercentSlider.getValue()) / 100.0));
+                    if (temp <= perLoanInvest) {
+                        sumToinvest = temp;
                     } else {
-                        customerController.addLoaner(loan.getLoanName(),customer.getName(),sumToinvest);
-                        //      loan.addLoaner(customer, sumToinvest);
+                        sumToinvest = perLoanInvest;
                     }
+
+                } else {
+                    sumToinvest = perLoanInvest;
+                }
+                Loan loan = customerController.getSpecificLoan(loanDto.getLoanName());
+                Customer customer = customerController.getSpecificCustomer(selectedCustomer.getName());
+                if (sumToinvest > loanDto.getAmountToComplete())
+                    sumToinvest = loanDto.getAmountToComplete();
+
+                customerController.addLoaner(loan.getLoanName(), customer.getName(), sumToinvest);
+                customerController.updateBankDtos();
+                customerController.setSelectedCustomer(customerController.getSpecificCustomerDto(selectedCustomer.getName()));
             }
+
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Information Dialog");
+            alert.setHeaderText("Info: Scramble Succeed!");
+            alert.setContentText(selectedCustomer.getName() + " successfully invested all chosen loans.");
+            customerController.loadCustomerDetails(selectedCustomer.getName(), false);
+            showValidLoansInTable();
+            customerController.refershInfo(selectedCustomer);
+
         }
-
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Information Dialog");
-        alert.setHeaderText("Info: Scramble Succeed!");
-        alert.setContentText(selectedCustomer.getName() + " successfully invested all chosen loans.");
-        customerController.loadCustomerDetails(selectedCustomer.getName(), false);
-        showValidLoansInTable();
-        customerController.refershInfo(selectedCustomer);
-
     }
 
     public void setCustomer(CustomerDto selectedCustomer) {

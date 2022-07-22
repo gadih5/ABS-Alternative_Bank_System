@@ -69,9 +69,34 @@ public class AppController {
 
 
     public void updateYaz() {
+        Request request = new Request.Builder()
+                .url(Constants.UPDATE_YAZ_PAGE)
+                .build();
+
+        Call call = Constants.HTTP_CLIENT.newCall(request);
 
         try {
+            Response response = call.execute();
+            String resp = response.body().string();
+            response.body().close();
 
+            /*Request request2 = new Request.Builder()
+                    .url(Constants.CHECK_RISK_STATUS)
+                    .build();
+
+            Call call2 = Constants.HTTP_CLIENT.newCall(request2);
+
+            try {
+                Response response2 = call.execute();
+                String resp2 = response2.body().string();
+                response.body().close();
+            } catch (IOException e) {
+                System.out.println("Error when trying to get data. Exception: " + e.getMessage());
+            }*/
+        } catch (IOException e) {
+            System.out.println("Error when trying to get data. Exception: " + e.getMessage());
+        }
+        /*try {
             String finalUrl = HttpUrl
                     .parse(Constants.UPDATE_YAZ_PAGE)
                     .newBuilder()
@@ -90,14 +115,14 @@ public class AppController {
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                     String resp = response.body().string();
+                    System.out.println("UPDATE YAZ RESP CODE: " + response.code());
                     response.body().close();
                     if (response.code() != 200) {
 
                     } else {
                         Platform.runLater(()-> {
-                                    headerComponentController.updateYazLabel(resp);
+                            headerComponentController.updateYazLabel(resp);
                             adminComponentController.showAdminScreen();
-
                         });
 
                         String finalUrl = HttpUrl
@@ -118,6 +143,7 @@ public class AppController {
                             @Override
                             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                                 response.body().close();
+                                System.out.println("CHECK RISK RESP CODE: " + response.code());
                                 if (response.code() != 200) {
 
                                 } else {
@@ -132,9 +158,7 @@ public class AppController {
 
         } catch (Exception e) {
             throw new RuntimeException(e);
-        }
-
-
+        }*/
     }
     public void changeBody(String userName) {
         String finalUrl = HttpUrl
@@ -347,7 +371,7 @@ public class AppController {
         return customers;
     }
 
-    public Collection<Loan> getLoans() {
+    public ArrayList<Loan> getLoans() {
         @Nullable ArrayList<Loan> loans = new ArrayList<>();
 
         Request request = new Request.Builder()

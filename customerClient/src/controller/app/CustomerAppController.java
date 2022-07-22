@@ -479,6 +479,7 @@ public class CustomerAppController {
                 } else {
                     new Thread(()-> {
                         while(true) {
+                            updateBankDtos();
                             getYazValueFromBank();
                             customerComponentController.refershInfo(getSpecificCustomerDto(username));
                             try {
