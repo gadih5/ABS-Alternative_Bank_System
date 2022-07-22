@@ -8,12 +8,15 @@ import controller.withdrawDialog.WithdrawDialogController;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -52,30 +55,26 @@ public class InformationController {
     @FXML
     public void showInfoTable(CustomerDto selectedCustomer) {
 
-           final int numOfTrans = customerController.getNumOfTrans(selectedCustomer.getName());
-
-        System.out.println("NUM OF TRANS GET TO SHOWINFOTABLE: " + numOfTrans);
             accountTransTable.getItems().clear();
             accountTransTable.getColumns().clear();
-
-         //   if(numOfTrans > 0){
-                ArrayList<Transaction> transactions = getTransactions(selectedCustomer.getName());
-                makeTransactionsTable(transactions);
-          //  }
+            ArrayList<Transaction> transactions = getTransactions(selectedCustomer.getName());
+            makeTransactionsTable(transactions);
 
             double b = getNewBalance(selectedCustomer.getName());
-           // double b =selectedCustomer.getBalance();
-
             balanceLabel.setText("Balance: " + b);
-
 
             borrowerLoansTable.getItems().clear();
             borrowerLoansTable.getColumns().clear();
-            makeBorrowerLoansTable(selectedCustomer.getOutgoingLoans());
+            ArrayList<LoanDto> outLoans = selectedCustomer.getOutgoingLoans();
+            makeBorrowerLoansTable(outLoans);
+            borrowerLoansTable.getSortOrder().add(borrowerLoansTable.getColumns().get(0));
 
+
+            ArrayList<LoanDto> inLoans = selectedCustomer.getIngoingLoans();
             loanerLoansTable.getItems().clear();
             loanerLoansTable.getColumns().clear();
-            makeLoanerLoansTable(selectedCustomer.getIngoingLoans());
+            makeLoanerLoansTable(inLoans);
+            loanerLoansTable.getSortOrder().add(loanerLoansTable.getColumns().get(0));
 
     }
 
@@ -91,6 +90,7 @@ public class InformationController {
     private void makeLoanerLoansTable(Collection<LoanDto> ingoingLoans) {
         TableColumn loanNameColumn = new TableColumn("Loan Name");
         loanNameColumn.setCellValueFactory(new PropertyValueFactory<>("loanName"));
+
 
         TableColumn reasonColumn = new TableColumn("Category");
         reasonColumn.setCellValueFactory(new PropertyValueFactory<>("reason"));
@@ -133,6 +133,7 @@ public class InformationController {
         Set<LoanDto> setOfLoans = new HashSet<>();
         setOfLoans.addAll(ingoingLoans);
         ObservableList<LoanDto> listOfLoans = FXCollections.observableArrayList(setOfLoans);
+      //  SortedList<LoanDto> sortedList = new SortedList<>(listOfLoans);
         loanerLoansTable.setItems(listOfLoans);
     }
 
@@ -182,6 +183,7 @@ public class InformationController {
         Set<LoanDto> setOfLoans = new HashSet<>();
         setOfLoans.addAll(outgoingLoans);
         ObservableList<LoanDto> listOfLoans = FXCollections.observableArrayList(setOfLoans);
+       // SortedList<LoanDto> sortedList = new SortedList<>(listOfLoans);
         borrowerLoansTable.setItems(listOfLoans);
     }
 
@@ -227,8 +229,6 @@ public class InformationController {
     }
 
     public void chargeAmount(String text) {
-      //  CustomerDto theCustomerDto = customerController.getSelectedCustomer();
-       // Customer theCustomer = null;
         try {
             int amount = Integer.parseInt(text);
             if (amount <= 0) {
@@ -238,23 +238,11 @@ public class InformationController {
                 alert.setHeaderText("Error: Invalid Number");
                 alert.setContentText("Please enter a positive integer, click OK and try again:");
                 alert.showAndWait();
-            } /*else {
-                ArrayList<Customer> customers = customerController.getCustomers();
-                //System.out.println("CUSTOMERS: " + customers);
-                if (customers != null) {
-                    for (Customer customer : customerController.getCustomers()) {
-                        if (customer.getName().equals(theCustomerDto.getName())) {
-                            theCustomer = customer;
-                        }
-                    }
-                }*/
+            }
             this.selectedCustomer = customerController.getTheCustomer();
 
                 if (selectedCustomer != null) {
-
                     customerController.selfTransaction(selectedCustomer.getName(), amount);
-                    //theCustomer.selfTransaction(amount);
-
                     showInfoTable(selectedCustomer);
                 }
 
@@ -288,15 +276,9 @@ public class InformationController {
     }
 
     public void withdrawAmount(String text) {
-      //  CustomerDto theCustomerDto = customerController.getSelectedCustomer();
-      //  Customer theCustomer = null;
         try {
             int amount = Integer.parseInt(text);
 
-           /* for(Customer customer: customerController.getCustomers()){
-                if (customer.getName().equals(theCustomerDto.getName()))
-                    theCustomer = customer;
-            }*/
             if(amount == 0){
                 withdrawMoney(new ActionEvent());
                 Alert alert = new Alert(Alert.AlertType.ERROR);

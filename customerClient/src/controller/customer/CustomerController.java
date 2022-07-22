@@ -102,6 +102,8 @@ public class CustomerController {
                     if(customerDto.getName().equals(userName)) {
                         selectedCustomer = customerDto;
                         informationComponentController.setCustomer(selectedCustomer);
+                        scrambleComponentController.setCustomer(selectedCustomer);
+                        paymentComponentController.setCustomer(selectedCustomer);
                     }
                 }
                 if(selectedCustomer == null)
@@ -111,6 +113,7 @@ public class CustomerController {
                     informationComponentController.showInfoTable(selectedCustomer);
                     if(!fromScramble)
                         scrambleComponentController.loadScrambleInfo(selectedCustomer);
+
                     paymentComponentController.showPaymentInfo(selectedCustomer);
                 }
     }
@@ -170,6 +173,9 @@ public class CustomerController {
     public void refershInfo(CustomerDto customerDto) {
         Platform.runLater(() -> {
             informationComponentController.showInfoTable(customerDto);
+          //  if(!this.scrambleTab.isSelected())
+                scrambleComponentController.loadScrambleInfo(customerDto);
+            paymentComponentController.showPaymentInfo(customerDto);
         });
     }
 
@@ -224,8 +230,6 @@ public class CustomerController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-
 
 
         url = getClass().getResource("/controller/payment/payment.fxml");

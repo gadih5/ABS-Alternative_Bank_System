@@ -5,8 +5,9 @@ import _json.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 
-public class LoanDto implements Serializable {
+public class LoanDto implements Serializable, Comparable<LoanDto> {
     private String loanName;
     private String borrowerName;
     private Status status;
@@ -196,4 +197,8 @@ public class LoanDto implements Serializable {
         return debts;
     }
 
+    @Override
+    public int compareTo(LoanDto o) {
+        return (loanName.compareTo(((LoanDto) o).getLoanName()));
+    }
 }

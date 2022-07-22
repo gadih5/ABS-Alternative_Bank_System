@@ -24,12 +24,10 @@ import static utils.ServletUtils.getUserManager;
 public class BankSenderServlet extends HttpServlet{
 
         protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-            //returning JSON objects, not HTML
             response.setContentType("application/json");
             try (PrintWriter out = response.getWriter()) {
                 Gson gson = new Gson();
                 Bank bank= (Bank)getServletContext().getAttribute("myBank");
-                System.out.println("ITS SEND YAZ");
                 String json = gson.toJson(bank.getSyncGlobalTimeUnit());
                 out.println(json);
                 out.flush();

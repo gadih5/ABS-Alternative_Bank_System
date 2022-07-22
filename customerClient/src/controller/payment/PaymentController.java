@@ -219,5 +219,9 @@ public class PaymentController {
             }
         }
     }
+
+    public void setCustomer(CustomerDto selectedCustomer) {
+        this.selectedCustomer = selectedCustomer;
+    }
 }
 

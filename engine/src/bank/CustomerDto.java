@@ -11,8 +11,8 @@ public class CustomerDto implements Serializable {
     private String name;
     private double balance;
     //private Collection<TransactionDto> transactions;
-    private Collection<LoanDto> ingoingLoans;
-    private Collection<LoanDto> outgoingLoans;
+    private ArrayList<LoanDto> ingoingLoans;
+    private ArrayList<LoanDto> outgoingLoans;
     private Collection<PreTransaction> preTransactions;
     private int numOfPendingIngoingLoans=0;
     private int numOfActiveIngoingLoans=0;
@@ -180,11 +180,11 @@ public class CustomerDto implements Serializable {
   //      return transactions;
   //  }
 
-    public Collection<LoanDto> getIngoingLoans() {
+    public ArrayList<LoanDto> getIngoingLoans() {
         return ingoingLoans;
     }
 
-    public Collection<LoanDto> getOutgoingLoans() {
+    public ArrayList<LoanDto> getOutgoingLoans() {
         return outgoingLoans;
     }
 

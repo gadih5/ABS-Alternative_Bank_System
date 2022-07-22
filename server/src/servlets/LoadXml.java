@@ -25,20 +25,14 @@ public class LoadXml extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
       Gson gson = new Gson();
         Bank myBank = (Bank)getServletContext().getAttribute("myBank");
-        System.out.println("-----------------------------------");
-        //System.out.println(req.getInputStream().toString());
-        System.out.println("-----------------------------------");
-        /*StringBuilder fileContent = new StringBuilder();
-        fileContent.append(new Scanner(req.getInputStream()));
-        String desctriptor_string = new String(fileContent);*/
         AbsDescriptor descriptor = gson.fromJson(req.getParameter("descriptor"),AbsDescriptor.class);
         try {
             myBank.loadXmlData(req.getParameter("username"),descriptor);
         } catch (NegativeInterestPercentException e) {
             resp.setStatus(406);
+        }catch (UndefinedReasonException e){
+            resp.setStatus(409);
         } catch (NegativeLoanSumException e) {
-            resp.setStatus(406);
-        } catch (UndefinedReasonException e) {
             resp.setStatus(406);
         } catch (NegativeTotalTimeUnitException e) {
             resp.setStatus(406);

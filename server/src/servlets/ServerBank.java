@@ -14,7 +14,6 @@ import java.util.ArrayList;
 @WebListener
 @WebServlet(name="ServerBank" ,urlPatterns="/serverBank")
 public class ServerBank extends HttpServlet implements ServletContextListener {
-    //private Bank myBank;
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
@@ -24,10 +23,5 @@ public class ServerBank extends HttpServlet implements ServletContextListener {
         sce.getServletContext().setAttribute("Customers",ServerCustomers);
         System.out.println("BANK CREATED");
 
-
-        /*Gson gson = new Gson();
-        sce.getServletContext().setAttribute("myGson",gson);
-        System.out.println("GSON CRATED");*/
-        //System.out.println("YAZ: " + myBank.getSyncGlobalTimeUnit());
     }
 }

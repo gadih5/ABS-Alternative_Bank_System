@@ -17,11 +17,5 @@ public class GetYaz extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Bank myBank = (Bank) getServletContext().getAttribute("myBank");
         resp.getWriter().println(myBank.getSyncGlobalTimeUnit());
-        UserManager userManager = ServletUtils.getUserManager(getServletContext());
-
-        for( HttpServletResponse hsr :userManager.responses){
-            System.out.println(hsr);
-            hsr.setStatus(10);
-        }
     }
 }

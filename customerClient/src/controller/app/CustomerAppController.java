@@ -103,109 +103,6 @@ public class CustomerAppController {
 
     }
 
-    /*public void updateYaz() {
-
-        try {
-
-            String finalUrl = HttpUrl
-                    .parse(Constants.UPDATE_YAZ_PAGE)
-                    .newBuilder()
-                    .build()
-                    .toString();
-            HttpClientUtil.runAsync(finalUrl, new Callback() {
-                @Override
-                public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    Alert alert = new Alert(Alert.AlertType.WARNING);
-                    alert.setTitle("Warning Dialog");
-                    alert.setHeaderText("Warning: Something went wrong");
-                    alert.setContentText("Click OK and try again:");
-                    alert.showAndWait();
-                }
-
-                @Override
-                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                    if (response.code() != 200) {
-
-                    } else {
-                        headerComponentController.updateYazLabel(response.message());
-                        adminComponentController.showAdminScreen();
-
-                        String finalUrl = HttpUrl
-                                .parse(Constants.CHECK_RISK_STATUS)
-                                .newBuilder()
-                                .build()
-                                .toString();
-                        HttpClientUtil.runAsync(finalUrl, new Callback() {
-                            @Override
-                            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                                Alert alert = new Alert(Alert.AlertType.WARNING);
-                                alert.setTitle("Warning Dialog");
-                                alert.setHeaderText("Warning: Something went wrong");
-                                alert.setContentText("Click OK and try again:");
-                                alert.showAndWait();
-                            }
-
-                            @Override
-                            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                                if (response.code() != 200) {
-
-                                } else {
-
-                                }
-                            }
-                        });
-                    }
-                }
-            });
-
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-
-    }*/
-    /*public void changeBody(String userName) {
-        String finalUrl = HttpUrl
-                .parse(Constants.IS_ADMIN)
-                .newBuilder()
-                .addQueryParameter("userName", userName)
-                .build()
-                .toString();
-
-        HttpClientUtil.runAsync(finalUrl, new Callback() {
-                    @Override
-                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                        Alert alert = new Alert(Alert.AlertType.WARNING);
-                        alert.setTitle("Warning Dialog");
-                        alert.setHeaderText("Warning: Something went wrong");
-                        alert.setContentText("Click OK and try again:");
-                        alert.showAndWait();
-                    }
-                    @Override
-                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        response.body().close();
-                        if (response.code() != 200) {
-                        } else {
-                            try {
-                                URL url = getClass().getResource("/controller/customer/customer.fxml");
-                                FXMLLoader fxmlLoader = new FXMLLoader();
-                                fxmlLoader.setLocation(url);
-                                customerComponent = fxmlLoader.load(url.openStream());
-                                customerComponentController = fxmlLoader.getController();
-                                setCustomerComponentController(customerComponentController);
-                                Platform.runLater(()-> {
-                                    customerComponentController.loadCustomerDetails(userName, false);
-                                    getYazValueFromBank();
-                                });
-
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-        });
-    }*/
     public void changeBody(String userName) {
         try {
             URL url = getClass().getResource("/controller/customer/customer.fxml");
@@ -247,85 +144,6 @@ public class CustomerAppController {
         }
         return yaz;
     }
-    /*public void addUsers() {
-        String finalUrl = HttpUrl
-                .parse(Constants.GET_CUSTOMERS)
-                .newBuilder()
-                .build()
-                .toString();
-        HttpClientUtil.runAsync(finalUrl, new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Warning Dialog");
-                alert.setHeaderText("Warning: Something went wrong");
-                alert.setContentText("Click OK and try again:");
-                alert.showAndWait();
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (response.code() != 200) {
-
-                } else {
-                    Gson gson = new Gson();
-                    //ArrayList<Customer> customers = new ArrayList<>();
-                    //gson.fromJson(response.body().string() );
-
-                    //headerComponentController.removeAllUsers();
-                    //headerComponentController.addAdminBtn();
-                   // for (int i=0 ; i<names.length ; i++) {
-                      //  headerComponentController.addUserBtn(names[i]);
-                    }
-                }
-          //  }
-        });
-    }*/
-
-    /*public void setUserComboBoxEnable() {
-        headerComponentController.setUserComboBoxEnable();
-    }*/
-   /* public boolean loadXmlData2(AbsDescriptor descriptor) {
-        RequestBody body =
-                new MultipartBody.Builder()
-                        .addFormDataPart("descriptor", Constants.GSON_INSTANCE.toJson(descriptor))
-                        .build();
-
-        String finalUrl = HttpUrl
-                .parse(Constants.LOAD_XML)
-                .newBuilder()
-                .addQueryParameter("username", username)
-
-                .build()
-                .toString();
-        HttpClientUtil.runAsync(finalUrl, new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Warning Dialog");
-                alert.setHeaderText("Warning: Something went wrong");
-                alert.setContentText("Click OK and try again:");
-                alert.showAndWait();
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (response.code() != 200) {
-
-                } else {
-                    Gson gson = new Gson();
-                    //ArrayList<Customer> customers = new ArrayList<>();
-                    //gson.fromJson(response.body().string() );
-
-                    //headerComponentController.removeAllUsers();
-                    //headerComponentController.addAdminBtn();
-                    // for (int i=0 ; i<names.length ; i++) {
-                    //  headerComponentController.addUserBtn(names[i]);
-                }
-            }
-            //  }
-        });
-    }*/
 
     public void loadXmlData(AbsDescriptor descriptor) {
         try {
@@ -348,9 +166,11 @@ public class CustomerAppController {
                 Response response = call.execute();
                 String resp = response.body().string();
                 response.body().close();
-                System.out.println("XML RESP CODE: " + response.code());
                 if(response.code() == 406){
                     showErrorAlert("XML File Not Allowed");
+                }
+                else if(response.code() == 409){
+                    showErrorAlert("Loan's Name Already Exist In The System");
                 }
             } catch (IOException e) {
                 System.out.println("Error when trying to get data. Exception: " + e.getMessage());
@@ -529,37 +349,6 @@ public class CustomerAppController {
         return numOfLoans;
     }
 
-    /*public int getNumOfLoans() {
-        final int[] numOfLoans = {0};
-        String finalUrl = HttpUrl
-                .parse(Constants.GET_NUM_OF_LOANS)
-                .newBuilder()
-                .build()
-                .toString();
-        HttpClientUtil.runAsync(finalUrl, new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Warning Dialog");
-                alert.setHeaderText("Warning: Something went wrong");
-                alert.setContentText("Click OK and try again:");
-                alert.showAndWait();
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (response.code() != 200) {
-
-                } else {
-                    numOfLoans[0] = Integer.parseInt(response.message());
-                }
-            }
-
-        });*/
-
-/*
-        return numOfLoans[0];
-    }*/
 
     public Collection<LoanDto> getLoansDtoForScramble(int categoriesChosed, Set<String> chosenCategories, int minInterestPercent, int minTotalYaz, int maxOpenLoans, int maxOwnershipPercent, CustomerDto selectedCustomer) {
         Set<LoanDto> validLoans = new HashSet<>();
@@ -690,6 +479,7 @@ public class CustomerAppController {
                     new Thread(()-> {
                         while(true) {
                             getYazValueFromBank();
+                            customerComponentController.refershInfo(getSpecificCustomerDto(username));
                             try {
                                 Thread.sleep(2000);
                             } catch (InterruptedException e) {
@@ -845,7 +635,6 @@ public class CustomerAppController {
         });
     }
 
-
     public ArrayList<Transaction> getTransactions(String name) {
         ArrayList<Transaction> transactions = new ArrayList<>();
         Request request = new Request.Builder()
@@ -859,7 +648,6 @@ public class CustomerAppController {
             Response response = call.execute();
             String resp = response.body().string();
             response.body().close();
-            System.out.println("GET TRANS CODE: " + response.code());
             TransactionList_json transactionList_json;
             transactionList_json = Constants.GSON_INSTANCE.fromJson(resp, TransactionList_json.class);
             if(transactionList_json.transactions != null)

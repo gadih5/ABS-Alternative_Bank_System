@@ -137,19 +137,40 @@ public class ScrambleController {
     public void loadScrambleInfo(CustomerDto selectedCustomer) {
         this.selectedCustomer = selectedCustomer;
         sumInvestSlider.setMax(selectedCustomer.getBalance());
-        Set<String> categories = customerController.getCategories();
-        if(categories != null) {
-            for (String category : categories) {
-                categoriesVBox.getChildren().add(new CheckBox(category));
+
+        Set<String> chosenCategories = new HashSet<>();
+        for (int i = 0; i < categoriesVBox.getChildren().size(); i++) {
+            CheckBox currCategory = (CheckBox) categoriesVBox.getChildren().get(i);
+            if (currCategory.isSelected()) {
+                chosenCategories.add(currCategory.getText());
             }
         }
-        maxInterestPercent = customerController.calcMaxInterestPercent(selectedCustomer);
-        minInterestPercentSlider.setMax(maxInterestPercent);
 
-        maxTotalYaz = customerController.calcMaxTotalYaz(selectedCustomer);
-        minTotalYazSlider.setMax(maxTotalYaz);
+        categoriesVBox.getChildren().clear();
 
-        maxOpenLoansSlider.setMax(customerController.getNumOfLoans());
+
+        Set<String> categories = customerController.getCategories();
+        if (categories != null) {
+            for (String category : categories) {
+                // if(!categoriesVBox.getChildren().contains(category))
+                CheckBox cb = new CheckBox(category);
+                categoriesVBox.getChildren().add(cb);
+                if(chosenCategories.contains(category))
+                    cb.setSelected(true);
+                // }
+            }
+        }
+
+
+
+            maxInterestPercent = customerController.calcMaxInterestPercent(selectedCustomer);
+            minInterestPercentSlider.setMax(maxInterestPercent);
+
+            maxTotalYaz = customerController.calcMaxTotalYaz(selectedCustomer);
+            minTotalYazSlider.setMax(maxTotalYaz);
+
+            maxOpenLoansSlider.setMax(customerController.getNumOfLoans());
+
     }
 
     public void changeSumInvest(MouseEvent mouseEvent) {
@@ -307,43 +328,6 @@ public class ScrambleController {
 
             taskHelper();
 
-/*
-
-            Platform.runLater(() -> {
-                    investButton.setText("3");
-
-            });
-            TimeUnit.SECONDS.sleep(1);
-            Platform.runLater(() -> {
-
-                    investButton.setText("2");
-
-              });
-            TimeUnit.SECONDS.sleep(1);
-            Platform.runLater(() -> {
-
-                    investButton.setText("1");
-
-
-                            });
-            TimeUnit.SECONDS.sleep(1);
-            Platform.runLater(() -> {
-
-                investButton.setText("Invested!!!");
-
-
-
-            });
-            TimeUnit.SECONDS.sleep(1);
-            Platform.runLater(() -> {
-
-                investButton.setText("Invest!");
-
-            });
-*/
-
-
-
             return 1;
         }
 
@@ -408,6 +392,10 @@ public class ScrambleController {
         showValidLoansInTable();
         customerController.refershInfo(selectedCustomer);
 
+    }
+
+    public void setCustomer(CustomerDto selectedCustomer) {
+        this.selectedCustomer  = selectedCustomer;
     }
 }
 

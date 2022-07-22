@@ -13,7 +13,7 @@ public class Bank  implements Serializable {
     private int syncGlobalTimeUnit = 1;
     private ArrayList<Loan> loans = new ArrayList<>();
     private ArrayList<Customer> customers = new ArrayList<>();
-    private Set<String> category=null;
+    private Set<String> category=new HashSet<>();
     private Admin bankAdmin;
 
     public Bank (){
@@ -102,14 +102,7 @@ public class Bank  implements Serializable {
     }
 
     public void loadXmlData(String username,AbsDescriptor descriptor) throws  UndefinedReasonException, NegativeLoanSumException, NegativeTotalTimeUnitException, NegativeInterestPercentException, NegativePaymentFrequencyException, OverPaymentFrequencyException, UndividedPaymentFrequencyException, NotInCategoryException  {
-       /*AbsCustomers absCustomers = descriptor.getAbsCustomers();
-       Set<String> customerNames = new HashSet<>();
-       for (AbsCustomer absCustomer: absCustomers.getAbsCustomer()){
-           if(customerNames.add(absCustomer.getName()))
-               this.customers.add(new Customer(absCustomer.getName(), absCustomer.getAbsBalance()));
-           else
-               throw new AlreadyExistCustomerException("There is already a customer named \"" + absCustomer.getName() +"\", can't be two customers with the same name!");
-       }*/
+
         Customer loanCustomer = null;
 
         for(Customer customer: customers){
@@ -121,23 +114,22 @@ public class Bank  implements Serializable {
         Set<String> listOfCategory=new HashSet<>();
         for(String s:descriptor.getAbsCategories().getAbsCategory()){
             listOfCategory.add(s);
+           // category.add(s);
         }
-        category=listOfCategory;
+        category.addAll(listOfCategory);
 
        AbsLoans absLoans = descriptor.getAbsLoans();
         for(AbsLoan absLoan: absLoans.getAbsLoan()) {
-            System.out.println("NUM OF LOANS ADDED TO USER: " + absLoans.getAbsLoan().size());
 
-            /*if(loanCustomer == null){
-                throw new UndefinedCustomerException("\"" + absLoan.getAbsOwner() + "\" is not bank's customer!");
-            }*/
             if(listOfCategory.contains(absLoan.getAbsCategory())) {
                 Loan newLoan = new Loan(absLoan.getId(), loanCustomer, absLoan.getAbsCapital(), absLoan.getAbsTotalYazTime(), absLoan.getAbsCategory(),
                         (int) absLoan.getAbsIntristPerPayment(), absLoan.getAbsPaysEveryYaz());
                 Boolean exist = false;
-                for(LoanDto loan: loanCustomer.getOutgoingLoans()){
-                    if(loan.getLoanName().equals(newLoan.getLoanName()))
+                for(LoanDto loan: this.getLoansDto()){
+                    if(loan.getLoanName().equals(newLoan.getLoanName())) {
                         exist = true;
+                        throw new UndefinedReasonException("");
+                    }
                 }
                 if(!exist){
                     this.loans.add(newLoan);
