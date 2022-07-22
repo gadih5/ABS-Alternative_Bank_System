@@ -34,22 +34,22 @@ public class LoadXml extends HttpServlet {
         AbsDescriptor descriptor = gson.fromJson(req.getParameter("descriptor"),AbsDescriptor.class);
         try {
             myBank.loadXmlData(req.getParameter("username"),descriptor);
-        } catch (UndefinedReasonException e) {
-            throw new RuntimeException(e);
-        } catch (NegativeLoanSumException e) {
-            throw new RuntimeException(e);
-        } catch (NegativeTotalTimeUnitException e) {
-            throw new RuntimeException(e);
         } catch (NegativeInterestPercentException e) {
-            throw new RuntimeException(e);
+            resp.setStatus(406);
+        } catch (NegativeLoanSumException e) {
+            resp.setStatus(406);
+        } catch (UndefinedReasonException e) {
+            resp.setStatus(406);
+        } catch (NegativeTotalTimeUnitException e) {
+            resp.setStatus(406);
         } catch (NegativePaymentFrequencyException e) {
-            throw new RuntimeException(e);
+            resp.setStatus(406);
         } catch (OverPaymentFrequencyException e) {
-            throw new RuntimeException(e);
+            resp.setStatus(406);
         } catch (UndividedPaymentFrequencyException e) {
-            throw new RuntimeException(e);
+            resp.setStatus(406);
         } catch (NotInCategoryException e) {
-            throw new RuntimeException(e);
+            resp.setStatus(406);
         }
     }
 }

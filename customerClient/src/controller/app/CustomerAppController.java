@@ -348,6 +348,10 @@ public class CustomerAppController {
                 Response response = call.execute();
                 String resp = response.body().string();
                 response.body().close();
+                System.out.println("XML RESP CODE: " + response.code());
+                if(response.code() == 406){
+                    showErrorAlert("XML File Not Allowed");
+                }
             } catch (IOException e) {
                 System.out.println("Error when trying to get data. Exception: " + e.getMessage());
             }
