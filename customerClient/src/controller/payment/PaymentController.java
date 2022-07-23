@@ -191,12 +191,16 @@ public class PaymentController {
 
         LoanDto selectedLoan = borrowerLoansTable.getSelectionModel().getSelectedItem();
         if(selectedLoan == null){
-            //TODO WARNING DIALOG
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning Dialog");
+            alert.setHeaderText("Warning: No Loan Chosen");
+            alert.setContentText("Please choose a loan, click OK and try again:");
+            alert.showAndWait();
         }
         else {
             Loan theLoan = getSpecificLoan(selectedLoan.getLoanName());
             int leftPayments = selectedLoan.getRemainTimeUnit() / selectedLoan.getPaymentFrequency();
-            for (Fraction fraction : theLoan.getFractions()) {
+            for (Fraction fraction : customerController.getFractions(selectedLoan.getLoanName())) {
                 double singlePayment = (fraction.getAmount() + (fraction.getAmount() * (selectedLoan.getInterestPercent()) / 100.0)) / (selectedLoan.getTotalTimeUnit() / selectedLoan.getPaymentFrequency());
                 double totalPaymentAmount = singlePayment * leftPayments;
                 Customer customer = customerController.getSpecificCustomer(this.selectedCustomer.getName());
@@ -206,9 +210,9 @@ public class PaymentController {
                     }
                 }
                 try {
-                    customer.addTransaction(new Transaction(customer, fraction.getCustomer(), totalPaymentAmount));
-                    //customer.clearAllPreTransactions(selectedLoan);
-                    customer.makeAllPreTransactionsPaid(selectedLoan);
+                    customerController.addTranctions(customer.getName(),fraction.getCustomer().getName(),
+                            String.valueOf(totalPaymentAmount));
+                    customerController.makeAllPreTransactionsPaid(customer.getName(),selectedLoan.getLoanName());
                     customerController.clearAllDebts(selectedLoan);
                     customerController.setStatusFinished(selectedLoan);
                     customerController.showInfoTable(customer.getCustomerDto());

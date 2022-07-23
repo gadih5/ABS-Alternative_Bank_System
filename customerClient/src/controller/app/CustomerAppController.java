@@ -761,6 +761,86 @@ public class CustomerAppController {
         }
         return false;
     }
+
+    public void addTransction(String name, String name1, String valueOf) throws NegativeBalanceException {
+        String s = name+ "," + name1+","+valueOf;
+
+        Request request = new Request.Builder()
+                .url(Constants.ADD_TRANS)
+                .addHeader("data", s)
+                .build();
+
+        Call call = Constants.HTTP_CLIENT.newCall(request);
+
+        try {
+            Response response = call.execute();
+            String resp = response.body().string();
+            response.body().close();
+            if(response.code() == 200) {
+            }
+            else if(response.code()==419) {
+
+                throw  new NegativeBalanceException("");
+            }
+        } catch (IOException e) {
+            System.out.println("Error when trying to get data. Exception: " + e.getMessage());
+        }
+
+    }
+
+    public void makeAllPreTransactionsPaid(String name, String selectedLoan) {
+        String s = name+ "," + selectedLoan;
+
+        Request request = new Request.Builder()
+                .url(Constants.MARK_AS_PAID)
+                .addHeader("data", s)
+                .build();
+
+        Call call = Constants.HTTP_CLIENT.newCall(request);
+
+        try {
+            Response response = call.execute();
+            String resp = response.body().string();
+            response.body().close();
+            if(response.code() == 200) {
+            }
+            else if(response.code()==419) {
+
+
+            }
+        } catch (IOException e) {
+            System.out.println("Error when trying to get data. Exception: " + e.getMessage());
+        }
+
+    }
+
+    public  Collection<Fraction> getFractions(String loanName) {
+        Collection<Fraction> fractions = new ArrayList<>();
+
+        Request request = new Request.Builder()
+                .url(Constants.GET_FRACTION)
+                .addHeader("loanName", loanName)
+                .build();
+
+        Call call = Constants.HTTP_CLIENT.newCall(request);
+
+        try {
+            Response response = call.execute();
+            String resp = response.body().string();
+            response.body().close();
+            FractionList_json fractionList_json;
+            fractionList_json = Constants.GSON_INSTANCE.fromJson(resp, FractionList_json.class);
+
+             fractions= fractionList_json.fractions;
+        } catch (IOException e) {
+            System.out.println("Error when trying to get data. Exception: " + e.getMessage());
+        }catch (JsonSyntaxException e){
+
+        }
+
+        return fractions;
+    }
 }
+
 
 

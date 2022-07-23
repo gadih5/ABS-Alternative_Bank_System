@@ -295,4 +295,17 @@ public class CustomerController {
     public boolean makeTransaction(String id, String name) throws NegativeBalanceException {
         return customerAppController.makeTransaction(id,name);
     }
+
+    public void addTranctions(String name, String name1, String valueOf) throws NegativeBalanceException {
+        customerAppController.addTransction(name,name1,valueOf);
+    }
+
+    public void makeAllPreTransactionsPaid(String name, String selectedLoan) {
+        customerAppController.makeAllPreTransactionsPaid(name,selectedLoan);
+
+    }
+
+    public  Collection<Fraction> getFractions (String loanName) {
+       return customerAppController.getFractions(loanName);
+    }
 }

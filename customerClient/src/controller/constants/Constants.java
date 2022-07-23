@@ -47,6 +47,9 @@ public class Constants {
     public final static String GET_NEW_BALANCE = FULL_SERVER_PATH + "/getNewBalance";
     public final static String ADD_LOANER = FULL_SERVER_PATH + "/addLoaner";
     public final static String MAKE_TRANS = FULL_SERVER_PATH + "/makeTrans";
+    public final static String ADD_TRANS = FULL_SERVER_PATH + "/addTrans";
+    public final static String MARK_AS_PAID = FULL_SERVER_PATH + "/markAsPaid";
+    public final static String GET_FRACTION = FULL_SERVER_PATH + "/getFraction";
 
 
 

@@ -23,6 +23,7 @@ public class Loan implements Serializable {
     private int interestPercent;
     private int paymentFrequency;
     private ArrayList<Fraction> fractions;
+    private ArrayList<PreTransaction> preTransactions;
     private double currentInterest;
     private double remainInterest;
     private double currentFund;
@@ -67,6 +68,7 @@ public class Loan implements Serializable {
         this.numOfDebts = 0;
         this.sumOfDebts = 0;
         this.loanersNames = new ArrayList<String>();
+        this.preTransactions=new ArrayList<PreTransaction>();
     }
 
     private void setPaymentFrequency(int paymentFrequency) throws NegativePaymentFrequencyException, OverPaymentFrequencyException,UndividedPaymentFrequencyException {
@@ -311,7 +313,7 @@ public class Loan implements Serializable {
                             double fundPart = fraction.getAmount() / (totalTimeUnit / paymentFrequency);
                             double interestPart = fraction.getAmount() * (((double) interestPercent / 100)) / (totalTimeUnit / paymentFrequency);
                             preTransaction = new PreTransaction(fraction.getCustomer().getCustomerDto(), Bank.getGlobalTimeUnit(), fundPart, interestPart, this.getLoanDto());
-
+                            this.preTransactions.add(preTransaction);
 
                             uncompletedTransactions.add(new Debt(fraction.getCustomer(), fraction.getAmount() / (totalTimeUnit / paymentFrequency), fraction.getAmount() * ((double)((interestPercent/100))) / (totalTimeUnit / paymentFrequency)));
                             setStatus(Status.Risk);
@@ -385,20 +387,24 @@ public class Loan implements Serializable {
 
     public void checkRiskStatus(Collection<Customer> listOfCustomers) {
         boolean allPaid = true;
-        for(Customer customer: listOfCustomers){
-            for(PreTransaction preTransaction: customer.getPreTransactions()){
-                if(preTransaction.getLoan().getLoanName() == this.getLoanName()) {
-                    if (!preTransaction.isPaid()){
-                        allPaid = false;
 
-                    }else{
+                 for(PreTransaction preTransaction: this.preTransactions){
+                if (!preTransaction.isPaid()){
+                        setStatus(Status.Risk);
+                        break;
+                    }else if(this.remainTimeUnit == 0 && this.status != Status.Risk && this.remainInterest == 0 && this.remainFund == 0){
+                    setStatus(Status.Finished);
+                }else{
+
                         setStatus(Status.Active);
                     }
                 }
-            }
-        }
+                 updateLoanDto();
 
     }
+
+
+
 
     public void clearAllDebts() {
         uncompletedTransactions.clear();

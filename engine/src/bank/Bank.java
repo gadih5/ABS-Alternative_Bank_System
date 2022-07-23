@@ -187,10 +187,16 @@ public class Bank  implements Serializable {
     }
 
     public void updateAllDtos() {
-        for (Loan loan : loans) {
 
-                loan.updateLoanDto();
-                   }
+
+
+
+        for (Loan loan : loans) {
+            if(loan.getStatus()!=(Status.Finished)){
+                loan.checkRiskStatus(getCustomers());
+            }
+                 loan.updateLoanDto();
+        }
         for (Customer customer : customers) {
             customer.updateCustomerDto();
         }

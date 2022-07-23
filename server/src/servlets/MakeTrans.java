@@ -29,6 +29,7 @@ public class MakeTrans extends HttpServlet {
                        try {
 
                            preTransaction.makeTransaction(customer.getCustomerDto());
+
                            myBank.updateAllDtos();
                            break;
                        } catch (NegativeBalanceException e) {
