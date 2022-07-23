@@ -22,6 +22,7 @@ public class GetLoansDto extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Bank myBank = (Bank)getServletContext().getAttribute("myBank");
         Gson gson = new Gson();
+
         resp.getWriter().write(gson.toJson(new LoanDtoList_json(myBank.getLoansDto())));
     }
 }

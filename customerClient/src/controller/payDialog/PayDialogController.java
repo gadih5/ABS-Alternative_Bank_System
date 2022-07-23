@@ -45,15 +45,9 @@ public class PayDialogController {
                 try {
                     synchronized (this) {
                         paymentController.makeTransaction(preTransaction.getId(),fromCustomer.getName());
-                        selectedCustomer = paymentController.getSpecificCustomerDto(selectedCustomer.getName());
+                        selectedCustomer = paymentController.getSpecificCustomerDto(this.selectedCustomer.getName());
                     }
-                    paymentController.showNotifications();
-                    paymentController.showPaymentInfo(this.selectedCustomer);
-                    selectedCustomer = paymentController.getSpecificCustomerDto(this.selectedCustomer.getName());
-                    paymentController.updateAllDtos();
-                    paymentController.showInfoTable(this.selectedCustomer);
-                    Stage stage = (Stage) cancelBtn.getScene().getWindow();
-                    stage.close();
+
 
                 } catch (NegativeBalanceException e) {
                     Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -63,6 +57,14 @@ public class PayDialogController {
                     alert.showAndWait();
                 }
             }
+            paymentController.showNotifications();
+            System.out.println("after print notifaction");
+            paymentController.showPaymentInfo(this.selectedCustomer);
+            selectedCustomer = paymentController.getSpecificCustomerDto(this.selectedCustomer.getName());
+            paymentController.updateAllDtos();
+            paymentController.showInfoTable(this.selectedCustomer);
+            Stage stage = (Stage) cancelBtn.getScene().getWindow();
+            stage.close();
             paymentController.checkLoanStatus(loanToCheck);
         }
         else{

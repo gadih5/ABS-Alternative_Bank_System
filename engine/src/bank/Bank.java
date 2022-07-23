@@ -107,6 +107,7 @@ public class Bank  implements Serializable {
 
     public ArrayList<LoanDto> getLoansDto() {
         ArrayList<LoanDto> loansDto = new ArrayList<>();
+        updateAllDtos();
         for (Loan loan : loans) {
             loansDto.add(loan.getLoanDto());
         }

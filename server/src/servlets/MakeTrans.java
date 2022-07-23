@@ -21,23 +21,24 @@ public class MakeTrans extends HttpServlet {
         String data = req.getHeader("data");
         List<String> dataList = Arrays.asList(data.split(","));
         String preTransId = dataList.get(0);
-        String fromCutomerName = dataList.get(1);
-
-        for (Customer customer : myBank.getCustomers()) {
-            if (customer.getName().equals(fromCutomerName)) {
-               for(PreTransaction preTransaction: customer.getPreTransactions()){
+        String fromCustomerName = dataList.get(1);
+        for (Customer customer : Bank.getCustomers()) {
+            if (customer.getName().equals(fromCustomerName)) {
+                            for(PreTransaction preTransaction: customer.getPreTransactions()){
                    if(preTransaction.getId().equals(preTransId)){
                        try {
+
                            preTransaction.makeTransaction(customer.getCustomerDto());
+                           myBank.updateAllDtos();
                            break;
                        } catch (NegativeBalanceException e) {
                            resp.setStatus(419);
                        }
                    }
-                   break;
+
                }
             }
-            break;
+
         }
     }
 }

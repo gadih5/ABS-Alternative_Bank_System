@@ -63,10 +63,13 @@ public class PreTransaction {
     }
 
     public void makeTransaction(CustomerDto fromCustomer) throws NegativeBalanceException {
+        System.out.println("MAKE TRANSACTION!!!");
         //new Transaction(fromCustomer,toCustomer,fundPart+interestPart);
         Customer fromCustomer1 = Bank.getSpecificCustomer(fromCustomer.getName());
         Customer toCustomer1 = Bank.getSpecificCustomer(toCustomer.getName());
+        System.out.println("BEFOR:::::Pretran::makeTransaction from"+fromCustomer+" to "+toCustomer1 +"amount of " +fundPart+interestPart);
         fromCustomer1.addTransaction(new Transaction(fromCustomer1,toCustomer1,fundPart+interestPart));
+        System.out.println("AFTER:::::Pretran::makeTransaction from"+fromCustomer+" to "+toCustomer1 +"amount of " +fundPart+interestPart);
         Loan loan1 = Bank.getSpecificLoan(loan.getLoanName());
         loan1.setRemainFund(-fundPart);
         loan1.setRemainInterest(-interestPart);
@@ -74,10 +77,12 @@ public class PreTransaction {
         loan1.setCurrentInterest(interestPart);
 
         paid = true;
-
+        System.out.println("this loan remain "+loan1.getRemainFund()+loan1.getRemainInterest());
         loan1.updateLoanDto();
         fromCustomer1.updateCustomerDto();
         toCustomer1.updateCustomerDto();
+
+
     }
 
     @Override
