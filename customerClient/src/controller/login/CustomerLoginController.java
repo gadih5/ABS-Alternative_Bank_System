@@ -29,6 +29,8 @@ public class CustomerLoginController {
     private ScrollPane customerAppComponent;
     @FXML
     private CustomerAppController customerAppComponentController;
+    @FXML
+    private ScrollPane customerLoginScrollPane;
 
     public void setMainController(CustomerAppController customerAppController) {
         this.customerAppComponentController = customerAppController;
