@@ -28,7 +28,7 @@ public class Loan implements Serializable {
     private double currentFund;
     private double remainFund;
     private boolean isActive;
-    private ArrayList transactions;
+    private ArrayList<LoanTransaction> transactions;
     private double amountToComplete;
     private ArrayList<Debt> uncompletedTransactions;
     private LoanDto loanDto;
@@ -57,7 +57,7 @@ public class Loan implements Serializable {
         this.amountToComplete=loanSum;
         this.isActive = false;
         this.fractions = new ArrayList<Fraction>();
-        this.transactions = new ArrayList<Transaction>();
+        this.transactions = new ArrayList<LoanTransaction>();
         this.uncompletedTransactions = new ArrayList<Debt>();
         this.finishTimeUnit = 0;
         this.reason = reason;
@@ -310,7 +310,7 @@ public class Loan implements Serializable {
                             PreTransaction preTransaction = null;
                             double fundPart = fraction.getAmount() / (totalTimeUnit / paymentFrequency);
                             double interestPart = fraction.getAmount() * (((double) interestPercent / 100)) / (totalTimeUnit / paymentFrequency);
-                            preTransaction = new PreTransaction(fraction.getCustomer(), Bank.getGlobalTimeUnit(), fundPart, interestPart, this);
+                            preTransaction = new PreTransaction(fraction.getCustomer().getCustomerDto(), Bank.getGlobalTimeUnit(), fundPart, interestPart, this.getLoanDto());
 
 
                             uncompletedTransactions.add(new Debt(fraction.getCustomer(), fraction.getAmount() / (totalTimeUnit / paymentFrequency), fraction.getAmount() * ((double)((interestPercent/100))) / (totalTimeUnit / paymentFrequency)));
@@ -387,7 +387,7 @@ public class Loan implements Serializable {
         boolean allPaid = true;
         for(Customer customer: listOfCustomers){
             for(PreTransaction preTransaction: customer.getPreTransactions()){
-                if(preTransaction.getLoan() == this) {
+                if(preTransaction.getLoan().getLoanName() == this.getLoanName()) {
                     if (!preTransaction.isPaid()){
                         allPaid = false;
 

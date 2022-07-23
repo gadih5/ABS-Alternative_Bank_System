@@ -79,7 +79,14 @@ public class AppController {
             Response response = call.execute();
             String resp = response.body().string();
             response.body().close();
+            if (response.code() != 200) {
 
+            } else {
+                Platform.runLater(() -> {
+                    headerComponentController.updateYazLabel(resp);
+                    adminComponentController.showAdminScreen();
+                });
+            }
             /*Request request2 = new Request.Builder()
                     .url(Constants.CHECK_RISK_STATUS)
                     .build();
@@ -340,7 +347,7 @@ public class AppController {
             customerDtos = customerDtoList_json.customersDtos;
         } catch (IOException e) {
             System.out.println("Error when trying to get data. Exception: " + e.getMessage());
-        }catch (JsonSyntaxException e){
+        }catch(JsonSyntaxException e){
 
         }
         return customerDtos;

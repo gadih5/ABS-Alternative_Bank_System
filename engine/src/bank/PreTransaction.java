@@ -4,16 +4,19 @@ import _json.PreTransaction_json;
 import bank.exception.NegativeBalanceException;
 
 public class PreTransaction {
-    private Loan loan;
+    static int idCounter = 0;
+    private String id;
+    private LoanDto loan;
     private String loanName;
-    private Customer toCustomer;
+    private CustomerDto toCustomer;
     private int payTime;
     private double fundPart;
     private double interestPart; //positive value
     private double sum;
     private boolean paid = false;
 
-    public PreTransaction(Customer toCustomer,int payTime, double fundPart, double interestPart, Loan loan){
+    public PreTransaction(CustomerDto toCustomer,int payTime, double fundPart, double interestPart, LoanDto loan){
+        this.id = String.valueOf(idCounter++);
         this.fundPart = fundPart;
         this.payTime = payTime;
         this.interestPart = interestPart;
@@ -23,19 +26,12 @@ public class PreTransaction {
         this.sum = fundPart + interestPart;
     }
 
-   /* public PreTransaction(PreTransaction_json preTransaction_json) {
-        this.loan = new Loan(preTransaction_json.loan);
-        this.loanName = preTransaction_json.loanName;
-        this.toCustomer = new Customer(preTransaction_json.toCustomer);
-        this.payTime = preTransaction_json.payTime;
-        this.fundPart = preTransaction_json.fundPart;
-        this.interestPart = preTransaction_json.interestPart;
-        this.sum = preTransaction_json.sum;
-        this.paid = preTransaction_json.paid;
-    }*/
-
-    public Loan getLoan() {
+    public LoanDto getLoan() {
         return loan;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getToCustomer() {
@@ -66,14 +62,22 @@ public class PreTransaction {
         return interestPart;
     }
 
-    public void makeTransaction(Customer fromCustomer) throws NegativeBalanceException {
+    public void makeTransaction(CustomerDto fromCustomer) throws NegativeBalanceException {
         //new Transaction(fromCustomer,toCustomer,fundPart+interestPart);
-        fromCustomer.addTransaction(new Transaction(fromCustomer,toCustomer,fundPart+interestPart));
-        loan.setRemainFund(-fundPart);
-        loan.setRemainInterest(-interestPart);
-        loan.setCurrentFund(fundPart);
-        loan.setCurrentInterest(interestPart);
+        Customer fromCustomer1 = Bank.getSpecificCustomer(fromCustomer.getName());
+        Customer toCustomer1 = Bank.getSpecificCustomer(toCustomer.getName());
+        fromCustomer1.addTransaction(new Transaction(fromCustomer1,toCustomer1,fundPart+interestPart));
+        Loan loan1 = Bank.getSpecificLoan(loan.getLoanName());
+        loan1.setRemainFund(-fundPart);
+        loan1.setRemainInterest(-interestPart);
+        loan1.setCurrentFund(fundPart);
+        loan1.setCurrentInterest(interestPart);
+
         paid = true;
+
+        loan1.updateLoanDto();
+        fromCustomer1.updateCustomerDto();
+        toCustomer1.updateCustomerDto();
     }
 
     @Override

@@ -31,7 +31,7 @@ public class AdminController{
     FileChooser fileChooser = new FileChooser();
 
     @FXML
-    void makeAdminLoansTable() {
+    public void makeAdminLoansTable() {
         TableColumn nameColumn = new TableColumn("Loan Name");
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("loanName"));
 
@@ -64,7 +64,8 @@ public class AdminController{
         loansTable.setItems(listOfLoansDto);
     }
 
-    void makeAdminCustomersTable() {
+    @FXML
+    public void makeAdminCustomersTable() {
         TableColumn nameColumn = new TableColumn("Customer Name");
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
@@ -108,10 +109,10 @@ public class AdminController{
         loansTable.getItems().clear();
         loansTable.getColumns().clear();
         customersTable.getColumns().clear();
-       // Platform.runLater(()-> {
+        Platform.runLater(()-> {
                     makeAdminLoansTable();
                     makeAdminCustomersTable();
-       //         });
+                });
     }
 
 

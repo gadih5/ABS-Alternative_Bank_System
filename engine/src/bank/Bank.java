@@ -11,8 +11,8 @@ import java.util.*;
 public class Bank  implements Serializable {
     protected static int globalTimeUnit = 1;
     private int syncGlobalTimeUnit = 1;
-    private ArrayList<Loan> loans = new ArrayList<>();
-    private ArrayList<Customer> customers = new ArrayList<>();
+    static ArrayList<Loan> loans = new ArrayList<>();
+    static ArrayList<Customer> customers = new ArrayList<>();
     private Set<String> category=new HashSet<>();
     private Admin bankAdmin;
 
@@ -37,6 +37,7 @@ public class Bank  implements Serializable {
         syncGlobalTimeUnit++;
         for (Loan loan : loans) {
             loan.update();
+            loan.updateLoanDto();
         }
         for (Customer customer : customers) {
             customer.updateCustomerDto();
@@ -51,11 +52,11 @@ public class Bank  implements Serializable {
         return category;
     }
 
-    public ArrayList<Loan> getLoans() {
+    public static ArrayList<Loan> getLoans() {
         return loans;
     }
 
-    public ArrayList<Customer> getCustomers() {
+    public static ArrayList<Customer> getCustomers() {
         return customers;
     }
 
@@ -74,6 +75,27 @@ public class Bank  implements Serializable {
             Admin newAdmin = new Admin(name,isAdminInt);
             bankAdmin = newAdmin;
         }
+    }
+    static Customer getSpecificCustomer(String name){
+        Customer resCustomer=null;
+        for(Customer customer: getCustomers()){
+            if(customer.getName().equals(name)){
+                resCustomer = customer;
+                break;
+            }
+        }
+        return resCustomer;
+
+    }
+    static Loan getSpecificLoan(String name){
+        Loan resLoan = null;
+        for(Loan loan: getLoans()){
+            if(loan.getLoanName().equals(name)){
+                resLoan = loan;
+                break;
+            }
+        }
+        return resLoan;
     }
 
     public void checkRiskStatus(){

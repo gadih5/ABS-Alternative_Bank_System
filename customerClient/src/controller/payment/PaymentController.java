@@ -46,13 +46,15 @@ public class PaymentController {
         this.customerController = customerController;
     }
 
-    public void showPaymentInfo(CustomerDto selectedCustomer) {
+    public synchronized void showPaymentInfo(CustomerDto selectedCustomer) {
         try {
             this.selectedCustomer = selectedCustomer;
             //borrowerLoansTable.getItems().clear();
             //borrowerLoansTable.getColumns().clear();
-            makeBorrowerLoansTable(customerController.getOutgoingLoans(selectedCustomer.getName()));
-            showNotifications();
+            Platform.runLater(()-> {
+                makeBorrowerLoansTable(customerController.getOutgoingLoans(this.selectedCustomer.getName()));
+                showNotifications();
+            });
         }catch(Exception e){
 
         }
@@ -62,7 +64,8 @@ public class PaymentController {
     public void showNotifications() {
         notificationsVBox.getChildren().clear();
         try {
-            for (PreTransaction preTransaction : selectedCustomer.getPreTransactions()) {
+            Customer customer = getSpecificCustomer(this.selectedCustomer.getName());
+            for (PreTransaction preTransaction : customer.getPreTransactions()) {
                 Platform.runLater(() -> {
                     notificationsVBox.getChildren().add(new Label(preTransaction.toString()));
                 });
@@ -72,7 +75,6 @@ public class PaymentController {
         }
         catch(Exception e){}
         }
-
 
     @FXML
     private void makeBorrowerLoansTable(Collection<LoanDto> outgoingLoans) {
@@ -126,6 +128,7 @@ public class PaymentController {
         ObservableList<LoanDto> listOfLoans = FXCollections.observableArrayList(setOfLoans);
         borrowerLoansTable.setItems(listOfLoans);
     }
+
     @FXML
     void openPayDialog(ActionEvent event) {
         LoanDto chosenLoan = borrowerLoansTable.getSelectionModel().getSelectedItem();
@@ -139,8 +142,9 @@ public class PaymentController {
                 payDialogComponentController.setMainController(this);
                 LoanDto payLoan = borrowerLoansTable.getSelectionModel().getSelectedItem();
                 Set<PreTransaction> preTransactionSet = new HashSet<>();
-                for (PreTransaction preTransaction : selectedCustomer.getPreTransactions()) {
-                    if (preTransaction.getLoan().equals(payLoan) && !preTransaction.isPaid())
+                Customer customer = getSpecificCustomer(this.selectedCustomer.getName());
+                for (PreTransaction preTransaction : customer.getPreTransactions()){
+                    if (preTransaction.getLoan().getLoanName().equals(payLoan.getLoanName()) && !preTransaction.isPaid())
                         preTransactionSet.add(preTransaction);
                 }
                 payDialogComponentController.loadLoanPayments(preTransactionSet, selectedCustomer);
@@ -186,53 +190,66 @@ public class PaymentController {
     public void payEntireLoan(ActionEvent actionEvent) {
 
         LoanDto selectedLoan = borrowerLoansTable.getSelectionModel().getSelectedItem();
-        Loan theLoan = getSpecificLoan(selectedLoan.getLoanName());
-        int leftPayments = selectedLoan.getRemainTimeUnit()/selectedLoan.getPaymentFrequency();
-        for(Fraction fraction: theLoan.getFractions()){
-            double singlePayment = (fraction.getAmount() + (fraction.getAmount() * (selectedLoan.getInterestPercent())/100.0)) / (selectedLoan.getTotalTimeUnit() / selectedLoan.getPaymentFrequency());
-            double totalPaymentAmount = singlePayment * leftPayments;
-            Customer customer = customerController.getSpecificCustomer(selectedCustomer.getName());
-            for(PreTransaction preTransaction: customer.getPreTransactions()){
-                if(!preTransaction.isPaid() && preTransaction.getLoan().getLoanDto() == selectedLoan){
-                    totalPaymentAmount += preTransaction.getSum();
-                }
-            }
-            try {
-                customer.addTransaction(new Transaction(customer, fraction.getCustomer(),totalPaymentAmount));
-                //customer.clearAllPreTransactions(selectedLoan);
-                customer.makeAllPreTransactionsPaid(selectedLoan);
-                customerController.clearAllDebts(selectedLoan);
-                customerController.setStatusFinished(selectedLoan);
-                customerController.showInfoTable(customer.getCustomerDto());
-                showPaymentInfo(customer.getCustomerDto());
-
-            } catch (NegativeBalanceException e) {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Warning Dialog");
-                alert.setHeaderText("Warning: Negative Balance");
-                alert.setContentText(customer.getName() + " not have enough money in account balance");
-                alert.showAndWait();
-            }
-
+        if(selectedLoan == null){
+            //TODO WARNING DIALOG
         }
+        else {
+            Loan theLoan = getSpecificLoan(selectedLoan.getLoanName());
+            int leftPayments = selectedLoan.getRemainTimeUnit() / selectedLoan.getPaymentFrequency();
+            for (Fraction fraction : theLoan.getFractions()) {
+                double singlePayment = (fraction.getAmount() + (fraction.getAmount() * (selectedLoan.getInterestPercent()) / 100.0)) / (selectedLoan.getTotalTimeUnit() / selectedLoan.getPaymentFrequency());
+                double totalPaymentAmount = singlePayment * leftPayments;
+                Customer customer = customerController.getSpecificCustomer(this.selectedCustomer.getName());
+                for (PreTransaction preTransaction : customer.getPreTransactions()) {
+                    if (!preTransaction.isPaid() && preTransaction.getLoan() == selectedLoan) {
+                        totalPaymentAmount += preTransaction.getSum();
+                    }
+                }
+                try {
+                    customer.addTransaction(new Transaction(customer, fraction.getCustomer(), totalPaymentAmount));
+                    //customer.clearAllPreTransactions(selectedLoan);
+                    customer.makeAllPreTransactionsPaid(selectedLoan);
+                    customerController.clearAllDebts(selectedLoan);
+                    customerController.setStatusFinished(selectedLoan);
+                    customerController.showInfoTable(customer.getCustomerDto());
+                    showPaymentInfo(customer.getCustomerDto());
 
+                } catch (NegativeBalanceException e) {
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setTitle("Warning Dialog");
+                    alert.setHeaderText("Warning: Negative Balance");
+                    alert.setContentText(customer.getName() + " not have enough money in account balance");
+                    alert.showAndWait();
+                }
+
+            }
+        }
     }
 
     private Loan getSpecificLoan(String loanName) {
         return customerController.getSpecificLoan(loanName);
     }
 
-    public void tableClicked(MouseEvent mouseEvent) {
+    public synchronized void tableClicked(MouseEvent mouseEvent) {
         if(!borrowerLoansTable.getItems().isEmpty()){
             LoanDto selectedLoan = borrowerLoansTable.getSelectionModel().getSelectedItem();
             if(selectedLoan != null){
                 payEntireButton.setDisable(false);
+                payButton.setDisable(false);
             }
         }
     }
 
     public void setCustomer(CustomerDto selectedCustomer) {
         this.selectedCustomer = selectedCustomer;
+    }
+
+    public Loan getSpecficLoan(String loanName) {
+        return customerController.getSpecificLoan(loanName);
+    }
+
+    public boolean makeTransaction(String id, String name) throws NegativeBalanceException {
+       return customerController.makeTransaction(id,name);
     }
 }
 

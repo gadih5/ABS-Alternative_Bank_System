@@ -61,11 +61,11 @@ public class InformationController {
 
             borrowerLoansTable.getItems().clear();
             borrowerLoansTable.getColumns().clear();
-            ArrayList<LoanDto> outLoans = getOutgoingLoans(selectedCustomer.getName());
+            ArrayList<LoanDto> outLoans = getOutgoingLoans(this.selectedCustomer.getName());
             makeBorrowerLoansTable(outLoans);
             borrowerLoansTable.getSortOrder().add(borrowerLoansTable.getColumns().get(0));
 
-            Set<LoanDto> inLoans = getIngoingLoans(selectedCustomer.getName());
+            Set<LoanDto> inLoans = getIngoingLoans(this.selectedCustomer.getName());
             loanerLoansTable.getItems().clear();
             loanerLoansTable.getColumns().clear();
             makeLoanerLoansTable(inLoans);
@@ -144,7 +144,7 @@ public class InformationController {
     }
 
     @FXML
-    private void makeBorrowerLoansTable(Collection<LoanDto> outgoingLoans) {
+    private synchronized void makeBorrowerLoansTable(Collection<LoanDto> outgoingLoans) {
         TableColumn loanNameColumn = new TableColumn("Loan Name");
         loanNameColumn.setCellValueFactory(new PropertyValueFactory<>("loanName"));
 

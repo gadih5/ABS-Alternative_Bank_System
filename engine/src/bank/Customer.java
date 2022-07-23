@@ -133,7 +133,7 @@ public class Customer implements Serializable {
     public void clearAllPreTransactions(Loan selectedLoan) {
         ArrayList<PreTransaction> preTransactionsToRemove = new ArrayList<>();
         for(PreTransaction preTransaction: preTransactions){
-            if(preTransaction.getLoan() == selectedLoan){
+            if(preTransaction.getLoan().getLoanName() == selectedLoan.getLoanName()){
                 preTransactionsToRemove.add(preTransaction);
             }
         }
@@ -142,7 +142,7 @@ public class Customer implements Serializable {
 
     public void makeAllPreTransactionsPaid(LoanDto selectedLoan) {
         for(PreTransaction preTransaction: preTransactions){
-            if(preTransaction.getLoan().getLoanDto() == selectedLoan){
+            if(preTransaction.getLoan() == selectedLoan){
                 preTransaction.setPaid(true);
             }
         }

@@ -3,6 +3,7 @@ import _json.Customer_json;
 import _json.Transaction_json;
 import bank.Customer;
 import bank.exception.NegativeBalanceException;
+import com.sun.istack.internal.NotNull;
 //import com.google.gson.Gson;
 
 import java.io.Serializable;
@@ -18,11 +19,14 @@ public class Transaction implements Serializable {
         this(fromCustomer,toCustomer,amount,true);
     }
 
-    public Transaction(Customer fromCustomer,Customer toCustomer, double amount, boolean firstTime) throws NegativeBalanceException {
+    public Transaction(Customer fromCustomer, Customer toCustomer, double amount, boolean firstTime) throws NegativeBalanceException {
         sign = firstTime ? "-" : "+";
-        boolean amountChange = false;
+     //   boolean amountChange = false;
+
+
         this.previousBalance = fromCustomer.getBalance();
         this.timeUnit = Bank.getGlobalTimeUnit();
+
     //    this.toCustomer = toCustomer;
         this.amount = amount; //check in ui that positive
         if (fromCustomer == toCustomer) {//its a self deposit
@@ -36,29 +40,17 @@ public class Transaction implements Serializable {
 
                 throw new NegativeBalanceException("Not enough money to complete this transaction");
             else {
+
+
                 fromCustomer.setBalance(previousBalance - amount);
                 afterBalance = previousBalance - amount;
                 if(firstTime)
-                toCustomer.addTransaction(new Transaction(toCustomer, fromCustomer, -amount, false));
+                    toCustomer.addTransaction(new Transaction(toCustomer, fromCustomer, -amount, false));
+
             }
-
-
         }
 
     }
-
-   /* public Transaction(Transaction_json transaction_json) {
-        this.toCustomer = new Customer(transaction_json.toCustomer);
-        this.amount = transaction_json.amount;
-        this.timeUnit = transaction_json.timeUnit;
-        this.previousBalance = transaction_json.previousBalance;
-        this.afterBalance = transaction_json.afterBalance;
-        this.sign = transaction_json.sign;
-    }*/
-
-   // public Customer getToCustomer() {
-  //      return toCustomer;
-  //  }
 
     public double getAmount() {
         double res = Math.abs(amount);

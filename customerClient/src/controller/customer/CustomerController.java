@@ -1,6 +1,7 @@
 package controller.customer;
 
 import bank.*;
+import bank.exception.NegativeBalanceException;
 import controller.app.CustomerAppController;
 import controller.information.InformationController;
 import controller.payment.PaymentController;
@@ -162,7 +163,6 @@ public class CustomerController {
             informationComponentController.showInfoTable(customerDto);
           //  if(!this.scrambleTab.isSelected())
                 scrambleComponentController.loadScrambleInfo(customerDto);
-            paymentComponentController.showPaymentInfo(customerDto);
         });
     }
 
@@ -259,7 +259,6 @@ public class CustomerController {
             if(loanDto.getBorrowerName().equals(name))
                 outgoingLoans.add(loanDto);
         }
-        System.out.println(outgoingLoans.size());
         return outgoingLoans;
     }
 
@@ -287,5 +286,13 @@ public class CustomerController {
 
     public void setSelectedCustomer(CustomerDto selectedCustomer) {
         this.selectedCustomer = selectedCustomer;
+    }
+
+    public void showPaymentInfo(CustomerDto selectedCustomer) {
+        paymentComponentController.showPaymentInfo(selectedCustomer);
+    }
+
+    public boolean makeTransaction(String id, String name) throws NegativeBalanceException {
+        return customerAppController.makeTransaction(id,name);
     }
 }

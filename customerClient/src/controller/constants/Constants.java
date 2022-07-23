@@ -46,6 +46,10 @@ public class Constants {
     public final static String GET_NUM_OF_TRANS = FULL_SERVER_PATH + "/getNumOfTrans";
     public final static String GET_NEW_BALANCE = FULL_SERVER_PATH + "/getNewBalance";
     public final static String ADD_LOANER = FULL_SERVER_PATH + "/addLoaner";
+    public final static String MAKE_TRANS = FULL_SERVER_PATH + "/makeTrans";
+
+
+
 
 
 

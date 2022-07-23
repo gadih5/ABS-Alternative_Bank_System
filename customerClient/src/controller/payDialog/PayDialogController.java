@@ -38,17 +38,20 @@ public class PayDialogController {
     public void payPayment(ActionEvent actionEvent) {
         ObservableList<PreTransaction> listOfPreTransactions = paymentsTableView.getSelectionModel().getSelectedItems();
         if(listOfPreTransactions != null){
-            Loan loanToCheck = listOfPreTransactions.get(0).getLoan();
-            Customer fromCustomer = paymentController.getSpecificCustomer((selectedCustomer.getName()));
+            Loan loanToCheck = paymentController.getSpecficLoan(listOfPreTransactions.get(0).getLoan().getLoanName());
+           // Loan loanToCheck = listOfPreTransactions.get(0).getLoan();
+            Customer fromCustomer = paymentController.getSpecificCustomer((this.selectedCustomer.getName()));
             for(PreTransaction preTransaction: listOfPreTransactions){
                 try {
-                    preTransaction.makeTransaction(fromCustomer);
+                    synchronized (this) {
+                        paymentController.makeTransaction(preTransaction.getId(),fromCustomer.getName());
+                        selectedCustomer = paymentController.getSpecificCustomerDto(selectedCustomer.getName());
+                    }
                     paymentController.showNotifications();
-                    paymentController.showPaymentInfo(selectedCustomer);
-
-                    selectedCustomer = paymentController.getSpecificCustomerDto(selectedCustomer.getName());
+                    paymentController.showPaymentInfo(this.selectedCustomer);
+                    selectedCustomer = paymentController.getSpecificCustomerDto(this.selectedCustomer.getName());
                     paymentController.updateAllDtos();
-                    paymentController.showInfoTable(selectedCustomer);
+                    paymentController.showInfoTable(this.selectedCustomer);
                     Stage stage = (Stage) cancelBtn.getScene().getWindow();
                     stage.close();
 

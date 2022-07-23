@@ -477,11 +477,15 @@ public class CustomerAppController {
                 response.body().close();
                 if (response.code() != 200) {
                 } else {
+                   // customerComponentController.showPaymentInfo(getSpecificCustomerDto(username));
                     new Thread(()-> {
                         while(true) {
+                            String prevYaz = headerComponentController.getYazFromLabel();
                             updateBankDtos();
                             getYazValueFromBank();
                             customerComponentController.refershInfo(getSpecificCustomerDto(username));
+                            if(!prevYaz.equals(headerComponentController.getYazFromLabel()))
+                                customerComponentController.showPaymentInfo(getSpecificCustomerDto(username));
                             try {
                                 Thread.sleep(2000);
                             } catch (InterruptedException e) {
@@ -712,7 +716,6 @@ public class CustomerAppController {
     }
 
     public void addLoaner(String loanName, String name, double sumToinvest) {
-        System.out.println("START of addLoaner response in cusAppcontrl");
         String s = loanName+ "," + name + "," + sumToinvest;
 
         Request request = new Request.Builder()
@@ -722,10 +725,8 @@ public class CustomerAppController {
 
         Call call = Constants.HTTP_CLIENT.newCall(request);
 
-        System.out.println("just before execute..");
         try {
             Response response = call.execute();
-            System.out.println("AFTER EXECUTE, RESP CODE: " + response.code());
             String resp = response.body().string();
             response.body().close();
             if(response.code() == 200) {
@@ -733,6 +734,32 @@ public class CustomerAppController {
         } catch (IOException e) {
             System.out.println("Error when trying to get data. Exception: " + e.getMessage());
         }
+    }
+
+    public boolean makeTransaction(String id, String name) throws NegativeBalanceException{
+        String s = id+ "," + name;
+
+        Request request = new Request.Builder()
+                .url(Constants.MAKE_TRANS)
+                .addHeader("data", s)
+                .build();
+
+        Call call = Constants.HTTP_CLIENT.newCall(request);
+
+        try {
+            Response response = call.execute();
+            String resp = response.body().string();
+            response.body().close();
+            if(response.code() == 200) {
+                return true;
+            }
+            else{
+                throw  new NegativeBalanceException("");
+            }
+        } catch (IOException e) {
+            System.out.println("Error when trying to get data. Exception: " + e.getMessage());
+        }
+        return false;
     }
 }
 

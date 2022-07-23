@@ -78,4 +78,7 @@ public class HeaderController {
         });
     }
 
+    public String getYazFromLabel() {
+        return yazLabel.getText();
+    }
 }

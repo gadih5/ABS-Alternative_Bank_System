@@ -13,7 +13,7 @@ public class CustomerDto implements Serializable {
     //private Collection<TransactionDto> transactions;
     private ArrayList<LoanDto> ingoingLoans;
     private ArrayList<LoanDto> outgoingLoans;
-    private Collection<PreTransaction> preTransactions;
+   // private Collection<PreTransaction> preTransactions;
     private int numOfPendingIngoingLoans=0;
     private int numOfActiveIngoingLoans=0;
     private int numOfRiskIngoingLoans=0;
@@ -29,7 +29,7 @@ public class CustomerDto implements Serializable {
       //  this.transactions = customer.getTransactions();
         this.ingoingLoans = customer.getIngoingLoans();
         this.outgoingLoans = customer.getOutgoingLoans();
-        this.preTransactions = customer.getPreTransactions();
+    //    this.preTransactions = customer.getPreTransactions();
         numOfPendingIngoingLoans=0;
         numOfActiveIngoingLoans=0;
         numOfRiskIngoingLoans=0;
@@ -188,7 +188,7 @@ public class CustomerDto implements Serializable {
         return outgoingLoans;
     }
 
-    public Collection<PreTransaction> getPreTransactions() {
-        return preTransactions;
-    }
+//    public Collection<PreTransaction> getPreTransactions() {
+ //       return preTransactions;
+ //   }
 }

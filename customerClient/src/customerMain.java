@@ -16,11 +16,10 @@ public class customerMain extends Application {
         URL url = getClass().getResource("controller/login/customerLogin.fxml");
         fxmlLoader.setLocation(url);
         Parent root = fxmlLoader.load(url.openStream());
-        Scene scene = new Scene(root, 1200, 800);
+        Scene scene = new Scene(root, 1205, 825);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
-
 }
 
 
