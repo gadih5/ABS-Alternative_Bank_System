@@ -11,10 +11,6 @@ public class SingleChatEntry {
         this.time = System.currentTimeMillis();
     }
 
-    public String getChatString() {
-        return chatString;
-    }
-
     public long getTime() {
         return time;
     }

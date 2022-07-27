@@ -11,11 +11,6 @@ import controller.customer.CustomerController;
 import controller.header.HeaderController;
 import controller.payment.PaymentController;
 import controller.scramble.ScrambleController;
-import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -26,15 +21,10 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.util.Pair;
 import okhttp3.*;
-
-import okhttp3.internal.http2.Header;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import utils.YazRefresher;
 import utils.HttpClientUtil;
-
 import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -62,15 +52,6 @@ public class CustomerAppController {
     private AnchorPane bodyAnchorPane;
 
     private String username;
-    private Timer timer;
-    private TimerTask yazRefresher;
-    private final BooleanProperty autoUpdate =new SimpleBooleanProperty() ;
-    private final IntegerProperty totalUsers = new SimpleIntegerProperty();
-   // private HttpStatusUpdate httpStatusUpdate;
-
-    public CustomerAppController() {
-    }
-
 
     @FXML
     public void initialize() {
@@ -84,24 +65,17 @@ public class CustomerAppController {
         headerComponentController.setMainController(this);
     }
 
-
     public void setCustomerComponentController(CustomerController customerComponentController) {
         this.customerComponentController = customerComponentController;
         customerComponentController.setMainController(this);
     }
 
-    public void updatePathLabel(String filePath) {
-        headerComponentController.updatePathLabel(filePath);
-    }
-
     public void setScrambleController(ScrambleController scrambleController) {
         this.scrambleController = scrambleController;
-
     }
 
     public void setPaymentController(PaymentController paymentController) {
         this.paymentController = paymentController;
-
     }
 
     public void changeBody(String userName) {
@@ -127,13 +101,11 @@ public class CustomerAppController {
 
     private int getYazValueFromBank() {
         int yaz = 0;
-
         Request request = new Request.Builder()
                 .url(Constants.GET_YAZ)
                 .build();
 
         Call call = Constants.HTTP_CLIENT.newCall(request);
-
         try {
             Response response = call.execute();
             String resp = response.body().string();
@@ -148,24 +120,17 @@ public class CustomerAppController {
 
     public void loadXmlData(AbsDescriptor descriptor) {
         try {
-            //TODO: 1) LOAD XML FROM BANK IN HTTP REQUEST
-            //      2) ADD LOAN IN HTTP REQUEST
-
-
             HttpUrl.Builder urlBuilder = HttpUrl.parse(Constants.LOAD_XML).newBuilder();
             urlBuilder.addQueryParameter("username", username);
             urlBuilder.addQueryParameter("descriptor", Constants.GSON_INSTANCE.toJson(descriptor));
             String finalUrl = urlBuilder.build().toString();
-
             Request request = new Request.Builder()
                     .url(finalUrl)
                     .build();
 
             Call call = Constants.HTTP_CLIENT.newCall(request);
-
             try {
                 Response response = call.execute();
-                String resp = response.body().string();
                 response.body().close();
                 if(response.code() == 406){
                     showErrorAlert("XML File Not Allowed");
@@ -176,7 +141,6 @@ public class CustomerAppController {
             } catch (IOException e) {
                 System.out.println("Error when trying to get data. Exception: " + e.getMessage());
             }
-
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -191,16 +155,13 @@ public class CustomerAppController {
         alert.showAndWait();
     }
 
-
     public ArrayList<LoanDto> getLoansDto() {
         ArrayList<LoanDto> loanDtos = new ArrayList<>();
-
         Request request = new Request.Builder()
                 .url(Constants.GET_LOANS_DTO)
                 .build();
 
         Call call = Constants.HTTP_CLIENT.newCall(request);
-
         try {
             Response response = call.execute();
             String resp = response.body().string();
@@ -215,13 +176,11 @@ public class CustomerAppController {
 
     public ArrayList<CustomerDto> getCustomersDto() {
         ArrayList<CustomerDto> customerDtos = new ArrayList<>();
-
         Request request = new Request.Builder()
                 .url(Constants.GET_CUSTOMERS_DTO)
                 .build();
 
         Call call = Constants.HTTP_CLIENT.newCall(request);
-
         try {
             Response response = call.execute();
             String resp = response.body().string();
@@ -231,29 +190,24 @@ public class CustomerAppController {
         } catch (IOException e) {
             System.out.println("Error when trying to get data. Exception: " + e.getMessage());
         }catch(JsonSyntaxException e){
-
         }
         return customerDtos;
     }
 
     public ArrayList<Customer> getCustomers() throws NullPointerException {
         ArrayList<Customer> customers = new ArrayList<>();
-
         Request request = new Request.Builder()
                 .url(Constants.GET_CUSTOMERS)
                 .build();
 
         Call call = Constants.HTTP_CLIENT.newCall(request);
-
         try {
             Response response = call.execute();
             CustomerList_json customerList_json;
             String resp = response.body().string();
             response.body().close();
-
             customerList_json = Constants.GSON_INSTANCE.fromJson(resp, CustomerList_json.class);
             customers = customerList_json.customers;
-
         } catch (IOException e) {
             System.out.println("Error when trying to get data. Exception: " + e.getMessage());
         }
@@ -262,13 +216,11 @@ public class CustomerAppController {
 
     public ArrayList<Loan> getLoans() {
         @Nullable ArrayList<Loan> loans = new ArrayList<>();
-
         Request request = new Request.Builder()
                 .url(Constants.GET_LOANS)
                 .build();
 
         Call call = Constants.HTTP_CLIENT.newCall(request);
-
         try {
             Response response = call.execute();
             LoanList_json loanList_json;
@@ -287,13 +239,11 @@ public class CustomerAppController {
 
     public Set<String> getCategories() {
         Set<String> categoriesSet = new HashSet<>();
-
         Request request = new Request.Builder()
                 .url(Constants.GET_CATEGORIES)
                 .build();
 
         Call call = Constants.HTTP_CLIENT.newCall(request);
-
         try {
             Response response = call.execute();
             CategoryList_json categoryList_json;
@@ -304,11 +254,9 @@ public class CustomerAppController {
                 if (categoryList_json != null)
                     categoriesSet = categoryList_json.categories;
             }
-
         } catch (IOException e) {
             System.out.println("Error when trying to get data. Exception: " + e.getMessage());
         }
-
         return categoriesSet;
     }
 
@@ -332,13 +280,11 @@ public class CustomerAppController {
 
     public int getNumOfLoans() {
         int numOfLoans = 0;
-
         Request request = new Request.Builder()
                 .url(Constants.GET_NUM_OF_LOANS)
                 .build();
 
         Call call = Constants.HTTP_CLIENT.newCall(request);
-
         try {
             Response response = call.execute();
             String resp = response.body().string();
@@ -349,7 +295,6 @@ public class CustomerAppController {
         }
         return numOfLoans;
     }
-
 
     public Collection<LoanDto> getLoansDtoForScramble(int categoriesChosed, Set<String> chosenCategories, int minInterestPercent, int minTotalYaz, int maxOpenLoans, int maxOwnershipPercent, CustomerDto selectedCustomer) {
         Set<LoanDto> validLoans = new HashSet<>();
@@ -396,6 +341,7 @@ public class CustomerAppController {
                 .newBuilder()
                 .build()
                 .toString();
+
         HttpClientUtil.runAsync(finalUrl, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
@@ -405,7 +351,6 @@ public class CustomerAppController {
                 alert.setContentText("Click OK and try again:");
                 alert.showAndWait();
             }
-
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 response.body().close();
@@ -414,7 +359,6 @@ public class CustomerAppController {
                 }
             }
         });
-
     }
 
     public Loan getSpecificLoan(String loanName) {
@@ -452,7 +396,6 @@ public class CustomerAppController {
             loanToCheck.checkRiskStatus(this.getCustomers());
     }
 
-
     public void updateUserName(String _userName, String isAdmin) {
         this.username = _userName;
         String finalUrl = HttpUrl
@@ -462,6 +405,7 @@ public class CustomerAppController {
                 .addQueryParameter("isAdmin", isAdmin)
                 .build()
                 .toString();
+
         HttpClientUtil.runAsync(finalUrl, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
@@ -471,19 +415,17 @@ public class CustomerAppController {
                 alert.setContentText("Click OK and try again:");
                 alert.showAndWait();
             }
-
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 response.body().close();
                 if (response.code() != 200) {
                 } else {
-                   // customerComponentController.showPaymentInfo(getSpecificCustomerDto(username));
                     new Thread(()-> {
                         while(true) {
                             String prevYaz = headerComponentController.getYazFromLabel();
                             updateBankDtos();
                             getYazValueFromBank();
-                            customerComponentController.refershInfo(getSpecificCustomerDto(username));
+                            customerComponentController.refreshInfo(getSpecificCustomerDto(username));
                             if(!prevYaz.equals(headerComponentController.getYazFromLabel()))
                                 customerComponentController.showPaymentInfo(getSpecificCustomerDto(username));
                             try {
@@ -496,8 +438,7 @@ public class CustomerAppController {
                     }
                 }
             });
-        }
-
+    }
 
     public void onClick(ActionEvent actionEvent) {
         FileChooser fileChooser = new FileChooser();
@@ -509,8 +450,6 @@ public class CustomerAppController {
                 try {
                     XmlReader myXml = new XmlReader(Paths.get(filePath));
                     loadXmlData(myXml.getDescriptor());
-                    //updateBankDtos();                               ///////////////
-
                 } catch (JAXBException e) {
                     e.printStackTrace();
                 } catch (FileNotFoundException e) {
@@ -520,14 +459,11 @@ public class CustomerAppController {
                 } catch (NullPointerException e) {
                     return;
                 }
-
             } else
                 return;
         } catch (Exception e) {
             return;
         }
-
-
     }
 
     public void setName(String name) {
@@ -542,6 +478,7 @@ public class CustomerAppController {
                 .addQueryParameter("amount", String.valueOf(amount))
                 .build()
                 .toString();
+
         HttpClientUtil.runAsync(finalUrl, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
@@ -551,7 +488,6 @@ public class CustomerAppController {
                 alert.setContentText("Click OK and try again:");
                 alert.showAndWait();
             }
-
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 response.body().close();
@@ -562,31 +498,6 @@ public class CustomerAppController {
         });
     }
 
-    private void updateYaz(String yaz) {
-        Platform.runLater(() -> {
-            headerComponentController.setYazLabel(Integer.parseInt(yaz));
-        });
-    }
-
-    private void refreshYaz() throws InterruptedException {
-        while(true) {
-            getYazValueFromBank();
-            Thread.sleep(2000);
-        }
-    }
-
-    public void startListRefresher() {
-
-        yazRefresher = new YazRefresher(
-                autoUpdate
-                //httpStatusUpdate::updateHttpLine
-                ,this::updateYaz
-                );
-        timer = new Timer();
-        timer.schedule(yazRefresher, 2, 2);
-
-    }
-
     public void clearAllDebts(LoanDto selectedLoan) {
         String finalUrl = HttpUrl
                 .parse(Constants.CLEAR_DEBTS)
@@ -594,6 +505,7 @@ public class CustomerAppController {
                 .addQueryParameter("selectedLoan", selectedLoan.getLoanName())
                 .build()
                 .toString();
+
         HttpClientUtil.runAsync(finalUrl, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
@@ -603,7 +515,6 @@ public class CustomerAppController {
                 alert.setContentText("Click OK and try again:");
                 alert.showAndWait();
             }
-
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 response.body().close();
@@ -621,6 +532,7 @@ public class CustomerAppController {
                 .addQueryParameter("selectedLoan", selectedLoan.getLoanName())
                 .build()
                 .toString();
+
         HttpClientUtil.runAsync(finalUrl, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
@@ -630,7 +542,6 @@ public class CustomerAppController {
                 alert.setContentText("Click OK and try again:");
                 alert.showAndWait();
             }
-
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 response.body().close();
@@ -649,7 +560,6 @@ public class CustomerAppController {
                 .build();
 
         Call call = Constants.HTTP_CLIENT.newCall(request);
-
         try {
             Response response = call.execute();
             String resp = response.body().string();
@@ -661,22 +571,18 @@ public class CustomerAppController {
         } catch (IOException e) {
             System.out.println("Error when trying to get data. Exception: " + e.getMessage());
         }catch (JsonSyntaxException e){
-
         }
-
         return transactions;
     }
 
     public int getNumOfTrans(String name) {
         int numOfTrans = 0;
-
         Request request = new Request.Builder()
                 .url(Constants.GET_NUM_OF_TRANS)
                 .addHeader("username", name)
                 .build();
 
         Call call = Constants.HTTP_CLIENT.newCall(request);
-
         try {
             Response response = call.execute();
             String resp = response.body().string();
@@ -687,20 +593,17 @@ public class CustomerAppController {
         } catch (IOException e) {
             System.out.println("Error when trying to get data. Exception: " + e.getMessage());
         }
-
         return numOfTrans;
     }
 
     public double getNewBalance(String name) {
         double newBalance = 0;
-
         Request request = new Request.Builder()
                 .url(Constants.GET_NEW_BALANCE)
                 .addHeader("username", name)
                 .build();
 
         Call call = Constants.HTTP_CLIENT.newCall(request);
-
         try {
             Response response = call.execute();
             String resp = response.body().string();
@@ -711,23 +614,19 @@ public class CustomerAppController {
         } catch (IOException e) {
             System.out.println("Error when trying to get data. Exception: " + e.getMessage());
         }
-
         return newBalance;
     }
 
     public void addLoaner(String loanName, String name, double sumToinvest) {
         String s = loanName+ "," + name + "," + sumToinvest;
-
         Request request = new Request.Builder()
                 .url(Constants.ADD_LOANER)
                 .addHeader("data", s)
                 .build();
 
         Call call = Constants.HTTP_CLIENT.newCall(request);
-
         try {
             Response response = call.execute();
-            String resp = response.body().string();
             response.body().close();
             if(response.code() == 200) {
             }
@@ -738,17 +637,14 @@ public class CustomerAppController {
 
     public boolean makeTransaction(String id, String name) throws NegativeBalanceException{
         String s = id+ "," + name;
-
         Request request = new Request.Builder()
                 .url(Constants.MAKE_TRANS)
                 .addHeader("data", s)
                 .build();
 
         Call call = Constants.HTTP_CLIENT.newCall(request);
-
         try {
             Response response = call.execute();
-            String resp = response.body().string();
             response.body().close();
             if(response.code() == 200) {
                 return true;
@@ -762,19 +658,16 @@ public class CustomerAppController {
         return false;
     }
 
-    public void addTransction(String name, String name1, String valueOf) throws NegativeBalanceException {
+    public void addTransition(String name, String name1, String valueOf) throws NegativeBalanceException {
         String s = name+ "," + name1+","+valueOf;
-
         Request request = new Request.Builder()
                 .url(Constants.ADD_TRANS)
                 .addHeader("data", s)
                 .build();
 
         Call call = Constants.HTTP_CLIENT.newCall(request);
-
         try {
             Response response = call.execute();
-            String resp = response.body().string();
             response.body().close();
             if(response.code() == 200) {
             }
@@ -785,62 +678,47 @@ public class CustomerAppController {
         } catch (IOException e) {
             System.out.println("Error when trying to get data. Exception: " + e.getMessage());
         }
-
     }
 
     public void makeAllPreTransactionsPaid(String name, String selectedLoan) {
         String s = name+ "," + selectedLoan;
-
         Request request = new Request.Builder()
                 .url(Constants.MARK_AS_PAID)
                 .addHeader("data", s)
                 .build();
 
         Call call = Constants.HTTP_CLIENT.newCall(request);
-
         try {
             Response response = call.execute();
-            String resp = response.body().string();
             response.body().close();
             if(response.code() == 200) {
             }
             else if(response.code()==419) {
-
-
             }
         } catch (IOException e) {
             System.out.println("Error when trying to get data. Exception: " + e.getMessage());
         }
-
     }
 
     public  Collection<Fraction> getFractions(String loanName) {
         Collection<Fraction> fractions = new ArrayList<>();
-
         Request request = new Request.Builder()
                 .url(Constants.GET_FRACTION)
                 .addHeader("loanName", loanName)
                 .build();
 
         Call call = Constants.HTTP_CLIENT.newCall(request);
-
         try {
             Response response = call.execute();
             String resp = response.body().string();
             response.body().close();
             FractionList_json fractionList_json;
             fractionList_json = Constants.GSON_INSTANCE.fromJson(resp, FractionList_json.class);
-
-             fractions= fractionList_json.fractions;
+            fractions= fractionList_json.fractions;
         } catch (IOException e) {
             System.out.println("Error when trying to get data. Exception: " + e.getMessage());
         }catch (JsonSyntaxException e){
-
         }
-
         return fractions;
     }
 }
-
-
-

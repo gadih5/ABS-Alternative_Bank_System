@@ -1,8 +1,6 @@
 package _json;
 
-import bank.Customer;
 import bank.CustomerDto;
-
 import java.util.ArrayList;
 
 public class CustomerDtoList_json {

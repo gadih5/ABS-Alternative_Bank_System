@@ -1,8 +1,6 @@
 package _json;
 
 import bank.Customer;
-import bank.exception.NegativeBalanceException;
-
 import java.util.ArrayList;
 
 public class CustomerList_json {
@@ -11,7 +9,4 @@ public class CustomerList_json {
     public CustomerList_json(ArrayList<Customer> customers) {
         this.customers = customers;
     }
-
-
 }
-

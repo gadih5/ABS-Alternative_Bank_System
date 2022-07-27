@@ -7,7 +7,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 
 @WebServlet(name="UpdateYaz" ,urlPatterns="/updateYaz")
@@ -18,7 +17,6 @@ public class UpdateYaz extends HttpServlet {
             Bank myBank = (Bank)getServletContext().getAttribute("myBank");
             myBank.updateGlobalTimeUnit();
             resp.getWriter().println(myBank.getSyncGlobalTimeUnit());
-
         } catch (NegativeBalanceException e) {
             throw new RuntimeException(e);
         }

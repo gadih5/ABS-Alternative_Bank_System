@@ -2,8 +2,6 @@ package controller.admin;
 
 import bank.CustomerDto;
 import bank.LoanDto;
-import bank.exception.*;
-import bank.xml.XmlReader;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -12,12 +10,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import controller.app.AppController;
-import javax.xml.bind.JAXBException;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.nio.file.Paths;
 import java.util.Collection;
 
 public class AdminController{
@@ -28,7 +21,6 @@ public class AdminController{
     @FXML
     private TableView<LoanDto> loansTable;
     private AppController appController;
-    FileChooser fileChooser = new FileChooser();
 
     @FXML
     public void makeAdminLoansTable() {
@@ -55,7 +47,6 @@ public class AdminController{
 
         TableColumn statusColumn = new TableColumn("Status");
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
-
 
         loansTable.getColumns().addAll(nameColumn, borrowerNameColumn, reasonColumn, loanSumColumn, totalLoanTimeColumn, interestColumn, paymentFrequencyColumn, statusColumn);
         Collection<LoanDto> loansDto = appController.getLoansDto();
@@ -96,7 +87,6 @@ public class AdminController{
         TableColumn numOfFinishOutgoingColumn = new TableColumn("#Finish loans \nas a borrower");
         numOfFinishOutgoingColumn.setCellValueFactory(new PropertyValueFactory<>("numOfFinishOutgoingLoans"));
 
-
         appController.updateBankDtos();
         customersTable.getColumns().addAll(nameColumn, balanceColumn, numOfPendingIngoingColumn, numOfActiveIngoingColumn, numOfRiskIngoingColumn, numOfFinishIngoingColumn, numOfPendingOutgoingColumn, numOfActiveOutgoingColumn, numOfRiskOutgoingColumn, numOfFinishOutgoingColumn);
         Collection<CustomerDto> customersDto = appController.getCustomersDto();
@@ -112,10 +102,8 @@ public class AdminController{
         Platform.runLater(()-> {
                     makeAdminLoansTable();
                     makeAdminCustomersTable();
-                });
+        });
     }
-
-
 
     public void moveTimeline(ActionEvent actionEvent) {
         appController.updateYaz();
@@ -125,14 +113,8 @@ public class AdminController{
         this.appController = appController;
     }
 
-    public void disableAndHideYazBtn() {
-        increaseYazBtn.setDisable(true);
-        increaseYazBtn.setVisible(false);
-    }
-
     public void enableAndShowYazBtn() {
         increaseYazBtn.setDisable(false);
         increaseYazBtn.setVisible(true);
     }
 }
-

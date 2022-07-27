@@ -1,6 +1,5 @@
 package _json;
 
-import bank.Customer;
 import bank.LoanDto;
 
 import java.util.ArrayList;

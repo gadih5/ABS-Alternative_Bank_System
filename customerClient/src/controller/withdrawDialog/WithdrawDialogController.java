@@ -36,5 +36,3 @@ public class WithdrawDialogController {
         amountTf.requestFocus();
     }
 }
-
-

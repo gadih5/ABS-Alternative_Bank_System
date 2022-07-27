@@ -1,11 +1,8 @@
 package bank;
 
-import _json.*;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 
 public class LoanDto implements Serializable, Comparable<LoanDto> {
     private String loanName;
@@ -19,7 +16,6 @@ public class LoanDto implements Serializable, Comparable<LoanDto> {
     private String reason;
     private int interestPrecent;
     private int paymentFrequency;
-   // private Collection<Fraction> fractions;
     private double currentInterest;
     private double remainInterest;
     private double currentFund;
@@ -28,13 +24,8 @@ public class LoanDto implements Serializable, Comparable<LoanDto> {
     private Collection<LoanTransaction> transactions;
     private double amountToComplete;
     private ArrayList<String> loaners;
-    //private Collection<Debt> debts;
     private int nextPaymentYaz;
     private double nextPaymentValue;
-    private int numOfDebts;
-    private double sumOfDebts;
-
-
 
     public LoanDto(Loan loan) {
         this.loanName = loan.getLoanName();
@@ -49,7 +40,6 @@ public class LoanDto implements Serializable, Comparable<LoanDto> {
         this.interestPrecent = loan.getInterestPercent();
         this.paymentFrequency = loan.getPaymentFrequency();
         this.loaners = loan.getLoanersNames();
-      //  this.fractions = loan.getFractions();
         this.currentInterest = loan.getCurrentInterest();
         this.remainInterest = loan.getRemainInterest();
         this.currentFund = loan.getCurrentFund();
@@ -57,39 +47,16 @@ public class LoanDto implements Serializable, Comparable<LoanDto> {
         this.isActive = loan.isActive();
         this.transactions = loan.getTransactions();
         this.amountToComplete=loan.getAmountToComplete();
-     //   this.debts = loan.getUncompletedTransactions();
         this.nextPaymentYaz = loan.getNextPayment();
         this.nextPaymentValue = loan.getNextPaymentValue();
-     //   this.numOfDebts = this.debts.size();
-        /*for(Debt debt: debts){
-            this.sumOfDebts += debt.getAmount();
-        }*/
     }
 
     public ArrayList<String> getLoaners() {
         return loaners;
     }
 
-    public int checkNextPayment() {
-        int nextPayment=0;
-        if(Bank.getGlobalTimeUnit() == startTimeUnit){
-            nextPayment = Bank.getGlobalTimeUnit() + paymentFrequency;
-        }
-        else {
-            if ((Bank.getGlobalTimeUnit() - startTimeUnit) % paymentFrequency == 0 || paymentFrequency == 1) {
-                nextPayment = Bank.getGlobalTimeUnit() + paymentFrequency;
-            } else {
-                nextPayment = ((Bank.getGlobalTimeUnit() - startTimeUnit) % paymentFrequency) + Bank.getGlobalTimeUnit() + 1;
-            }
-        }
-        return nextPayment;
-    }
     public String getLoanName() {
         return loanName;
-    }
-
-    public double getInterestPrecent() {
-        return interestPrecent;
     }
 
     public String getBorrowerName() {
@@ -104,20 +71,12 @@ public class LoanDto implements Serializable, Comparable<LoanDto> {
         return loanSum;
     }
 
-    public int getStartTimeUnit() {
-        return startTimeUnit;
-    }
-
     public int getTotalTimeUnit() {
         return totalTimeUnit;
     }
 
     public int getRemainTimeUnit() {
         return remainTimeUnit;
-    }
-
-    public int getFinishTimeUnit() {
-        return finishTimeUnit;
     }
 
     public String getReason() {
@@ -132,26 +91,6 @@ public class LoanDto implements Serializable, Comparable<LoanDto> {
         return paymentFrequency;
     }
 
-   /* public Collection<Fraction> getFractions() {
-        return fractions;
-    }*/
-
-    public double getCurrentInterest() {
-        return currentInterest;
-    }
-
-    public double getRemainInterest() {
-        return remainInterest;
-    }
-
-    public double getCurrentFund() {
-        return currentFund;
-    }
-
-    public double getRemainFund() {
-        return remainFund;
-    }
-
     public boolean isActive() {
         return isActive;
     }
@@ -163,10 +102,6 @@ public class LoanDto implements Serializable, Comparable<LoanDto> {
     public double getAmountToComplete() {
         return amountToComplete;
     }
-
-  /*  public Collection<Debt> getDebts() {
-        return debts;
-    }*/
 
     @Override
     public int compareTo(LoanDto o) {

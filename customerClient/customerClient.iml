@@ -8,7 +8,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="server" />
-    <orderEntry type="library" name="okHttp" level="project" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
@@ -22,10 +21,20 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/Desktop/13. JSON ( GSON)/13. JSON (&amp; GSON)/json/lib/gson-2.8.8/gson-2.8.8.jar!/" />
+          <root url="jar://$MODULE_DIR$/../lib/gson-2.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/../lib/okHttp" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+        <jarDirectory url="file://$MODULE_DIR$/../lib/okHttp" recursive="false" />
       </library>
     </orderEntry>
   </component>

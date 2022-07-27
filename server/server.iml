@@ -20,7 +20,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="engine" />
     <orderEntry type="library" name="okHttp" level="project" />
     <orderEntry type="library" name="apache-tomcat-10.0" level="project" />
     <orderEntry type="library" name="Java EE 6-Java EE 6" level="project" />
@@ -28,11 +27,22 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/Desktop/13. JSON ( GSON)/13. JSON (&amp; GSON)/json/lib/gson-2.8.8/gson-2.8.8.jar!/" />
+          <root url="jar://$MODULE_DIR$/../lib/gson-2.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/../lib/okHttp" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+        <jarDirectory url="file://$MODULE_DIR$/../lib/okHttp" recursive="false" />
+      </library>
+    </orderEntry>
+    <orderEntry type="module" module-name="engine" />
   </component>
 </module>

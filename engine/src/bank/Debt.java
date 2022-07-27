@@ -1,7 +1,5 @@
 package bank;
 
-import _json.Debt_json;
-
 import java.io.Serializable;
 
 public class Debt implements Comparable<Debt>, Serializable {
@@ -16,13 +14,6 @@ public class Debt implements Comparable<Debt>, Serializable {
         this.interestPart = interestPart;
         this.amount = fundPart + interestPart;
     }
-
-  /*  public Debt(Debt_json debt_json) {
-        this.toCustomer = new Customer(debt_json.toCustomer);
-        this.fundPart = debt_json.fundPart;
-        this.interestPart = debt_json.interestPart;
-        this.amount = debt_json.amount;
-    }*/
 
     public Customer getToCustomer() {
         return toCustomer;
@@ -59,5 +50,3 @@ public class Debt implements Comparable<Debt>, Serializable {
                 '}';
     }
 }
-
-

@@ -3,10 +3,6 @@ package bank;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-
-import _json.Debt_json;
-import _json.Fraction_json;
-import _json.Loan_json;
 import bank.exception.*;
 
 public class Loan implements Serializable {
@@ -38,7 +34,6 @@ public class Loan implements Serializable {
     private int numOfDebts;
     private double sumOfDebts;
     private ArrayList<String> loanersNames;
-
 
     public Loan(String loanName, Customer borrower, double loanSum, int totalTimeUnit, String reason, int interestPercent, int paymentFrequency) throws UndefinedReasonException, NegativeLoanSumException, NegativeTotalTimeUnitException, NegativeInterestPercentException, NegativePaymentFrequencyException, OverPaymentFrequencyException, UndividedPaymentFrequencyException {
         this.loanName = loanName;
@@ -94,7 +89,6 @@ public class Loan implements Serializable {
             throw new NegativeTotalTimeUnitException(this.getLoanName() + " total time unit cannot be non-positive value!");
         else
             this.totalTimeUnit = totalTimeUnit;
-
     }
 
     public String getReason() {
@@ -106,7 +100,6 @@ public class Loan implements Serializable {
             throw new NegativeLoanSumException(this.getLoanName() + " sum cannot be non-positive value!");
         else
             this.loanSum = loanSum;
-
     }
 
     public void setStatus(Status status) {
@@ -152,7 +145,6 @@ public class Loan implements Serializable {
             this.addLoanerName(newFraction.getCustomerName());
             updateLoanDto();
             customer.updateCustomerDto();
-
         } catch (NegativeBalanceException e) {
             throw new NegativeBalanceException("");
         }
@@ -178,36 +170,12 @@ public class Loan implements Serializable {
         return status;
     }
 
-    public double getStartLoanAmount() {
-        return startLoanAmount;
-    }
-
     public double getLoanSum() {
         return loanSum;
     }
 
     public int getStartTimeUnit() {
         return startTimeUnit;
-    }
-
-    public int getNumOfDebts() {
-        calcNumOfDebts();
-        return numOfDebts;
-    }
-
-    public double getSumOfDebts() {
-        return sumOfDebts;
-    }
-
-    private void calcNumOfDebts() {
-        int numOfDebts = 0;
-        double sumOfDebts = 0;
-        for(Debt debt:getUncompletedTransactions()){
-            numOfDebts++;
-            sumOfDebts += debt.getAmount();
-        }
-        this.numOfDebts = numOfDebts;
-        this.sumOfDebts = sumOfDebts;
     }
 
     public int getTotalTimeUnit() {
@@ -226,14 +194,6 @@ public class Loan implements Serializable {
         return borrower;
     }
 
-    protected Collection getLoaners() {
-        return fractions;
-    }
-
-    public int getRemainTimeUnit() {
-        return remainTimeUnit;
-    }
-
     protected double getCurrentInterest() {
         return currentInterest;
     }
@@ -244,7 +204,6 @@ public class Loan implements Serializable {
     }
 
     public int getNextPayment() {
-        //calcNextPayment();
         return nextPayment;
     }
 
@@ -272,42 +231,18 @@ public class Loan implements Serializable {
         return isActive;
     }
 
-    public ArrayList<Debt> getUncompletedTransactions() {
-        return uncompletedTransactions;
-    }
-
-    private void payDebts(ArrayList<Debt> debts) throws NegativeBalanceException{
-        for(Debt debt:debts) {
-            if (debt.getAmount() <= this.getBorrower().getBalance()) {
-                LoanTransaction newLoanTransaction = new LoanTransaction(this.borrower, debt.getToCustomer(), debt.getFundPart(), debt.getInterestPart());
-                debts.remove(debt);
-                transactions.add(newLoanTransaction);
-
-                payDebts(uncompletedTransactions);
-                break;
-            }
-            if (uncompletedTransactions.isEmpty()) {
-                setStatus(Status.Active);
-                break;
-            }
-        }
-    }
-
-    public void update() throws NegativeBalanceException {
+    public void update() {
         if(isActive&&remainTimeUnit>=0) {
             remainTimeUnit--;
-
         }
         if(this.getStatus() != Status.Finished && Bank.getGlobalTimeUnit() != startTimeUnit && isActive() && (remainTimeUnit >= 0 )&& (((Bank.getGlobalTimeUnit() - startTimeUnit)%paymentFrequency==0) || paymentFrequency == 1))
         {
             double debtAmount = 0;
-
             for(Debt debt: uncompletedTransactions){
                 debtAmount += debt.getAmount();
             }
             if(debtAmount != getLoanSum() + getLoanSum()*(((double)getInterestPercent()/100.0))){
                 for (Fraction fraction : fractions) {
-
                         if(fraction.getConvertTime() != Bank.getGlobalTimeUnit()) {
                             PreTransaction preTransaction = null;
                             double fundPart = fraction.getAmount() / (totalTimeUnit / paymentFrequency);
@@ -323,7 +258,6 @@ public class Loan implements Serializable {
                             calcNextPayment();
                             calcNextPaymentValue();
                         }
-
                 }
             }
         }
@@ -358,14 +292,12 @@ public class Loan implements Serializable {
     }
 
     private void calcNextPaymentValue() {
-
         double nextPayment = 0;
         for (Fraction fraction : fractions) {
             double fundPart = fraction.getAmount() / (getTotalTimeUnit() / getPaymentFrequency());
             double interestPart = fraction.getAmount() * (getInterestPercent()/100.0) / (double)(getTotalTimeUnit() / getPaymentFrequency());
             nextPayment += fundPart + interestPart;
         }
-
         nextPaymentValue = nextPayment;
     }
 
@@ -386,25 +318,19 @@ public class Loan implements Serializable {
     }
 
     public void checkRiskStatus(Collection<Customer> listOfCustomers) {
-        boolean allPaid = true;
+        for(PreTransaction preTransaction: this.preTransactions){
+            if (!preTransaction.isPaid()){
+                setStatus(Status.Risk);
+                break;
+            }else if(this.remainTimeUnit == 0 && this.status != Status.Risk && this.remainInterest == 0 && this.remainFund == 0){
+                setStatus(Status.Finished);
+            }else{
 
-                 for(PreTransaction preTransaction: this.preTransactions){
-                if (!preTransaction.isPaid()){
-                        setStatus(Status.Risk);
-                        break;
-                    }else if(this.remainTimeUnit == 0 && this.status != Status.Risk && this.remainInterest == 0 && this.remainFund == 0){
-                    setStatus(Status.Finished);
-                }else{
-
-                        setStatus(Status.Active);
-                    }
-                }
-                 updateLoanDto();
-
+                setStatus(Status.Active);
+            }
+        }
+        updateLoanDto();
     }
-
-
-
 
     public void clearAllDebts() {
         uncompletedTransactions.clear();

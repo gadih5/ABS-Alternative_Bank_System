@@ -6,7 +6,6 @@ import javafx.stage.Stage;
 import java.net.URL;
 
 public class adminMain extends Application {
-
     public static void main(String[] args) {
         launch(args);
     }
@@ -21,5 +20,3 @@ public class adminMain extends Application {
         primaryStage.show();
     }
 }
-
-

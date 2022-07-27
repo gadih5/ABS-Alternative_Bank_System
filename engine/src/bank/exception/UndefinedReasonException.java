@@ -5,7 +5,6 @@ public class UndefinedReasonException extends Exception {
         super(message);
         msg=message;
     }
-
     String msg;
     @Override
     public String toString() {

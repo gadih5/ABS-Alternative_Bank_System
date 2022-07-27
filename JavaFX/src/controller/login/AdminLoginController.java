@@ -23,13 +23,13 @@ public class AdminLoginController {
     private Label doubleError;
     @FXML
     private ScrollPane appComponent;
-    @FXML
-    private Button loginBtn;
+
     private AppController appController;
 
     public void setMainController(AppController appController) {
         this.appController = appController;
     }
+
     @FXML
     void onClick(ActionEvent event) {
         String userName = nameTF.getText();
@@ -47,10 +47,8 @@ public class AdminLoginController {
                     .build()
                     .toString();
 
-            // updateHttpStatusLine("New request is launched for: " + finalUrl);
             System.out.println("FROM CLIENT: " + finalUrl);
             HttpClientUtil.runAsync(finalUrl, new Callback() {
-
                 @Override
                 public void onFailure(@NotNull Call call, @NotNull IOException e) {
                     Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -59,7 +57,6 @@ public class AdminLoginController {
                     alert.setContentText("Click OK and try again:");
                     alert.showAndWait();
                 }
-
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                     System.out.println(response.body().string());
@@ -78,7 +75,6 @@ public class AdminLoginController {
                                 AnchorPane.setLeftAnchor(appComponent, 0.0);
                                 AnchorPane.setRightAnchor(appComponent, 0.0);
                                 AnchorPane.setTopAnchor(appComponent, 0.0);
-                                //setCustomerComponentController(customerComponentController);
                                 appController.updateUserName(userName, "true");
                                 appController.changeBody(userName);
                             } catch (IOException e) {
@@ -90,8 +86,4 @@ public class AdminLoginController {
             });
         }
     }
-/*    private void updateHttpStatusLine(String data) {
-        chatAppMainController.updateHttpLine(data);
-    }*/
-
 }

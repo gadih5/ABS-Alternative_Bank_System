@@ -1,14 +1,11 @@
 package servlets;
 
 import bank.Bank;
-import bank.UserManager;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import utils.ServletUtils;
-
 import java.io.IOException;
 
 @WebServlet(name="GetYaz" ,urlPatterns="/getYaz")

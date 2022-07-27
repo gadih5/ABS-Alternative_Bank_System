@@ -5,14 +5,12 @@
 // Generated on: 2022.07.12 at 11:58:48 PM IDT 
 //
 
-
 package bank.xml.generated;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElementDecl;
 import javax.xml.bind.annotation.XmlRegistry;
 import javax.xml.namespace.QName;
-
 
 /**
  * This object contains factory methods for each 
@@ -120,5 +118,4 @@ public class ObjectFactory {
     public JAXBElement<Integer> createAbsCapital(Integer value) {
         return new JAXBElement<Integer>(_AbsCapital_QNAME, Integer.class, null, value);
     }
-
 }

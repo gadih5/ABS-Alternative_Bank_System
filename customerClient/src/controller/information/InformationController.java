@@ -13,7 +13,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -50,30 +49,24 @@ public class InformationController {
     @FXML
     public void showInfoTable(CustomerDto selectedCustomer) {
         try {
-
             accountTransTable.getItems().clear();
             accountTransTable.getColumns().clear();
             ArrayList<Transaction> transactions = getTransactions(this.selectedCustomer.getName());
             makeTransactionsTable(transactions);
-
             double b = getNewBalance(this.selectedCustomer.getName());
             balanceLabel.setText("Balance: " + b);
-
             borrowerLoansTable.getItems().clear();
             borrowerLoansTable.getColumns().clear();
             ArrayList<LoanDto> outLoans = getOutgoingLoans(this.selectedCustomer.getName());
             makeBorrowerLoansTable(outLoans);
             borrowerLoansTable.getSortOrder().add(borrowerLoansTable.getColumns().get(0));
-
             Set<LoanDto> inLoans = getIngoingLoans(this.selectedCustomer.getName());
             loanerLoansTable.getItems().clear();
             loanerLoansTable.getColumns().clear();
             makeLoanerLoansTable(inLoans);
             loanerLoansTable.getSortOrder().add(loanerLoansTable.getColumns().get(0));
         }catch (Exception e){
-
         }
-
     }
 
     private Set<LoanDto> getIngoingLoans(String name) {
@@ -96,7 +89,6 @@ public class InformationController {
     private void makeLoanerLoansTable(Collection<LoanDto> ingoingLoans) {
         TableColumn loanNameColumn = new TableColumn("Loan Name");
         loanNameColumn.setCellValueFactory(new PropertyValueFactory<>("loanName"));
-
 
         TableColumn reasonColumn = new TableColumn("Category");
         reasonColumn.setCellValueFactory(new PropertyValueFactory<>("reason"));
@@ -139,7 +131,6 @@ public class InformationController {
         Set<LoanDto> setOfLoans = new HashSet<>();
         setOfLoans.addAll(ingoingLoans);
         ObservableList<LoanDto> listOfLoans = FXCollections.observableArrayList(setOfLoans);
-      //  SortedList<LoanDto> sortedList = new SortedList<>(listOfLoans);
         loanerLoansTable.setItems(listOfLoans);
     }
 
@@ -189,7 +180,6 @@ public class InformationController {
         Set<LoanDto> setOfLoans = new HashSet<>();
         setOfLoans.addAll(outgoingLoans);
         ObservableList<LoanDto> listOfLoans = FXCollections.observableArrayList(setOfLoans);
-       // SortedList<LoanDto> sortedList = new SortedList<>(listOfLoans);
         borrowerLoansTable.setItems(listOfLoans);
     }
 
@@ -253,7 +243,6 @@ public class InformationController {
                     customerController.selfTransaction(selectedCustomer.getName(), amount);
                     showInfoTable(selectedCustomer);
                 }
-
             }
         }catch(NumberFormatException e){
                 chargeMoney(new ActionEvent());
@@ -286,7 +275,6 @@ public class InformationController {
     public void withdrawAmount(String text) {
         try {
             int amount = Integer.parseInt(text);
-
             if(amount == 0){
                 withdrawMoney(new ActionEvent());
                 Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -312,7 +300,6 @@ public class InformationController {
 
                 showInfoTable(selectedCustomer);
             }
-
         }
         catch (NumberFormatException e){
             withdrawMoney(new ActionEvent());
@@ -328,5 +315,3 @@ public class InformationController {
         this.selectedCustomer = selectedCustomer;
     }
 }
-
-

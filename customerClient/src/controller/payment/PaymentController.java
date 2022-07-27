@@ -17,7 +17,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
@@ -49,8 +48,6 @@ public class PaymentController {
     public synchronized void showPaymentInfo(CustomerDto selectedCustomer) {
         try {
             this.selectedCustomer = selectedCustomer;
-            //borrowerLoansTable.getItems().clear();
-            //borrowerLoansTable.getColumns().clear();
             Platform.runLater(()-> {
                 makeBorrowerLoansTable(customerController.getOutgoingLoans(this.selectedCustomer.getName()));
                 showNotifications();
@@ -74,7 +71,7 @@ public class PaymentController {
                 payButton.setDisable(false);
         }
         catch(Exception e){}
-        }
+    }
 
     @FXML
     private void makeBorrowerLoansTable(Collection<LoanDto> outgoingLoans) {
@@ -166,7 +163,6 @@ public class PaymentController {
         }
     }
 
-
     public Customer getSpecificCustomer(String name) {
        return customerController.getSpecificCustomer(name);
     }
@@ -188,7 +184,6 @@ public class PaymentController {
     }
 
     public void payEntireLoan(ActionEvent actionEvent) {
-
         LoanDto selectedLoan = borrowerLoansTable.getSelectionModel().getSelectedItem();
         if(selectedLoan == null){
             Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -198,7 +193,6 @@ public class PaymentController {
             alert.showAndWait();
         }
         else {
-            Loan theLoan = getSpecificLoan(selectedLoan.getLoanName());
             int leftPayments = selectedLoan.getRemainTimeUnit() / selectedLoan.getPaymentFrequency();
             for (Fraction fraction : customerController.getFractions(selectedLoan.getLoanName())) {
                 double singlePayment = (fraction.getAmount() + (fraction.getAmount() * (selectedLoan.getInterestPercent()) / 100.0)) / (selectedLoan.getTotalTimeUnit() / selectedLoan.getPaymentFrequency());
@@ -210,14 +204,12 @@ public class PaymentController {
                     }
                 }
                 try {
-                    customerController.addTranctions(customer.getName(),fraction.getCustomer().getName(),
-                            String.valueOf(totalPaymentAmount));
+                    customerController.addTransaction(customer.getName(),fraction.getCustomer().getName(),String.valueOf(totalPaymentAmount));
                     customerController.makeAllPreTransactionsPaid(customer.getName(),selectedLoan.getLoanName());
                     customerController.clearAllDebts(selectedLoan);
                     customerController.setStatusFinished(selectedLoan);
                     customerController.showInfoTable(customer.getCustomerDto());
                     showPaymentInfo(customer.getCustomerDto());
-
                 } catch (NegativeBalanceException e) {
                     Alert alert = new Alert(Alert.AlertType.WARNING);
                     alert.setTitle("Warning Dialog");
@@ -225,13 +217,8 @@ public class PaymentController {
                     alert.setContentText(customer.getName() + " not have enough money in account balance");
                     alert.showAndWait();
                 }
-
             }
         }
-    }
-
-    private Loan getSpecificLoan(String loanName) {
-        return customerController.getSpecificLoan(loanName);
     }
 
     public synchronized void tableClicked(MouseEvent mouseEvent) {
@@ -248,7 +235,7 @@ public class PaymentController {
         this.selectedCustomer = selectedCustomer;
     }
 
-    public Loan getSpecficLoan(String loanName) {
+    public Loan getSpecificLoan(String loanName) {
         return customerController.getSpecificLoan(loanName);
     }
 
@@ -256,4 +243,3 @@ public class PaymentController {
        return customerController.makeTransaction(id,name);
     }
 }
-

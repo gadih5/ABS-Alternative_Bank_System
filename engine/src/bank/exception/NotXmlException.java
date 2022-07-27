@@ -5,7 +5,6 @@ public class NotXmlException extends Exception {
         super(message);
         msg=message;
     }
-
     String msg;
     @Override
     public String toString() {

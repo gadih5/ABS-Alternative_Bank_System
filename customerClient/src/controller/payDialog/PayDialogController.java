@@ -20,8 +20,6 @@ import java.util.Set;
 
 public class PayDialogController {
     @FXML
-    private Button PayButton;
-    @FXML
     private TableView<PreTransaction> paymentsTableView;
     @FXML
     private Button cancelBtn;
@@ -33,13 +31,10 @@ public class PayDialogController {
         this.paymentController = paymentController;
     }
 
-
-
     public void payPayment(ActionEvent actionEvent) {
         ObservableList<PreTransaction> listOfPreTransactions = paymentsTableView.getSelectionModel().getSelectedItems();
         if(listOfPreTransactions != null){
-            Loan loanToCheck = paymentController.getSpecficLoan(listOfPreTransactions.get(0).getLoan().getLoanName());
-           // Loan loanToCheck = listOfPreTransactions.get(0).getLoan();
+            Loan loanToCheck = paymentController.getSpecificLoan(listOfPreTransactions.get(0).getLoan().getLoanName());
             Customer fromCustomer = paymentController.getSpecificCustomer((this.selectedCustomer.getName()));
             for(PreTransaction preTransaction: listOfPreTransactions){
                 try {
@@ -47,8 +42,6 @@ public class PayDialogController {
                         paymentController.makeTransaction(preTransaction.getId(),fromCustomer.getName());
                         selectedCustomer = paymentController.getSpecificCustomerDto(this.selectedCustomer.getName());
                     }
-
-
                 } catch (NegativeBalanceException e) {
                     Alert alert = new Alert(Alert.AlertType.WARNING);
                     alert.setTitle("Warning Dialog");
@@ -84,7 +77,6 @@ public class PayDialogController {
     public void loadLoanPayments(Set<PreTransaction> payLoan, CustomerDto selectedCustomer) {
         this.selectedCustomer = selectedCustomer;
         makePaymentsTable(payLoan);
-
     }
 
     private void makePaymentsTable(Set<PreTransaction> preTransactionSet) {
@@ -96,7 +88,6 @@ public class PayDialogController {
 
         TableColumn payTimeColumn = new TableColumn("Payment YAZ");
         payTimeColumn.setCellValueFactory(new PropertyValueFactory<>("payTime"));
-
 
         paymentsTableView.getSelectionModel().selectionModeProperty().setValue(SelectionMode.MULTIPLE);
         paymentsTableView.getSelectionModel().setSelectionMode (SelectionMode.MULTIPLE);
@@ -132,11 +123,9 @@ public class PayDialogController {
                 }
             }
         });
-
         paymentsTableView.getColumns().addAll(toCustomerColumn,sumColumn,payTimeColumn);
         paymentsTableView.setItems(null);
         ObservableList<PreTransaction> listOfPayments = FXCollections.observableArrayList(preTransactionSet);
         paymentsTableView.setItems(listOfPayments);
-
     }
 }

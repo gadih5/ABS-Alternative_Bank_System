@@ -1,17 +1,13 @@
 package servlets;
 
 import _json.CategoryList_json;
-import _json.CustomerList_json;
 import bank.Bank;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonParser;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 
 @WebServlet(name="GetCategories" ,urlPatterns="/getCategories")

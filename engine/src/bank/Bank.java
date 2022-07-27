@@ -4,7 +4,6 @@ import bank.exception.*;
 import bank.xml.generated.AbsDescriptor;
 import bank.xml.generated.AbsLoan;
 import bank.xml.generated.AbsLoans;
-
 import java.io.Serializable;
 import java.util.*;
 
@@ -19,6 +18,7 @@ public class Bank  implements Serializable {
     public Bank (){
         globalTimeUnit = 1;
     }
+
     public static int getGlobalTimeUnit() {
         return globalTimeUnit;
     }
@@ -60,12 +60,7 @@ public class Bank  implements Serializable {
         return customers;
     }
 
-    public void addLoan(Customer customer, double loanSum, int totalTimeUnit, String reason, int interestPercent, int paymentFrequency) throws UndefinedReasonException, NegativeLoanSumException, NegativeTotalTimeUnitException, NegativeInterestPercentException, NegativePaymentFrequencyException, OverPaymentFrequencyException, UndividedPaymentFrequencyException {
-        Loan newLoan = customer.createLoan(customer.getName(), loanSum, totalTimeUnit, reason, interestPercent, paymentFrequency);
-        loans.add(newLoan);
-    }
-
-    public void addCustumer(String name, double balance, String isAdmin) throws NegativeBalanceException {
+    public void addCustomer(String name, double balance, String isAdmin) throws NegativeBalanceException {
         Boolean isAdminInt = Boolean.parseBoolean(isAdmin);
         if(!isAdminInt) {
             Customer newCustomer = new Customer(name, balance, isAdminInt);
@@ -76,6 +71,7 @@ public class Bank  implements Serializable {
             bankAdmin = newAdmin;
         }
     }
+
     static Customer getSpecificCustomer(String name){
         Customer resCustomer=null;
         for(Customer customer: getCustomers()){
@@ -85,8 +81,8 @@ public class Bank  implements Serializable {
             }
         }
         return resCustomer;
-
     }
+
     static Loan getSpecificLoan(String name){
         Loan resLoan = null;
         for(Loan loan: getLoans()){
@@ -123,9 +119,7 @@ public class Bank  implements Serializable {
     }
 
     public void loadXmlData(String username,AbsDescriptor descriptor) throws  UndefinedReasonException, NegativeLoanSumException, NegativeTotalTimeUnitException, NegativeInterestPercentException, NegativePaymentFrequencyException, OverPaymentFrequencyException, UndividedPaymentFrequencyException, NotInCategoryException  {
-
         Customer loanCustomer = null;
-
         for(Customer customer: customers){
             if(customer.getName().equals(username)){
                 loanCustomer = customer;
@@ -135,13 +129,10 @@ public class Bank  implements Serializable {
         Set<String> listOfCategory=new HashSet<>();
         for(String s:descriptor.getAbsCategories().getAbsCategory()){
             listOfCategory.add(s);
-           // category.add(s);
         }
         category.addAll(listOfCategory);
-
-       AbsLoans absLoans = descriptor.getAbsLoans();
+        AbsLoans absLoans = descriptor.getAbsLoans();
         for(AbsLoan absLoan: absLoans.getAbsLoan()) {
-
             if(listOfCategory.contains(absLoan.getAbsCategory())) {
                 Loan newLoan = new Loan(absLoan.getId(), loanCustomer, absLoan.getAbsCapital(), absLoan.getAbsTotalYazTime(), absLoan.getAbsCategory(),
                         (int) absLoan.getAbsIntristPerPayment(), absLoan.getAbsPaysEveryYaz());
@@ -154,8 +145,6 @@ public class Bank  implements Serializable {
                 }
                 if(!exist){
                     this.loans.add(newLoan);
-                    //newLoan.addLoanerName(loanCustomer.getName());
-                   // loanCustomer.addOutgoingLoan(newLoan);
                 }
             }else{
                 throw new NotInCategoryException("\"" + absLoan.getAbsCategory() + "\" is missing in the categories list in Xml!");
@@ -163,34 +152,7 @@ public class Bank  implements Serializable {
         }
     }
 
-    public ArrayList<Loan> checkLoans(Customer customer, Set<String> chosenCategories, int chosenInterest, int chosenUnitTime) {
-        ArrayList<Loan> possibleLoans = new ArrayList<>();
-        for(Loan loan: loans){
-            if(loan.getStatus() == Status.Pending
-                    && loan.getBorrower() != customer
-                    && chosenCategories.contains(loan.getReason())
-                    && loan.getInterestPercent()*100 >= chosenInterest
-                    && loan.getTotalTimeUnit() >= chosenUnitTime){
-                possibleLoans.add(loan);
-            }
-        }
-        return possibleLoans;
-    }
-
-    public ArrayList<LoanDto> makeDto(ArrayList<Loan> possibleLoans) {
-        ArrayList<LoanDto> loansDto = new ArrayList<>();
-        for (Loan loan: possibleLoans){
-            LoanDto loanDto = new LoanDto(loan);
-            loansDto.add(loanDto);
-        }
-        return loansDto;
-    }
-
     public void updateAllDtos() {
-
-
-
-
         for (Loan loan : loans) {
             if(loan.getStatus()!=(Status.Finished)){
                 loan.checkRiskStatus(getCustomers());
@@ -200,14 +162,6 @@ public class Bank  implements Serializable {
         for (Customer customer : customers) {
             customer.updateCustomerDto();
         }
-    }
-
-    public ArrayList<String> getCustomersNames() {
-        ArrayList<String> names = null;
-        for(Customer customer: customers){
-            names.add(customer.getName());
-        }
-        return names;
     }
 
     public Boolean adminLogged() {

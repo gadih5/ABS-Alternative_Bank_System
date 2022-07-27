@@ -9,9 +9,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,7 +23,6 @@ public class AddLoaner extends HttpServlet {
         String loanname = dataList.get(0);
         String name = dataList.get(1);
         String sum = dataList.get(2);
-
         Loan loan = null;
         for (Loan loan1 : myBank.getLoans()) {
             if (loan1.getLoanName().equals(loanname)) {
@@ -33,7 +30,6 @@ public class AddLoaner extends HttpServlet {
                 break;
             }
         }
-
         Customer customer = null;
         for (Customer cust : myBank.getCustomers()) {
             if (cust.getName().equals(name)) {
@@ -41,7 +37,6 @@ public class AddLoaner extends HttpServlet {
                 break;
             }
         }
-
         if (loan != null && customer != null) {
             try {
                 loan.addLoaner(customer, Double.parseDouble(sum));

@@ -1,7 +1,6 @@
 package _json;
 
 import bank.Transaction;
-
 import java.util.ArrayList;
 
 public class TransactionList_json {

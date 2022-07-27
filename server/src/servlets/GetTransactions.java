@@ -1,6 +1,5 @@
 package servlets;
 
-import _json.LoanDtoList_json;
 import _json.TransactionList_json;
 import bank.Bank;
 import bank.Customer;
@@ -11,11 +10,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 import java.util.ArrayList;
-
-import static java.lang.System.out;
 
 @WebServlet(name="GetTransactions" ,urlPatterns="/getTransactions")
 public class GetTransactions extends HttpServlet {

@@ -1,6 +1,4 @@
 package bank;
-import _json.Fraction_json;
-import bank.Customer;
 
 import java.io.Serializable;
 
@@ -14,12 +12,6 @@ public class Fraction implements Serializable {
         this.amount = amount;
     }
 
-  /*  public Fraction(Fraction_json fraction_json) {
-        this.convertTime = fraction_json.convertTime;
-        this.customer = new Customer(fraction_json.customer);
-        this.amount = fraction_json.amount;
-    }*/
-
     public Customer getCustomer() {
         return customer;
     }
@@ -27,7 +19,6 @@ public class Fraction implements Serializable {
     public String getCustomerName() {
         return customer.getName();
     }
-
 
     public int getConvertTime() {
         return convertTime;
@@ -48,6 +39,4 @@ public class Fraction implements Serializable {
                  " , "+ amount +
                 "} " ;
     }
-
 }
-

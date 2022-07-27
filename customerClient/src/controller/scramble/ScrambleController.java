@@ -4,11 +4,9 @@ import bank.Customer;
 import bank.CustomerDto;
 import bank.Loan;
 import bank.LoanDto;
-import bank.exception.NegativeBalanceException;
 import controller.customer.CustomerController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -17,80 +15,56 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 public class ScrambleController {
-
     @FXML
     private Slider sumInvestSlider;
-
     @FXML
     private VBox categoriesVBox;
-
     @FXML
     private ScrollPane categoriesScrollPane;
-
     @FXML
     private AnchorPane categoriesAnchorPane;
-
     @FXML
     private Slider maxOwnershipPercentSlider;
-
     @FXML
     private CheckBox categoriesCheckBox;
-
     @FXML
     private CheckBox minInterestPercentCheckBox;
-
     @FXML
     private CheckBox minTotalYazCheckBox;
-
     @FXML
     private CheckBox maxOpenLoansCheckBox;
-
     @FXML
     private CheckBox maxOwnerShipPercentCheckBox;
-
     @FXML
     private TextField sumInvestTextField;
-
     @FXML
     private Slider minInterestPercentSlider;
-
     @FXML
     private Slider minTotalYazSlider;
-
     @FXML
     private Slider maxOpenLoansSlider;
-
     @FXML
     private TextField minInterestPercentTextField;
-
     @FXML
     private TextField minTotalYazTextField;
-
     @FXML
     private TextField maxOpenLoansTextField;
-
     @FXML
     private Button applyButton;
-
     @FXML
     private TextField maxOwnerShipPercentTextField;
-
     @FXML
     private Button investButton;
-
     @FXML
     private TableView<LoanDto> loansTable;
 
     private CustomerDto selectedCustomer;
-
     private CustomerController customerController;
     private int maxInterestPercent = 0;
     private int maxTotalYaz = 0;
@@ -138,7 +112,6 @@ public class ScrambleController {
         try {
             this.selectedCustomer = selectedCustomer;
             sumInvestSlider.setMax(this.selectedCustomer.getBalance());
-
             Set<String> chosenCategories = new HashSet<>();
             for (int i = 0; i < categoriesVBox.getChildren().size(); i++) {
                 CheckBox currCategory = (CheckBox) categoriesVBox.getChildren().get(i);
@@ -146,34 +119,23 @@ public class ScrambleController {
                     chosenCategories.add(currCategory.getText());
                 }
             }
-
             categoriesVBox.getChildren().clear();
-
-
             Set<String> categories = customerController.getCategories();
             if (categories != null) {
                 for (String category : categories) {
-                    // if(!categoriesVBox.getChildren().contains(category))
                     CheckBox cb = new CheckBox(category);
                     categoriesVBox.getChildren().add(cb);
                     if (chosenCategories.contains(category))
                         cb.setSelected(true);
-                    // }
                 }
             }
-
-
             maxInterestPercent = customerController.calcMaxInterestPercent(selectedCustomer);
             minInterestPercentSlider.setMax(maxInterestPercent);
-
             maxTotalYaz = customerController.calcMaxTotalYaz(selectedCustomer);
             minTotalYazSlider.setMax(maxTotalYaz);
-
             maxOpenLoansSlider.setMax(customerController.getNumOfLoans());
         }catch(Exception e){
-
         }
-
     }
 
     public void changeSumInvest(MouseEvent mouseEvent) {
@@ -208,7 +170,6 @@ public class ScrambleController {
     }
 
     public void showValidLoansInTable() {
-
         TableColumn nameColumn = new TableColumn("Loan Name");
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("loanName"));
 
@@ -232,7 +193,6 @@ public class ScrambleController {
 
         TableColumn statusColumn = new TableColumn("Status");
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
-
 
         loansTable.getColumns().addAll( nameColumn, borrowerNameColumn, reasonColumn, loanSumColumn, totalLoanTimeColumn, interestColumn, paymentFrequencyColumn, statusColumn);
         loansTable.getSelectionModel().selectionModeProperty().setValue(SelectionMode.MULTIPLE);
@@ -270,9 +230,9 @@ public class ScrambleController {
         });
 
         Set<String> chosenCategories = new HashSet<>();
-        int categoriesChosed = -1;
+        int categoriesChose = -1;
         if (!categoriesVBox.isDisable()) {
-            categoriesChosed = 1;
+            categoriesChose = 1;
             for (int i = 0; i < categoriesVBox.getChildren().size(); i++) {
                 CheckBox currCategory = (CheckBox) categoriesVBox.getChildren().get(i);
                 if (currCategory.isSelected()) {
@@ -296,26 +256,18 @@ public class ScrambleController {
         if (maxOwnerShipPercentCheckBox.isSelected())
             maxOwnershipPercent = (int) maxOwnershipPercentSlider.getValue();
 
-
-        Collection<LoanDto> loansDto = customerController.getLoansDto(categoriesChosed, chosenCategories, minInterestPercent, minTotalYaz, maxOpenLoans, maxOwnershipPercent, selectedCustomer);
+        Collection<LoanDto> loansDto = customerController.getLoansDto(categoriesChose, chosenCategories, minInterestPercent, minTotalYaz, maxOpenLoans, maxOwnershipPercent, selectedCustomer);
         loansTable.setItems(null);
         ObservableList<LoanDto> listOfLoansDto = FXCollections.observableArrayList(loansDto);
         loansTable.setItems(listOfLoansDto);
     }
 
     public void investLoan(ActionEvent actionEvent) throws InterruptedException {
-
-        //   customerController.loadCustomerDetails(selectedCustomer.getName(), true);
         customerController.updateBankDtos();
-        //   showValidLoansInTable();
-
-        //  customerController.refershInfo(selectedCustomer);
-
         ObservableList<LoanDto> list = loansTable.getSelectionModel().getSelectedItems();
         ArrayList<LoanDto> listOfLoans = new ArrayList<>();
         listOfLoans.addAll(list);
         loansTable.getSelectionModel().clearSelection();
-
         if (listOfLoans.isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error Dialog");
@@ -333,7 +285,6 @@ public class ScrambleController {
                     } else {
                         sumToinvest = perLoanInvest;
                     }
-
                 } else {
                     sumToinvest = perLoanInvest;
                 }
@@ -346,15 +297,13 @@ public class ScrambleController {
                 customerController.updateBankDtos();
                 customerController.setSelectedCustomer(customerController.getSpecificCustomerDto(selectedCustomer.getName()));
             }
-
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Information Dialog");
             alert.setHeaderText("Info: Scramble Succeed!");
             alert.setContentText(selectedCustomer.getName() + " successfully invested all chosen loans.");
             customerController.loadCustomerDetails(selectedCustomer.getName(), false);
             showValidLoansInTable();
-            customerController.refershInfo(selectedCustomer);
-
+            customerController.refreshInfo(selectedCustomer);
         }
     }
 
@@ -362,6 +311,3 @@ public class ScrambleController {
         this.selectedCustomer  = selectedCustomer;
     }
 }
-
-
-

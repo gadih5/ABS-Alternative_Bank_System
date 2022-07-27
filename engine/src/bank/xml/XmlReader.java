@@ -1,8 +1,7 @@
 package bank.xml;
-import bank.exception.NotXmlException;
-import bank.xml.XmlReader;
-import bank.xml.generated.AbsDescriptor;
 
+import bank.exception.NotXmlException;
+import bank.xml.generated.AbsDescriptor;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -14,7 +13,6 @@ import java.nio.file.Path;
 
 public class XmlReader {
     private final static String JAXB_XML_PACKAGE_NAME = "bank.xml.generated";
-    private boolean successfullyLoad;
     private Path xmlPath;
     AbsDescriptor descriptor;
 
@@ -33,16 +31,5 @@ public class XmlReader {
 
     public AbsDescriptor getDescriptor() {
         return descriptor;
-    }
-
-    public Path getXmlPath() {
-
-        return this.xmlPath;
-    }
-
-    public void setXmlPath(Path xmlPath) throws NotXmlException {
-        if(!xmlPath.endsWith(".xml")){
-            throw (new NotXmlException("Not xml Format"));
-        }
     }
 }

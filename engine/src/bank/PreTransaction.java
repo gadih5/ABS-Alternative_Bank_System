@@ -1,6 +1,5 @@
 package bank;
 
-import _json.PreTransaction_json;
 import bank.exception.NegativeBalanceException;
 
 public class PreTransaction {
@@ -34,37 +33,20 @@ public class PreTransaction {
         return id;
     }
 
-    public String getToCustomer() {
-        return toCustomer.getName();
-    }
-
     public String getLoanName() {
         return loanName;
-    }
-
-    public int getPayTime() {
-        return payTime;
     }
 
     public void setPaid(boolean paid) {
         this.paid = paid;
     }
 
-    public double getFundPart() {
-        return fundPart;
-    }
-
     public double getSum() {
         return sum;
     }
 
-    public double getInterestPart() {
-        return interestPart;
-    }
-
     public void makeTransaction(CustomerDto fromCustomer) throws NegativeBalanceException {
         System.out.println("MAKE TRANSACTION!!!");
-        //new Transaction(fromCustomer,toCustomer,fundPart+interestPart);
         Customer fromCustomer1 = Bank.getSpecificCustomer(fromCustomer.getName());
         Customer toCustomer1 = Bank.getSpecificCustomer(toCustomer.getName());
         System.out.println("BEFOR:::::Pretran::makeTransaction from"+fromCustomer+" to "+toCustomer1 +"amount of " +fundPart+interestPart);
@@ -75,14 +57,11 @@ public class PreTransaction {
         loan1.setRemainInterest(-interestPart);
         loan1.setCurrentFund(fundPart);
         loan1.setCurrentInterest(interestPart);
-
         paid = true;
         System.out.println("this loan remain "+loan1.getRemainFund()+loan1.getRemainInterest());
         loan1.updateLoanDto();
         fromCustomer1.updateCustomerDto();
         toCustomer1.updateCustomerDto();
-
-
     }
 
     @Override
@@ -100,5 +79,4 @@ public class PreTransaction {
     public boolean isPaid() {
         return paid;
     }
-
 }

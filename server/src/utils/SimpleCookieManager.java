@@ -4,19 +4,13 @@ import okhttp3.Cookie;
 import okhttp3.CookieJar;
 import okhttp3.HttpUrl;
 import org.jetbrains.annotations.NotNull;
-
 import java.util.*;
 import java.util.function.Consumer;
 
 public class SimpleCookieManager implements CookieJar {
-
     private final static String CACHE_MANAGER_PREFIX = "    [Cookie Manager] ---> ";
     Map<String, Map<String, Cookie>> cookies = new HashMap<>();
     private Consumer<String> logData = System.out::println;
-
-    public void setLogData(Consumer<String> logData) {
-        this.logData = logData;
-    }
 
     @NotNull
     @Override
@@ -47,12 +41,6 @@ public class SimpleCookieManager implements CookieJar {
                         logData.accept(CACHE_MANAGER_PREFIX + "Storing cookie [" + cookie.name() + "] --> [" + cookie.value() + "]");
                         cookiesMap.put(cookie.name(), cookie);
                     });
-        }
-    }
-
-    public void removeCookiesOf(String domain) {
-        synchronized (this) {
-            cookies.remove(domain);
         }
     }
 }

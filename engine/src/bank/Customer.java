@@ -1,10 +1,6 @@
 package bank;
 
-import _json.Customer_json;
-import _json.Loan_json;
-import _json.PreTransaction_json;
 import bank.exception.*;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,29 +26,6 @@ public class Customer implements Serializable {
         this.isAdmin = isAdmin;
     }
 
-    /*public Customer(Customer_json customer_json) {
-        this.name = customer_json.name;
-        this.balance = customer_json.balance;
-        this.transactions = customer_json.transactions;
-        ArrayList<Loan> copyIngoingLoans = new ArrayList<>();
-        for(Loan_json loan_json: customer_json.ingoingLoans){
-            copyIngoingLoans.add(new Loan(loan_json));
-        }
-        this.ingoingLoans = copyIngoingLoans;
-        ArrayList<Loan> copyOutgoingLoans = new ArrayList<>();
-        for(Loan_json loan_json: customer_json.outgoingLoans){
-            copyOutgoingLoans.add(new Loan(loan_json));
-        }
-        this.outgoingLoans = copyOutgoingLoans;
-        this.customerDto = new CustomerDto(customer_json.customerDto);
-        ArrayList<PreTransaction> copyPreTransactions = new ArrayList<>();
-        for(PreTransaction_json preTransaction_json: customer_json.preTransactions){
-            copyPreTransactions.add(new PreTransaction(preTransaction_json));
-        }
-        this.preTransactions = copyPreTransactions;
-        this.isAdmin = customer_json.isAdmin;
-    }*/
-
     public void addTransaction(Transaction transaction) {
         this.transactions.add(transaction);
     }
@@ -69,13 +42,6 @@ public class Customer implements Serializable {
         Transaction newTransaction = new Transaction(this,loan.getBorrower(),amount);
         addTransaction(newTransaction);
         updateCustomerDto();
-    }
-
-    public Loan createLoan(String loanName, double loanSum, int totalTimeUnit, String reason, int interestPrecent, int paymentFrequency) throws UndefinedReasonException, NegativeLoanSumException, NegativeTotalTimeUnitException, NegativeInterestPercentException, NegativePaymentFrequencyException, OverPaymentFrequencyException, UndividedPaymentFrequencyException {
-        Loan newLoan = new Loan( loanName, this,  loanSum,  totalTimeUnit,  reason,  interestPrecent,  paymentFrequency);
-        outgoingLoans.add(newLoan.getLoanDto());
-        updateCustomerDto();
-        return newLoan;
     }
 
     public String getName() {
@@ -120,24 +86,8 @@ public class Customer implements Serializable {
         updateCustomerDto();
     }
 
-    public void addOutgoingLoan(Loan loan) {
-        outgoingLoans.add(loan.getLoanDto());
-        updateCustomerDto();
-    }
-
     public void addPreTransaction(PreTransaction preTransaction) {
         preTransactions.add(preTransaction);
-    }
-
-
-    public void clearAllPreTransactions(Loan selectedLoan) {
-        ArrayList<PreTransaction> preTransactionsToRemove = new ArrayList<>();
-        for(PreTransaction preTransaction: preTransactions){
-            if(preTransaction.getLoan().getLoanName() == selectedLoan.getLoanName()){
-                preTransactionsToRemove.add(preTransaction);
-            }
-        }
-        preTransactions.removeAll(preTransactionsToRemove);
     }
 
     public void makeAllPreTransactionsPaid(LoanDto selectedLoan) {
@@ -148,4 +98,3 @@ public class Customer implements Serializable {
         }
     }
 }
-

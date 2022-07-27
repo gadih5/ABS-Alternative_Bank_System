@@ -1,6 +1,5 @@
 package servlets;
 
-import _json.TransactionList_json;
 import bank.Bank;
 import bank.Customer;
 import com.google.gson.Gson;
@@ -9,10 +8,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
-
-import static java.lang.System.out;
 
 @WebServlet(name="GetNumOfTrans" ,urlPatterns="/getNumOfTrans")
 public class GetNumOfTrans extends HttpServlet {

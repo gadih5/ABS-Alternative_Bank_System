@@ -5,7 +5,6 @@
 // Generated on: 2022.07.12 at 11:58:48 PM IDT 
 //
 
-
 package bank.xml.generated;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,7 +12,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
 
 /**
  * <p>Java class for anonymous complex type.
@@ -95,5 +93,4 @@ public class AbsDescriptor {
     public void setAbsLoans(AbsLoans value) {
         this.absLoans = value;
     }
-
 }

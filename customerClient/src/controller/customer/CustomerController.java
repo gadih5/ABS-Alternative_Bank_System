@@ -13,11 +13,9 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
-
 
 public class CustomerController {
     @FXML
@@ -79,10 +77,6 @@ public class CustomerController {
         scrambleComponentController.setMainController(this);
     }
 
-    public CustomerDto getSelectedCustomer() {
-        return selectedCustomer;
-    }
-
     public synchronized void loadCustomerDetails(String userName, boolean fromScramble)  {
                 customerAppController.updateBankDtos();
                 ArrayList<CustomerDto> customersDto = customerAppController.getCustomersDto() ;
@@ -106,14 +100,6 @@ public class CustomerController {
                 }
     }
 
-    public ArrayList<Customer> getCustomers() {
-        return customerAppController.getCustomers();
-    }
-
-    public Collection<CustomerDto> getCustomersDto() {
-        return customerAppController.getCustomersDto();
-    }
-
     public Set<String> getCategories() {
         return customerAppController.getCategories();
     }
@@ -130,8 +116,8 @@ public class CustomerController {
         return customerAppController.getNumOfLoans();
     }
 
-    public Collection<LoanDto> getLoansDto(int categoriesChosed, Set<String> chosenCategories, int minInterestPercent, int minTotalYaz, int maxOpenLoans, int maxOwnershipPercent, CustomerDto selectedCustomer) {
-        return customerAppController.getLoansDtoForScramble(categoriesChosed, chosenCategories,minInterestPercent,minTotalYaz,maxOpenLoans,maxOwnershipPercent, selectedCustomer);
+    public Collection<LoanDto> getLoansDto(int categoriesChose, Set<String> chosenCategories, int minInterestPercent, int minTotalYaz, int maxOpenLoans, int maxOwnershipPercent, CustomerDto selectedCustomer) {
+        return customerAppController.getLoansDtoForScramble(categoriesChose, chosenCategories,minInterestPercent,minTotalYaz,maxOpenLoans,maxOwnershipPercent, selectedCustomer);
     }
 
     public Loan getSpecificLoan(String loanName) {
@@ -158,18 +144,16 @@ public class CustomerController {
         customerAppController.checkLoanStatus(loanToCheck);
     }
 
-    public void refershInfo(CustomerDto customerDto) {
+    public void refreshInfo(CustomerDto customerDto) {
         Platform.runLater(() -> {
             informationComponentController.showInfoTable(customerDto);
-          //  if(!this.scrambleTab.isSelected())
-                scrambleComponentController.loadScrambleInfo(customerDto);
+            scrambleComponentController.loadScrambleInfo(customerDto);
         });
     }
 
     public void selfTransaction(String name, int amount) {
         customerAppController.selfTransaction(name,amount);
     }
-
 
     public void clearAllDebts(LoanDto selectedLoan) {
         customerAppController.clearAllDebts(selectedLoan);
@@ -178,7 +162,6 @@ public class CustomerController {
     public void setStatusFinished(LoanDto selectedLoan) {
         customerAppController.setStatusFinished(selectedLoan);
     }
-
 
     public CustomerDto getTheCustomer() {
         return selectedCustomer;
@@ -200,8 +183,6 @@ public class CustomerController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-
         url = getClass().getResource("/controller/scramble/scramble.fxml");
         fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(url);
@@ -217,8 +198,6 @@ public class CustomerController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-
         url = getClass().getResource("/controller/payment/payment.fxml");
         fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(url);
@@ -234,14 +213,10 @@ public class CustomerController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-            }
+    }
 
     public ArrayList<Transaction> getTransactions(String name) {
         return customerAppController.getTransactions(name);
-    }
-
-    public int getNumOfTrans(String name) {
-        return customerAppController.getNumOfTrans(name);
     }
 
     public double getNewBalance(String name) {
@@ -264,10 +239,8 @@ public class CustomerController {
 
     public Set<LoanDto> getIngoingLoans(String name) {
         Set<LoanDto> ingoingLoans = new HashSet<>();
-
         try {
             ArrayList<LoanDto> allLoans = customerAppController.getLoansDto();
-            // Set<Loan> ingoingLoans = new HashSet<>();
             if (!allLoans.isEmpty()) {
                 for (LoanDto loanDto : allLoans) {
                     if (loanDto != null) {
@@ -279,7 +252,6 @@ public class CustomerController {
                 }
             }
         }catch (Exception e) {
-
         }
         return ingoingLoans;
     }
@@ -296,13 +268,12 @@ public class CustomerController {
         return customerAppController.makeTransaction(id,name);
     }
 
-    public void addTranctions(String name, String name1, String valueOf) throws NegativeBalanceException {
-        customerAppController.addTransction(name,name1,valueOf);
+    public void addTransaction(String name, String name1, String valueOf) throws NegativeBalanceException {
+        customerAppController.addTransition(name,name1,valueOf);
     }
 
     public void makeAllPreTransactionsPaid(String name, String selectedLoan) {
         customerAppController.makeAllPreTransactionsPaid(name,selectedLoan);
-
     }
 
     public  Collection<Fraction> getFractions (String loanName) {

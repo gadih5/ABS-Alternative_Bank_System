@@ -1,17 +1,11 @@
 <component name="libraryTable">
   <library name="okHttp">
     <CLASSES>
-      <root url="file://$USER_HOME$/Desktop/Online Chat V3/Online Chat V3/3rd/okHttp" />
-      <root url="file://$PROJECT_DIR$/google-gson-2.1" />
-      <root url="file://$PROJECT_DIR$/okHttp" />
+      <root url="file://$PROJECT_DIR$/lib/okHttp" />
+      <root url="jar://$PROJECT_DIR$/lib/gson-2.1.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES>
-      <root url="file://$PROJECT_DIR$/google-gson-2.1" />
-    </SOURCES>
-    <jarDirectory url="file://$USER_HOME$/Desktop/Online Chat V3/Online Chat V3/3rd/okHttp" recursive="false" />
-    <jarDirectory url="file://$PROJECT_DIR$/google-gson-2.1" recursive="false" />
-    <jarDirectory url="file://$PROJECT_DIR$/okHttp" recursive="false" />
-    <jarDirectory url="file://$PROJECT_DIR$/google-gson-2.1" recursive="false" type="SOURCES" />
+    <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/lib/okHttp" recursive="false" />
   </library>
 </component>

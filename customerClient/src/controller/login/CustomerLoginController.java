@@ -2,7 +2,6 @@ package controller.login;
 
 import controller.app.CustomerAppController;
 import controller.constants.Constants;
-import controller.customer.CustomerController;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -63,7 +62,6 @@ public class CustomerLoginController {
                     alert.setContentText("Click OK and try again:");
                     alert.showAndWait();
                 }
-
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                     response.body().close();

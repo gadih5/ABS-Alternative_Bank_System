@@ -1,8 +1,6 @@
 package _json;
 
-
 import bank.Fraction;
-import java.util.ArrayList;
 import java.util.Collection;
 
 public class FractionList_json {

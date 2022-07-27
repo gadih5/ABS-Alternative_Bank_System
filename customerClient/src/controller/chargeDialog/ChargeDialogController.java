@@ -10,8 +10,6 @@ import javafx.stage.Stage;
 
 public class ChargeDialogController {
     @FXML
-    private Button chargeBtn;
-    @FXML
     private Button cancelBtn;
     @FXML
     private TextField amountTf;
@@ -19,7 +17,6 @@ public class ChargeDialogController {
     private SplitPane informationComponent;
     @FXML
     private InformationController informationComponentController;
-
     @FXML
     void cancelClicked(ActionEvent event) {
         Stage stage = (Stage) cancelBtn.getScene().getWindow();
