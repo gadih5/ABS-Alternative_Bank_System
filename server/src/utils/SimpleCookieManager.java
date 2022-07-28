@@ -28,7 +28,7 @@ public class SimpleCookieManager implements CookieJar {
         logData.accept(sb.toString());
         return cookiesPerDomain;
     }
-
+//
     @Override
     public void saveFromResponse(@NotNull HttpUrl httpUrl, @NotNull List<Cookie> responseCookies) {
         String host = httpUrl.host();
