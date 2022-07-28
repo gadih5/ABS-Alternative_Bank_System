@@ -5,12 +5,6 @@
       <element id="module-output" name="JavaFX" />
       <element id="module-output" name="server" />
       <element id="module-output" name="engine" />
-      <element id="extracted-dir" path="$USER_HOME$/Desktop/13. JSON ( GSON)/13. JSON (&amp; GSON)/json/lib/gson-2.8.8/gson-2.8.8.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/Desktop/Online Chat V3/Online Chat V3/3rd/okHttp/okio-2.8.0.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/Desktop/Online Chat V3/Online Chat V3/3rd/okHttp/okhttp-4.9.1.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/Desktop/Online Chat V3/Online Chat V3/3rd/okHttp/annotations-13.0.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/Desktop/Online Chat V3/Online Chat V3/3rd/okHttp/kotlin-stdlib-1.4.10.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/Desktop/Online Chat V3/Online Chat V3/3rd/okHttp/kotlin-stdlib-common-1.4.10.jar" path-in-jar="/" />
       <element id="library" level="project" name="apache-tomcat-10.0" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/javax.annotation.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/javax.servlet.jar" path-in-jar="/" />

@@ -11,10 +11,17 @@
         </element>
         <element id="directory" name="lib">
           <element id="library" level="project" name="okHttp" />
-          <element id="file-copy" path="$USER_HOME$/Desktop/13. JSON ( GSON)/13. JSON (&amp; GSON)/json/lib/gson-2.8.8/gson-2.8.8.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/lib/gson-2.1.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/lib/okHttp/okio-2.8.0.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/lib/okHttp/okhttp-4.9.1.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/lib/okHttp/annotations-13.0.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/lib/okHttp/kotlin-stdlib-1.4.10.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/lib/okHttp/kotlin-stdlib-common-1.4.10.jar" />
         </element>
       </element>
       <element id="library" level="project" name="apache-tomcat-10.0" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/gson-2.1.jar" path-in-jar="/" />
+      <element id="library" level="project" name="okHttp" />
     </root>
   </artifact>
 </component>
